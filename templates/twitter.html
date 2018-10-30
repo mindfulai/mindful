@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Flaskr</title>
+  <title>Twitter</title>
   <link rel="stylesheet" type="text/css" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 </head>
 <body>
@@ -17,8 +17,6 @@
     {% endif %}
 
     <a class="btn btn-info" role="button" href="{{ url_for('search') }}">Search</a>
-    <a class="btn btn-info" role="button" href="{{ url_for('facebook_auth') }}">Facebook</a>
-    <a class="btn btn-info" role="button" href="{{ url_for('twitter_auth') }}">Twitter</a>
 
     <br><br>
 
@@ -38,6 +36,20 @@
         </dl>
       </form>
     {% endif %}
+
+    <br>
+
+      <pre>
+        Twitter User Account for {{ screen_name }}: {{ resp_user_account }}
+      </pre>
+
+      <pre>
+        Twitter User Timeline for {{ screen_name }}: {{ resp_user_timeline }}
+      </pre>
+
+      <pre>
+        Twitter Mentions Timeline for {{ screen_name }}: {{ resp_mentions_timeline }}
+      </pre>
 
     <br>
 

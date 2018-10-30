@@ -5,6 +5,11 @@ from flask import Flask, request, session, g, redirect, url_for, \
     abort, render_template, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
+from flask_dance.contrib.twitter import make_twitter_blueprint, twitter
+from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
+
+import json
+import models
 
 # get the folder where this file runs
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -25,10 +30,20 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # create app
 app = Flask(__name__)
+# Twitter
+twitter_blueprint = make_twitter_blueprint(
+    api_key="devnDViKMhTY4J5AwVKW7NewW",
+    api_secret="92kwOgTnMiFNGP1bXNvaLCOLSEIiX6WYSPYDohEWIAnsDceGja",
+)
+app.register_blueprint(twitter_blueprint, url_prefix="/login")
+# Facebook
+facebook_blueprint = make_facebook_blueprint(
+    client_id="176320989922581",
+    client_secret="bfbf2231584f211669debf63467e58e9",
+)
+app.register_blueprint(facebook_blueprint, url_prefix="/login")
 app.config.from_object(__name__)
 db = SQLAlchemy(app)
-
-import models
 
 
 @app.route('/')
@@ -37,6 +52,66 @@ def index():
     entries = db.session.query(models.Flaskr)
     return render_template('index.html', entries=entries)
 
+@app.route('/twitter_auth')
+def twitter_auth():
+    """Searches the database for entries, then displays them."""
+    entries = db.session.query(models.Flaskr)
+
+    if not twitter.authorized:
+        return redirect(url_for("twitter.login"))
+    resp = twitter.get("account/settings.json")
+    assert resp.ok
+
+    screen_name = resp.json()['screen_name']
+    app.logger.info('%s logged in successfully', screen_name)
+    #app.logger.info('%s logged in successfully', resp.json())
+
+    resp_user_account = json.dumps(resp.json(), indent=2, ensure_ascii=False)
+
+    # WON'T use account activity api
+    # FOR The account activity api has limitation on accounts subscribed, and we don't really need the realtime data.
+    # Instead query twitter user's tweets and mentions is just enough.
+
+
+    # WON'T use statuses/home_timeline.json
+    # FOR the response include tweets from followings
+    #resp = twitter.get("statuses/home_timeline.json")
+
+
+    # WILL use statuses/user_timeline.json
+    # FOR the 20 most recent tweets for the authenticating user.
+    #
+    # TODO:
+    #   * tweets_today(days=1)
+    resp = twitter.get("statuses/user_timeline.json?screen_name=" + screen_name)
+    assert resp.ok
+
+    app.logger.info('%s logged in successfully', resp.json())
+
+    resp_user_timeline = json.dumps(resp.json(), indent=2, ensure_ascii=False)
+
+    # WILL use statuses/mentions_timeline.json
+    # FOR the 20 most recent mentions for the authenticating user.
+    #
+    # TODO:
+    #   * mentions_today(days=1)
+    resp = twitter.get("statuses/mentions_timeline.json?screen_name=" + screen_name)
+    assert resp.ok
+
+    app.logger.info('%s logged in successfully', resp.json())
+
+    resp_mentions_timeline = json.dumps(resp.json(), indent=2, ensure_ascii=False)
+
+    return render_template('twitter.html', screen_name=screen_name, resp_user_account=resp_user_account,
+                           entries=entries, resp_user_timeline=resp_user_timeline,
+                           resp_mentions_timeline=resp_mentions_timeline)
+
+@app.route('/facebook_auth')
+def facebook_auth():
+    """Searches the database for entries, then displays them."""
+    entries = db.session.query(models.Flaskr)
+
+    return render_template('facebook.html')
 
 @app.route('/add', methods=['POST'])
 def add_entry():
