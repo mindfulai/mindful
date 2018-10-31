@@ -52,6 +52,7 @@ def index():
     entries = db.session.query(models.Flaskr)
     return render_template('index.html', entries=entries)
 
+
 @app.route('/twitter_auth')
 def twitter_auth():
     """Searches the database for entries, then displays them."""
@@ -64,7 +65,7 @@ def twitter_auth():
 
     screen_name = resp.json()['screen_name']
     app.logger.info('%s logged in successfully', screen_name)
-    #app.logger.info('%s logged in successfully', resp.json())
+    # app.logger.info('%s logged in successfully', resp.json())
 
     resp_user_account = json.dumps(resp.json(), indent=2, ensure_ascii=False)
 
@@ -72,11 +73,9 @@ def twitter_auth():
     # FOR The account activity api has limitation on accounts subscribed, and we don't really need the realtime data.
     # Instead query twitter user's tweets and mentions is just enough.
 
-
     # WON'T use statuses/home_timeline.json
     # FOR the response include tweets from followings
-    #resp = twitter.get("statuses/home_timeline.json")
-
+    # resp = twitter.get("statuses/home_timeline.json")
 
     # WILL use statuses/user_timeline.json
     # FOR the 20 most recent tweets for the authenticating user.
