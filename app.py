@@ -110,6 +110,8 @@ def twitter_auth():
 def facebook_auth():
     """Searches the database for entries, then displays them."""
     entries = db.session.query(models.Flaskr)
+    if not facebook.authorized:
+        return redirect(url_for("facebook.login"))
 
     return render_template('facebook.html')
 
