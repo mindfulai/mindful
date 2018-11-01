@@ -65,7 +65,7 @@ def twitter_auth():
     assert resp.ok
 
     screen_name = resp.json()['screen_name']
-    app.logger.info('%s logged in successfully', screen_name)
+    session['twitter_screen_name'] = screen_name
     # app.logger.info('%s logged in successfully', resp.json())
 
     resp_user_account = json.dumps(resp.json(), indent=2, ensure_ascii=False)
@@ -106,12 +106,17 @@ def twitter_auth():
                            entries=entries, resp_user_timeline=resp_user_timeline,
                            resp_mentions_timeline=resp_mentions_timeline)
 
+
 @app.route('/twitter/timeline')
 def twitter_timeline():
     """
     将 timeline 存入
     """
-    screen_name = 'linxuedong'
+    screen_name = session.get('twitter_screen_name')
+
+    if not screen_name:
+        abort(401)
+
     # TODO: 查找数据库中的 tweet 找到最大 tweet_id，通过 since_id 载入他与 tweet_id 的文章
 
     resp = twitter.get("statuses/user_timeline.json?screen_name=" + screen_name)
@@ -124,7 +129,7 @@ def twitter_timeline():
         user = tweet['user']['screen_name']
         tweet_id = tweet['id']
         created_at = pendulum.parse(tweet['created_at'], strict=False)
-        t = models.Tweet(tweet_json=json.dumps(tweet), created_at=created_at,
+        t = models.Tweet(detail=json.dumps(tweet), created_at=created_at,
                          user=user, api_url=resp.url, tweet_id=tweet_id)
         db.session.add(t)
         db.session.commit()

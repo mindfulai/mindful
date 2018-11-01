@@ -24,4 +24,4 @@ class Tweet(db.Model):
     created_at = db.Column(db.DateTime)
     user = db.Column(db.String)
     api_url = db.Column(db.String)
-    content = db.Column(db.String)
+    detail = db.Column(db.String)
