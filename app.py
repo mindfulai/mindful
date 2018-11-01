@@ -1,5 +1,7 @@
 # imports
 import os
+import pendulum
+import json
 
 from flask import Flask, request, session, g, redirect, url_for, \
     abort, render_template, flash, jsonify
@@ -7,9 +9,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 from flask_dance.contrib.twitter import make_twitter_blueprint, twitter
 from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
-
-import json
-import models
 
 # get the folder where this file runs
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -44,6 +43,8 @@ facebook_blueprint = make_facebook_blueprint(
 app.register_blueprint(facebook_blueprint, url_prefix="/login")
 app.config.from_object(__name__)
 db = SQLAlchemy(app)
+
+import models
 
 
 @app.route('/')
@@ -104,6 +105,31 @@ def twitter_auth():
     return render_template('twitter.html', screen_name=screen_name, resp_user_account=resp_user_account,
                            entries=entries, resp_user_timeline=resp_user_timeline,
                            resp_mentions_timeline=resp_mentions_timeline)
+
+@app.route('/twitter/timeline')
+def twitter_timeline():
+    """
+    将 timeline 存入
+    """
+    screen_name = 'linxuedong'
+    # TODO: 查找数据库中的 tweet 找到最大 tweet_id，通过 since_id 载入他与 tweet_id 的文章
+
+    resp = twitter.get("statuses/user_timeline.json?screen_name=" + screen_name)
+    assert resp.ok
+
+    timeline = json.dumps(resp.json(), indent=2, ensure_ascii=False)
+
+    # 存入数据库
+    for tweet in resp.json():
+        user = tweet['user']['screen_name']
+        tweet_id = tweet['id']
+        created_at = pendulum.parse(tweet['created_at'], strict=False)
+        t = models.Tweet(tweet_json=json.dumps(tweet), created_at=created_at,
+                         user=user, api_url=resp.url, tweet_id=tweet_id)
+        db.session.add(t)
+        db.session.commit()
+
+    return jsonify({'tweets': timeline})
 
 @app.route('/facebook_auth')
 def facebook_auth():
