@@ -148,6 +148,51 @@ def twitter_user_timeline():
     # FIXME: response result
     return jsonify({'tweets': timeline})
 
+
+@app.route('/twitter/mentions_timeline')
+def twitter_mentions_timeline():
+    """
+    API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-mentions_timeline
+    将用户 mentions 存入数据库
+    """
+    # TODO: route 为 /twitter/<int:user_id>/mentions_timeline
+    # 用户授权验证
+    screen_name = session.get('twitter_screen_name')
+    if not screen_name:
+        abort(401)
+
+    # 获取数据库中最后 mention
+    last_mention = db.session.query(models.TweetMention).order_by(
+        models.TweetMention.tweet_id.desc()).first()
+    if last_mention:
+        max_tweet_id = last_mention.tweet_id
+        path = "statuses/mentions_timeline.json?screen_name={}&max_id=".format(
+            screen_name, max_tweet_id)
+    else:
+        path = "statuses/mentions_timeline.json?screen_name={}".format(
+            screen_name)
+
+    # TODO: 从什么时间开始获取 mentions
+    # 更新最后 mention 之后的文章
+    resp = twitter.get(path)
+    assert resp.ok
+
+    # 存入数据库
+    for mention in resp.json():
+        # TODO: user string 存为 models.User
+        user = screen_name
+        tweet_id = mention['id']
+        created_at = pendulum.parse(mention['created_at'], strict=False)
+        m = models.TweetMention(
+            tweet_id=tweet_id, mention_user=user, created_at=created_at,
+            api_url=resp.url, detail=json.dumps(mention)
+        )
+        db.session.add(m)
+        db.session.commit()
+
+    return jsonify(resp.json())
+
+
 @app.route('/facebook_auth')
 def facebook_auth():
     """Searches the database for entries, then displays them."""
