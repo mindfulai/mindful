@@ -25,3 +25,14 @@ class Tweet(db.Model):
     user = db.Column(db.String)
     api_url = db.Column(db.String)
     detail = db.Column(db.String)
+
+
+class TweetMention(db.Model):
+    __tablename__ = "tweet_mentions"
+
+    id = db.Column(db.Integer, primary_key=True)
+    tweet_id = db.Column(db.Integer, unique=True)
+    created_at = db.Column(db.DateTime)
+    mention_user = db.Column(db.String)
+    api_url = db.Column(db.String)
+    detail = db.Column(db.String)
