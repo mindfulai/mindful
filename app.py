@@ -107,19 +107,30 @@ def twitter_auth():
                            resp_mentions_timeline=resp_mentions_timeline)
 
 
-@app.route('/twitter/timeline')
-def twitter_timeline():
+@app.route('/twitter/user_timeline')
+def twitter_user_timeline():
     """
-    将 timeline 存入
+    API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
+    将用户 tweet 存入数据库
     """
+    # 用户授权验证
     screen_name = session.get('twitter_screen_name')
-
     if not screen_name:
         abort(401)
 
-    # TODO: 查找数据库中的 tweet 找到最大 tweet_id，通过 since_id 载入他与 tweet_id 的文章
+    # 获取数据库中最后 tweet
+    last_tweet = db.session.query(models.Tweet).order_by(
+        models.Tweet.tweet_id.desc()).first()
+    if last_tweet:
+        max_tweet_id = last_tweet.tweet_id
+        path = "statuses/user_timeline.json?screen_name={}&max_id=".format(
+            screen_name, max_tweet_id)
+    else:
+        path = "statuses/user_timeline.json?screen_name={}".format(screen_name)
 
-    resp = twitter.get("statuses/user_timeline.json?screen_name=" + screen_name)
+    # TODO: 从什么时间开始获取 tweets
+    # 更新最后 tweet 之后的文章
+    resp = twitter.get(path)
     assert resp.ok
 
     timeline = json.dumps(resp.json(), indent=2, ensure_ascii=False)
@@ -134,6 +145,7 @@ def twitter_timeline():
         db.session.add(t)
         db.session.commit()
 
+    # FIXME: response result
     return jsonify({'tweets': timeline})
 
 @app.route('/facebook_auth')
