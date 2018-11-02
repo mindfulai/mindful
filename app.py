@@ -113,6 +113,7 @@ def twitter_user_timeline():
     API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
     将用户 tweet 存入数据库
     """
+    # TODO: route 为 /twitter/<int:user_id>/user_timeline
     # 用户授权验证
     screen_name = session.get('twitter_screen_name')
     if not screen_name:
@@ -137,6 +138,7 @@ def twitter_user_timeline():
 
     # 存入数据库
     for tweet in resp.json():
+        # TODO: user string 存为 models.User
         user = tweet['user']['screen_name']
         tweet_id = tweet['id']
         created_at = pendulum.parse(tweet['created_at'], strict=False)
