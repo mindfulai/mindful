@@ -64,8 +64,19 @@ def twitter_auth():
     resp = twitter.get("account/settings.json")
     assert resp.ok
 
+    # 查找创建用户
     screen_name = resp.json()['screen_name']
-    session['twitter_screen_name'] = screen_name
+
+    try:
+        user = db.session.query(models.User).filter_by(
+            username=screen_name).one()
+    except:
+        user = models.User(username=screen_name)
+        db.session.add(user)
+        db.session.commit()
+
+    session['twitter_screen_name'] = user.username
+
     # app.logger.info('%s logged in successfully', resp.json())
 
     resp_user_account = json.dumps(resp.json(), indent=2, ensure_ascii=False)
