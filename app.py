@@ -118,24 +118,26 @@ def twitter_auth():
                            resp_mentions_timeline=resp_mentions_timeline)
 
 
-@app.route('/twitter/user_timeline')
-def twitter_user_timeline():
+@app.route('/twitter/<int:user_id>/user_timeline')
+def twitter_user_timeline(user_id):
     """
     API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
     将用户 tweet 存入数据库
     """
-    # TODO: route 为 /twitter/<int:user_id>/user_timeline
-    # 用户授权验证
+    # FIXME: 用户授权验证
     screen_name = session.get('twitter_screen_name')
     if not screen_name:
         abort(401)
 
+    user = db.session.query(models.User).get(user_id)
+
     # 获取数据库中最后 tweet
-    last_tweet = db.session.query(models.Tweet).order_by(
+    last_tweet = db.session.query(models.Tweet).filter_by(user=user).order_by(
         models.Tweet.tweet_id.desc()).first()
+
     if last_tweet:
         max_tweet_id = last_tweet.tweet_id
-        path = "statuses/user_timeline.json?screen_name={}&max_id=".format(
+        path = "statuses/user_timeline.json?screen_name={}&since_id={}".format(
             screen_name, max_tweet_id)
     else:
         path = "statuses/user_timeline.json?screen_name={}".format(screen_name)
@@ -150,7 +152,6 @@ def twitter_user_timeline():
     # 存入数据库
     for tweet in resp.json():
         # TODO: user string 存为 models.User
-        user = tweet['user']['screen_name']
         tweet_id = tweet['id']
         created_at = pendulum.parse(tweet['created_at'], strict=False)
         t = models.Tweet(detail=json.dumps(tweet), created_at=created_at,
@@ -179,7 +180,7 @@ def twitter_mentions_timeline():
         models.TweetMention.tweet_id.desc()).first()
     if last_mention:
         max_tweet_id = last_mention.tweet_id
-        path = "statuses/mentions_timeline.json?screen_name={}&max_id=".format(
+        path = "statuses/mentions_timeline.json?screen_name={}&since_id=".format(
             screen_name, max_tweet_id)
     else:
         path = "statuses/mentions_timeline.json?screen_name={}".format(
