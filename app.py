@@ -118,6 +118,57 @@ def twitter_auth():
                            resp_mentions_timeline=resp_mentions_timeline)
 
 
+def get_user_last_tweet_or_mention(user, csl):
+    """获取数据库中最后的 tweet 或 mention
+    args:
+        user: 访问用户 object
+        csl: 需要查找的 Tweet 或者 TweetMention
+    retrun:
+        数据库中最新的 tweet 或 mention
+    """
+    return db.session.query(csl).filter_by(user=user).order_by(
+        csl.tweet_id.desc()).first()
+
+
+def get_twitter_path(last_article, screen_name, article_type):
+    """需要访问的路径
+    args:
+        last_tweet_or_mention: 数据库中最新的推文
+        screen_name: 当前用户 twtter 用户名
+        article_type: 是 twitter 还是 mention
+    retrun:
+        访问的 twitter API 路径
+
+    TODO: 从什么时间开始获取 tweets
+    """
+    if article_type == 'tweet':
+        api = 'statuses/user_timeline.json'
+    elif article_type == 'mention':
+        api = 'statuses/mentions_timeline.json'
+    if last_article:
+        max_tweet_id = last_article.tweet_id
+        path = "{}?screen_name={}&since_id={}".format(
+            api, screen_name, max_tweet_id)
+    else:
+        path = "{}?screen_name={}".format(api, screen_name)
+    return path
+
+
+def save_twitter_data(resp, user, csl):
+    """存储 twitter 获取的数据到数据库
+    args:
+        resp: twitter API response
+        user: 当前用户 object
+    """
+    for tweet in resp.json():
+        tweet_id = tweet['id']
+        created_at = pendulum.parse(tweet['created_at'], strict=False)
+        t = csl(detail=json.dumps(tweet), created_at=created_at,
+                user=user, api_url=resp.url, tweet_id=tweet_id)
+        db.session.add(t)
+        db.session.commit()
+
+
 @app.route('/twitter/<int:user_id>/user_timeline')
 def twitter_user_timeline(user_id):
     """
@@ -132,32 +183,19 @@ def twitter_user_timeline(user_id):
     user = db.session.query(models.User).get(user_id)
 
     # 获取数据库中最后 tweet
-    last_tweet = db.session.query(models.Tweet).filter_by(user=user).order_by(
-        models.Tweet.tweet_id.desc()).first()
+    last_tweet = get_user_last_tweet_or_mention(user, models.Tweet)
 
-    if last_tweet:
-        max_tweet_id = last_tweet.tweet_id
-        path = "statuses/user_timeline.json?screen_name={}&since_id={}".format(
-            screen_name, max_tweet_id)
-    else:
-        path = "statuses/user_timeline.json?screen_name={}".format(screen_name)
+    # 获取 API 路径
+    path = get_twitter_path(last_tweet, screen_name, 'tweet')
 
-    # TODO: 从什么时间开始获取 tweets
-    # 更新最后 tweet 之后的文章
+    # 访问 twitter API
     resp = twitter.get(path)
     assert resp.ok
 
     timeline = json.dumps(resp.json(), indent=2, ensure_ascii=False)
 
     # 存入数据库
-    for tweet in resp.json():
-        # TODO: user string 存为 models.User
-        tweet_id = tweet['id']
-        created_at = pendulum.parse(tweet['created_at'], strict=False)
-        t = models.Tweet(detail=json.dumps(tweet), created_at=created_at,
-                         user=user, api_url=resp.url, tweet_id=tweet_id)
-        db.session.add(t)
-        db.session.commit()
+    save_twitter_data(resp, user, models.Tweet)
 
     # FIXME: response result
     return jsonify({'tweets': timeline})
