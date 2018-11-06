@@ -1,5 +1,7 @@
 # imports
 import os
+import pendulum
+import json
 
 from flask import Flask, request, session, g, redirect, url_for, \
     abort, render_template, flash, jsonify
@@ -7,9 +9,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 from flask_dance.contrib.twitter import make_twitter_blueprint, twitter
 from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
-
-import json
-import models
 
 # get the folder where this file runs
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -45,12 +44,15 @@ app.register_blueprint(facebook_blueprint, url_prefix="/login")
 app.config.from_object(__name__)
 db = SQLAlchemy(app)
 
+import models
+
 
 @app.route('/')
 def index():
     """Searches the database for entries, then displays them."""
     entries = db.session.query(models.Flaskr)
     return render_template('index.html', entries=entries)
+
 
 @app.route('/twitter_auth')
 def twitter_auth():
@@ -62,9 +64,20 @@ def twitter_auth():
     resp = twitter.get("account/settings.json")
     assert resp.ok
 
+    # 查找创建用户
     screen_name = resp.json()['screen_name']
-    app.logger.info('%s logged in successfully', screen_name)
-    #app.logger.info('%s logged in successfully', resp.json())
+
+    try:
+        user = db.session.query(models.User).filter_by(
+            username=screen_name).one()
+    except:
+        user = models.User(username=screen_name)
+        db.session.add(user)
+        db.session.commit()
+
+    session['twitter_screen_name'] = user.username
+
+    # app.logger.info('%s logged in successfully', resp.json())
 
     resp_user_account = json.dumps(resp.json(), indent=2, ensure_ascii=False)
 
@@ -72,11 +85,9 @@ def twitter_auth():
     # FOR The account activity api has limitation on accounts subscribed, and we don't really need the realtime data.
     # Instead query twitter user's tweets and mentions is just enough.
 
-
     # WON'T use statuses/home_timeline.json
     # FOR the response include tweets from followings
-    #resp = twitter.get("statuses/home_timeline.json")
-
+    # resp = twitter.get("statuses/home_timeline.json")
 
     # WILL use statuses/user_timeline.json
     # FOR the 20 most recent tweets for the authenticating user.
@@ -106,10 +117,125 @@ def twitter_auth():
                            entries=entries, resp_user_timeline=resp_user_timeline,
                            resp_mentions_timeline=resp_mentions_timeline)
 
+
+def get_user_last_tweet_or_mention(user, csl):
+    """获取数据库中最后的 tweet 或 mention
+    args:
+        user: 访问用户 object
+        csl: 需要查找的 Tweet 或者 TweetMention
+    retrun:
+        数据库中最新的 tweet 或 mention
+    """
+    return db.session.query(csl).filter_by(user=user).order_by(
+        csl.tweet_id.desc()).first()
+
+
+def get_twitter_path(last_article, screen_name, article_type):
+    """需要访问的路径
+    args:
+        last_tweet_or_mention: 数据库中最新的推文
+        screen_name: 当前用户 twtter 用户名
+        article_type: 是 twitter 还是 mention
+    retrun:
+        访问的 twitter API 路径
+
+    TODO: 从什么时间开始获取 tweets
+    """
+    if article_type == 'tweet':
+        api = 'statuses/user_timeline.json'
+    elif article_type == 'mention':
+        api = 'statuses/mentions_timeline.json'
+    if last_article:
+        max_tweet_id = last_article.tweet_id
+        path = "{}?screen_name={}&since_id={}".format(
+            api, screen_name, max_tweet_id)
+    else:
+        path = "{}?screen_name={}".format(api, screen_name)
+    return path
+
+
+def save_twitter_data(resp, user, csl):
+    """存储 twitter 获取的数据到数据库
+    args:
+        resp: twitter API response
+        user: 当前用户 object
+    """
+    for tweet in resp.json():
+        tweet_id = tweet['id']
+        created_at = pendulum.parse(tweet['created_at'], strict=False)
+        t = csl(detail=json.dumps(tweet), created_at=created_at,
+                user=user, api_url=resp.url, tweet_id=tweet_id)
+        db.session.add(t)
+        db.session.commit()
+
+
+@app.route('/twitter/<int:user_id>/user_timeline')
+def twitter_user_timeline(user_id):
+    """
+    API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
+    将用户 tweet 存入数据库
+    """
+    # FIXME: 用户授权验证
+    screen_name = session.get('twitter_screen_name')
+    if not screen_name:
+        abort(401)
+
+    user = db.session.query(models.User).get(user_id)
+
+    # 获取数据库中最后 tweet
+    last_tweet = get_user_last_tweet_or_mention(user, models.Tweet)
+
+    # 获取 API 路径
+    path = get_twitter_path(last_tweet, screen_name, 'tweet')
+
+    # 访问 twitter API
+    resp = twitter.get(path)
+    assert resp.ok
+
+    timeline = json.dumps(resp.json(), indent=2, ensure_ascii=False)
+
+    # 存入数据库
+    save_twitter_data(resp, user, models.Tweet)
+
+    # FIXME: response result
+    return jsonify({'tweets': timeline})
+
+
+@app.route('/twitter/<int:user_id>/mentions_timeline')
+def twitter_mentions_timeline(user_id):
+    """
+    API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-mentions_timeline
+    将用户 mentions 存入数据库
+    """
+    # FIXME: 用户授权验证
+    screen_name = session.get('twitter_screen_name')
+    if not screen_name:
+        abort(401)
+
+    user = db.session.query(models.User).get(user_id)
+
+    # 获取数据库中最后 mention
+    last_mention = get_user_last_tweet_or_mention(user, models.TweetMention)
+
+    # 获取路径
+    path = get_twitter_path(last_mention, screen_name, 'mention')
+
+    # 更新最后 mention 之后的文章
+    resp = twitter.get(path)
+    assert resp.ok
+
+    # 存入数据库
+    save_twitter_data(resp, user, models.TweetMention)
+
+    return jsonify(resp.json())
+
+
 @app.route('/facebook_auth')
 def facebook_auth():
     """Searches the database for entries, then displays them."""
     entries = db.session.query(models.Flaskr)
+    if not facebook.authorized:
+        return redirect(url_for("facebook.login"))
 
     return render_template('facebook.html')
 
