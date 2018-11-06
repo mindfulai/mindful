@@ -3,3 +3,6 @@ gunicorn==19.9.0
 Flask-SQLAlchemy==2.3.2
 Flask-Dance==1.1.0
 pendulum==2.0.3
+sqlalchemy_utils==0.33.5
+Flask-Login==0.4.1
+blinker==1.4
