@@ -1,32 +1,66 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Flaskr</title>
-  <link rel="stylesheet" type="text/css" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-</head>
-<body>
 
-  <div class="container">
+  <head>
+    <title>Flaskr</title>
+    <link rel="stylesheet" type="text/css" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  </head>
 
-    <h1>Flaskr-TDD</h1>
+  <body>
 
-    {% if not session.logged_in %}
-      <a class="btn btn-success" role="button" href="{{ url_for('login') }}">log in</a>
-    {% else %}
-      <a class="btn btn-warning" role="button" href="{{ url_for('logout') }}">log out</a>
-    {% endif %}
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId: '1219536341519886',
+          cookie: true,
+          xfbml: true,
+          version: 'v3.2'
+        });
 
-    <a class="btn btn-info" role="button" href="{{ url_for('search') }}">Search</a>
-    <a class="btn btn-info" role="button" href="{{ url_for('facebook_auth') }}">Facebook</a>
-    <a class="btn btn-info" role="button" href="{{ url_for('twitter_auth') }}">Twitter</a>
+        FB.AppEvents.logPageView();
+        console.log('hello');
+      };
 
-    <br><br>
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {
+          return;
+        }
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
 
-    {% for message in get_flashed_messages() %}
+      function checkLoginState() {
+        FB.getLoginStatus(function(response) {
+          console.log(response);
+          statusChangeCallback(response);
+        });
+      }
+
+      function statusChangeCallback(resp) {
+        console.log(resp)
+
+      }
+    </script>
+    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+    </fb:login-button>
+
+
+    <div class="container">
+
+      <h1>Flaskr-TDD</h1> {% if not session.logged_in %}
+      <a class="btn btn-success" role="button" href="{{ url_for('login') }}">log in</a> {% else %}
+      <a class="btn btn-warning" role="button" href="{{ url_for('logout') }}">log out</a> {% endif %}
+
+      <a class="btn btn-info" role="button" href="{{ url_for('search') }}">Search</a>
+      <a class="btn btn-info" role="button" href="{{ url_for('facebook_auth') }}">Facebook</a>
+      <a class="btn btn-info" role="button" href="{{ url_for('twitter_auth') }}">Twitter</a>
+
+      <br><br> {% for message in get_flashed_messages() %}
       <div class="flash alert alert-success col-sm-4" role="success">{{ message }}</div>
-    {% endfor %}
-
-    {% if session.logged_in %}
+      {% endfor %} {% if session.logged_in %}
       <form action="{{ url_for('add_entry') }}" method="post" class="add-entry form-group">
         <dl>
           <dt>Title:</dt>
@@ -37,23 +71,24 @@
           <dd><input type="submit" class="btn btn-primary" value="Share"></dd>
         </dl>
       </form>
-    {% endif %}
+      {% endif %}
 
-    <br>
+      <br>
 
-    <ul class="entries">
-      {% for entry in entries %}
-        <li class="entry"><h2 id="{{ entry.post_id }}">{{ entry.title }}</h2>{{ entry.text|safe }}</li>
-      {% else %}
+      <ul class="entries">
+        {% for entry in entries %}
+        <li class="entry">
+          <h2 id="{{ entry.post_id }}">{{ entry.title }}</h2>{{ entry.text|safe }}</li>
+        {% else %}
         <li><em>No entries yet. Add some!</em></li>
-      {% endfor %}
-    </ul>
+        {% endfor %}
+      </ul>
 
-  </div>
+    </div>
 
-  <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
-  <script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="{{url_for('static', filename='main.js') }}"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='main.js') }}"></script>
 
-</body>
+  </body>
 </html>
