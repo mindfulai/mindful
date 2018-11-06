@@ -1,5 +1,8 @@
 from app import db
 
+from flask_login import UserMixin
+from flask_dance.consumer.backend.sqla import OAuthConsumerMixin
+
 
 class Flaskr(db.Model):
 
@@ -16,13 +19,22 @@ class Flaskr(db.Model):
     def __repr__(self):
         return '<title {}>'.format(self.body)
 
+
+class User(db.Model, UserMixin):
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String)
+
+
 class Tweet(db.Model):
     __tablename__ = "tweets"
 
     id = db.Column(db.Integer, primary_key=True)
     tweet_id = db.Column(db.Integer, unique=True)
     created_at = db.Column(db.DateTime)
-    user = db.Column(db.String)
+    user = db.relationship(User)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     api_url = db.Column(db.String)
     detail = db.Column(db.String)
 
@@ -33,6 +45,7 @@ class TweetMention(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tweet_id = db.Column(db.Integer, unique=True)
     created_at = db.Column(db.DateTime)
-    mention_user = db.Column(db.String)
+    user = db.relationship(User)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     api_url = db.Column(db.String)
     detail = db.Column(db.String)
