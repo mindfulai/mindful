@@ -230,6 +230,46 @@ def twitter_mentions_timeline(user_id):
     return jsonify(resp.json())
 
 
+def count_filter_by_date(csl, user, start_date, end_date):
+    """计算用户在时间范围内 cls 的数量
+
+    args:
+        user: 访问用户 User
+        csl: 需要查找的表 例如，Tweet 或者 TweetMention
+    retrun:
+        用户在时间范围内 cls 的数量
+
+    """
+    print(csl.query.filter(
+        csl.user == user,
+        csl.created_at >= start_date,
+        csl.created_at < end_date
+    ))
+    return csl.query.filter(
+        csl.user == user,
+        csl.created_at >= start_date,
+        csl.created_at < end_date
+    ).count()
+
+
+@app.route('/twitter/<int:user_id>/summary')
+def summary(user_id):
+    user = models.User.query.get(user_id)
+
+    start_date = pendulum.parse(request.args.get('start_date'), strict=False)
+    end_date = pendulum.parse(request.args.get('end_date'), strict=False)
+
+    tweet_count = count_filter_by_date(models.Tweet, user, start_date, end_date)
+    mention_count = count_filter_by_date(models.TweetMention, user,
+                                         start_date, end_date)
+
+    result = {
+        'tweets': tweet_count,
+        'mentions': mention_count
+    }
+    return jsonify(result)
+
+
 @app.route('/facebook_auth')
 def facebook_auth():
     """Searches the database for entries, then displays them."""
