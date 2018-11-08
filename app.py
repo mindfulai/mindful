@@ -163,8 +163,11 @@ def save_twitter_data(resp, user, csl):
     for tweet in resp.json():
         tweet_id = tweet['id']
         created_at = pendulum.parse(tweet['created_at'], strict=False)
-        t = csl(detail=json.dumps(tweet), created_at=created_at,
-                user=user, api_url=resp.url, tweet_id=tweet_id)
+        try:
+            t = csl(detail=json.dumps(tweet), created_at=created_at,
+                    user=user, api_url=resp.url, tweet_id=tweet_id)
+        except:
+            t = csl.query.filter_by(tweet_id=tweet_id)
         db.session.add(t)
         db.session.commit()
 
