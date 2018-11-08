@@ -10,6 +10,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_dance.contrib.twitter import make_twitter_blueprint, twitter
 from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
 
+from flask_cors import CORS
+
 # get the folder where this file runs
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -29,6 +31,8 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # create app
 app = Flask(__name__)
+CORS(app)
+
 # Twitter
 twitter_blueprint = make_twitter_blueprint(
     api_key="devnDViKMhTY4J5AwVKW7NewW",
