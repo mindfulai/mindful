@@ -240,11 +240,6 @@ def count_filter_by_date(csl, user, start_date, end_date):
         用户在时间范围内 cls 的数量
 
     """
-    print(csl.query.filter(
-        csl.user == user,
-        csl.created_at >= start_date,
-        csl.created_at < end_date
-    ))
     return csl.query.filter(
         csl.user == user,
         csl.created_at >= start_date,
@@ -256,8 +251,11 @@ def count_filter_by_date(csl, user, start_date, end_date):
 def summary(user_id):
     user = models.User.query.get(user_id)
 
-    start_date = pendulum.parse(request.args.get('start_date'), strict=False)
-    end_date = pendulum.parse(request.args.get('end_date'), strict=False)
+    dt = pendulum.parse(request.args.get('datetime'), strict=False)
+    period = request.args.get('period', 'day')
+
+    start_date = dt.start_of(period)
+    end_date = dt.end_of(period)
 
     tweet_count = count_filter_by_date(models.Tweet, user, start_date, end_date)
     mention_count = count_filter_by_date(models.TweetMention, user,
@@ -340,4 +338,4 @@ def search():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0", port=5000)

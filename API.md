@@ -5,10 +5,17 @@ Method: GET
 Data:
 ```json
 {
-    "start_date": "String",
-    "end_data": "String"
+    "datetime": "String",
+    "period": "String"
 }
 ```
+Parameters:
+
+参数      | 描述        | Example
+-------- | ----------- | -------
+datetime | 用户访问的时间 |
+period   | 周期 | day / week / month
+
 
 Response:
 ```json
