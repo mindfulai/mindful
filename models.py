@@ -55,3 +55,15 @@ class TweetMention(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     api_url = db.Column(db.String)
     detail = db.Column(db.String)
+
+
+class FacebookPost(db.Model):
+    __tablename__ = "faceboot_posts"
+
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.String, unique=True)
+    created_at = db.Column(db.DateTime)
+    user = db.relationship(User)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    api_url = db.Column(db.String)
+    detail = db.Column(db.String)

@@ -272,6 +272,34 @@ def facebook_auth():
 
     return render_template('facebook.html')
 
+
+@app.route('/facebook/<int:user_id>/posts')
+def facebook_posts(user_id):
+    user = models.User.query.get(user_id)
+    print(user.username)
+    resp = facebook.get('898099183912379?fields=posts')
+    posts = resp.json()['posts']['data']
+    print(posts)
+    for post in posts:
+        # print(post)
+        created_at = pendulum.parse(post['created_time'])
+        try:
+            fb = db.session.query(models.FacebookPost).filter_by(
+                post_id=post['id'])
+
+        except NoResultFound:
+            fb = models.FacebookPost(
+                post_id=post['id'],
+                created_at=created_at,
+                detail=json.dumps(post),
+                api_url=resp.url
+            )
+            db.session.add(fb)
+            db.session.commit()
+
+    return jsonify(posts)
+
+
 @app.route('/add', methods=['POST'])
 def add_entry():
     """Adds new post to the database."""
