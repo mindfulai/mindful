@@ -9,6 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from flask_dance.contrib.twitter import make_twitter_blueprint, twitter
 from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
+from sqlalchemy.orm.exc import NoResultFound
 
 # get the folder where this file runs
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -258,6 +259,8 @@ def facebook_auth():
             provider=facebook_blueprint.name,
             provider_user_id=fb_id,
         )
+        db.session.add(oauth)
+        db.session.commit()
 
     if oauth.user:
         # FIXME: login_user
@@ -266,8 +269,9 @@ def facebook_auth():
         # FIXME: login_user
         # create user
         user = models.User(username=fb_name)
+        db.session.add(user)
         oauth.user = user
-        db.session.add_all([user, oauth])
+        db.session.add(oauth)
         db.session.commit()
 
     return render_template('facebook.html')
@@ -285,7 +289,7 @@ def facebook_posts(user_id):
         created_at = pendulum.parse(post['created_time'])
         try:
             fb = db.session.query(models.FacebookPost).filter_by(
-                post_id=post['id'])
+                post_id=post['id']).one()
 
         except NoResultFound:
             fb = models.FacebookPost(
