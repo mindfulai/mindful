@@ -237,6 +237,39 @@ def facebook_auth():
     if not facebook.authorized:
         return redirect(url_for("facebook.login"))
 
+    resp = facebook.get('me')
+    assert resp.ok
+
+    fb_name = resp.json()['name']
+    fb_id = resp.json()['id']
+    print(fb_id)
+
+    query = models.OAuth.query.filter_by(
+        provider=facebook_blueprint.name,
+        provider_user_id=fb_id
+    )
+
+    try:
+        # 查找用户授权
+        oauth = query.one()
+    except NoResultFound:
+        # 创建 OAuth
+        oauth = models.OAuth(
+            provider=facebook_blueprint.name,
+            provider_user_id=fb_id,
+        )
+
+    if oauth.user:
+        # FIXME: login_user
+        print('successfully signed in with Facebook')
+    else:
+        # FIXME: login_user
+        # create user
+        user = models.User(username=fb_name)
+        oauth.user = user
+        db.session.add_all([user, oauth])
+        db.session.commit()
+
     return render_template('facebook.html')
 
 @app.route('/add', methods=['POST'])
