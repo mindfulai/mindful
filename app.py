@@ -10,6 +10,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_dance.contrib.twitter import make_twitter_blueprint, twitter
 from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
 
+from flask_cors import CORS
+
 # get the folder where this file runs
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -29,6 +31,8 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # create app
 app = Flask(__name__)
+CORS(app)
+
 # Twitter
 twitter_blueprint = make_twitter_blueprint(
     api_key="devnDViKMhTY4J5AwVKW7NewW",
@@ -163,8 +167,11 @@ def save_twitter_data(resp, user, csl):
     for tweet in resp.json():
         tweet_id = tweet['id']
         created_at = pendulum.parse(tweet['created_at'], strict=False)
-        t = csl(detail=json.dumps(tweet), created_at=created_at,
-                user=user, api_url=resp.url, tweet_id=tweet_id)
+        try:
+            t = csl(detail=json.dumps(tweet), created_at=created_at,
+                    user=user, api_url=resp.url, tweet_id=tweet_id)
+        except:
+            t = csl.query.filter_by(tweet_id=tweet_id)
         db.session.add(t)
         db.session.commit()
 
@@ -228,6 +235,44 @@ def twitter_mentions_timeline(user_id):
     save_twitter_data(resp, user, models.TweetMention)
 
     return jsonify(resp.json())
+
+
+def count_filter_by_date(csl, user, start_date, end_date):
+    """计算用户在时间范围内 cls 的数量
+
+    args:
+        user: 访问用户 User
+        csl: 需要查找的表 例如，Tweet 或者 TweetMention
+    retrun:
+        用户在时间范围内 cls 的数量
+
+    """
+    return csl.query.filter(
+        csl.user == user,
+        csl.created_at >= start_date,
+        csl.created_at < end_date
+    ).count()
+
+
+@app.route('/twitter/<int:user_id>/summary')
+def summary(user_id):
+    user = models.User.query.get(user_id)
+
+    dt = pendulum.parse(request.args.get('datetime'), strict=False)
+    period = request.args.get('period', 'day')
+
+    start_date = dt.start_of(period)
+    end_date = dt.end_of(period)
+
+    tweet_count = count_filter_by_date(models.Tweet, user, start_date, end_date)
+    mention_count = count_filter_by_date(models.TweetMention, user,
+                                         start_date, end_date)
+
+    result = {
+        'tweets': tweet_count,
+        'mentions': mention_count
+    }
+    return jsonify(result)
 
 
 @app.route('/facebook_auth')
@@ -300,4 +345,4 @@ def search():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0", port=5000)
