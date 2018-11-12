@@ -1,6 +1,6 @@
 ## Twitter 用户数据统计
 
-URL: /twitter/<user_id>/aldkjf
+URL: /twitter/<user_id>/summary
 Method: GET
 Data:
 ```json
