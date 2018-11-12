@@ -296,7 +296,8 @@ def facebook_posts(user_id):
                 post_id=post['id'],
                 created_at=created_at,
                 detail=json.dumps(post),
-                api_url=resp.url
+                api_url=resp.url,
+                user=user
             )
             db.session.add(fb)
             db.session.commit()
