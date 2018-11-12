@@ -7,3 +7,4 @@ sqlalchemy_utils==0.33.5
 Flask-Login==0.4.1
 blinker==1.4
 pyOpenSSL==18.0.0
+Flask-Cors==3.0.6
