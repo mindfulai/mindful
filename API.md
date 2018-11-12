@@ -24,3 +24,29 @@ Response:
     "mentions": "Integer"
 }
 ```
+
+## Facebook 用户统计接口
+
+URL: /facebook/<user_id>/summary
+Method: GET
+Data:
+```json
+{
+    "datetime": "String",
+    "period": "String"
+}
+```
+Parameters:
+
+参数      | 描述        | Example
+-------- | ----------- | -------
+datetime | 用户访问的时间 |
+period   | 周期 | day / week / month
+
+
+Response:
+```json
+{
+    "posts": "Integer",
+}
+```
