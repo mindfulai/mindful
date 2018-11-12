@@ -352,6 +352,24 @@ def facebook_posts(user_id):
     return jsonify(posts)
 
 
+@app.route('/facebook/<int:user_id>/summary')
+def facebook_summary(user_id):
+    user = models.User.query.get(user_id)
+
+    dt = pendulum.parse(request.args.get('datetime'), strict=False)
+    period = request.args.get('period', 'day')
+
+    start_date = dt.start_of(period)
+    end_date = dt.end_of(period)
+
+    posts = count_filter_by_date(
+        models.FacebookPost, user, start_date, end_date)
+    result = {
+        'posts': posts,
+    }
+    return jsonify(result)
+
+
 @app.route('/add', methods=['POST'])
 def add_entry():
     """Adds new post to the database."""
