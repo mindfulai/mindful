@@ -317,13 +317,15 @@ def facebook_auth():
 @app.route('/facebook/<int:user_id>/posts')
 def facebook_posts(user_id):
     user = models.User.query.get(user_id)
-    print(user.username)
-    resp = facebook.get('898099183912379?fields=posts')
+    # 保存 posts
+    resp = facebook.get('me?fields=posts')
+    assert resp.ok
+
     posts = resp.json()['posts']['data']
-    print(posts)
+
     for post in posts:
-        # print(post)
         created_at = pendulum.parse(post['created_time'])
+
         try:
             fb = db.session.query(models.FacebookPost).filter_by(
                 post_id=post['id']).one()
