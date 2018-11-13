@@ -3,12 +3,17 @@ import pendulum
 
 from flask_dance.contrib.twitter import make_twitter_blueprint, twitter
 from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
+from flask_dance.consumer import oauth_authorized, oauth_error
+
+from flask_login import login_required, login_user, logout_user
 
 from flask import request, session, redirect, url_for, \
     abort, render_template, flash, jsonify
 
 from app import app, db
 from app import models
+from app import login_manager
+
 
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -23,6 +28,11 @@ facebook_blueprint = make_facebook_blueprint(
     client_id="176320989922581",
     client_secret="bfbf2231584f211669debf63467e58e9",
 )
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return models.User.query.get(int(user_id))
 
 
 @app.route('/')
@@ -251,19 +261,17 @@ def twitter_summary(user_id):
     return jsonify(result)
 
 
-@app.route('/facebook_auth')
-def facebook_auth():
+@oauth_authorized.connect_via(facebook_blueprint)
+def facebook_auth(facebook_blueprint, token):
     """Searches the database for entries, then displays them."""
-    entries = db.session.query(models.Flaskr)
-    if not facebook.authorized:
-        return redirect(url_for("facebook.login"))
+    if not token:
+        return False
 
     resp = facebook.get('me')
     assert resp.ok
 
     fb_name = resp.json()['name']
     fb_id = resp.json()['id']
-    print(fb_id)
 
     # Find this OAuth token in the database, or create it
     query = models.OAuth.query.filter_by(
@@ -282,11 +290,10 @@ def facebook_auth():
         )
 
     if oauth.user:
-        # FIXME: login_user
+        login_user(oauth.user)
         flash("Successfully signed in with Facebook.")
 
     else:
-        # FIXME: login_user
         # Create a new local user account for this user
         user = models.User(username=fb_name)
         # Associate the new local user account with the OAuth token
@@ -295,6 +302,7 @@ def facebook_auth():
         db.session.add_all([user, oauth])
         db.session.commit()
         # Log in the new local user account
+        login_user(oauth.user)
         flash("Successfully signed in with Facebook.")
 
     return render_template('facebook.html')
