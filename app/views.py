@@ -5,7 +5,7 @@ from flask_dance.contrib.twitter import make_twitter_blueprint, twitter
 from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
 from flask_dance.consumer import oauth_authorized, oauth_error
 
-from flask_login import login_required, login_user, logout_user
+from flask_login import login_required, login_user, logout_user, current_user
 
 from flask import request, session, redirect, url_for, \
     abort, render_template, flash, jsonify
