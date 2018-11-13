@@ -1,5 +1,4 @@
 # imports
-import os
 import pendulum
 import json
 
@@ -13,26 +12,14 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from flask_cors import CORS
 
-# get the folder where this file runs
-basedir = os.path.abspath(os.path.dirname(__file__))
 
-# configuration
-DATABASE = 'flaskr.db'
-DEBUG = True
-SECRET_KEY = 'my_precious'
-USERNAME = 'admin'
-PASSWORD = 'admin'
-
-# define the full path for the database
-DATABASE_PATH = os.path.join(basedir, DATABASE)
-
-# database config
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + DATABASE_PATH
-SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # create app
 app = Flask(__name__)
 CORS(app)
+
+# load the instance config
+app.config.from_pyfile('config.py')
 
 # Twitter
 twitter_blueprint = make_twitter_blueprint(
