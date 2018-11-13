@@ -279,9 +279,10 @@ def facebook_auth():
     fb_id = resp.json()['id']
     print(fb_id)
 
+    # Find this OAuth token in the database, or create it
     query = models.OAuth.query.filter_by(
         provider=facebook_blueprint.name,
-        provider_user_id=fb_id
+        provider_user_id=fb_id,
     )
 
     try:
@@ -293,20 +294,22 @@ def facebook_auth():
             provider=facebook_blueprint.name,
             provider_user_id=fb_id,
         )
-        db.session.add(oauth)
-        db.session.commit()
 
     if oauth.user:
         # FIXME: login_user
-        print('successfully signed in with Facebook')
+        flash("Successfully signed in with Facebook.")
+
     else:
         # FIXME: login_user
-        # create user
+        # Create a new local user account for this user
         user = models.User(username=fb_name)
-        db.session.add(user)
+        # Associate the new local user account with the OAuth token
         oauth.user = user
-        db.session.add(oauth)
+        # Save and commit our database models
+        db.session.add_all([user, oauth])
         db.session.commit()
+        # Log in the new local user account
+        flash("Successfully signed in with Facebook.")
 
     return render_template('facebook.html')
 
