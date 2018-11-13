@@ -13,7 +13,6 @@ from sqlalchemy.orm.exc import NoResultFound
 from flask_cors import CORS
 
 
-
 # create app
 app = Flask(__name__)
 CORS(app)
@@ -423,4 +422,4 @@ def search():
 
 
 if __name__ == '__main__':
-    app.run(ssl_context='adhoc', debug=True, host="0.0.0.0", port=8000)
+    app.run(ssl_context='adhoc', debug=True, host="0.0.0.0", port=5000)
