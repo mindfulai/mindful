@@ -40,7 +40,7 @@ def debug():
     tweets = db.session.query(models.Tweet).all()
     tweet_result = {'tweet': []}
     for tweet in tweets:
-        tweet_result.append({
+        tweet_result['tweet'].append({
             'id': tweet.id, 'user': tweet.user.username,
             'text': json.loads(tweet.detail)['text'],
             'api_url': tweet.api_url, 'tweet_id': tweet.tweet_id,
@@ -49,7 +49,7 @@ def debug():
     mentions = db.session.query(models.TweetMention).all()
     mention_result = {'mention': []}
     for mention in mentions:
-        mention_result.append({
+        mention_result['mention'].append({
             'id': mention.id, 'user': mention.user.username,
             'text': json.loads(mention.detail)['text'],
             'api_url': mention.api_url})
