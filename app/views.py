@@ -35,6 +35,56 @@ def load_user(user_id):
     return models.User.query.get(int(user_id))
 
 
+@app.route('/debug')
+def debug():
+    tweets = db.session.query(models.Tweet).all()
+    tweet_result = {'tweet': []}
+    for tweet in tweets:
+        tweet_result.append({
+            'id': tweet.id, 'user': tweet.user.username,
+            'text': json.loads(tweet.detail)['text'],
+            'api_url': tweet.api_url, 'tweet_id': tweet.tweet_id,
+            'time': tweet.created_at})
+
+    mentions = db.session.query(models.TweetMention).all()
+    mention_result = {'mention': []}
+    for mention in mentions:
+        mention_result.append({
+            'id': mention.id, 'user': mention.user.username,
+            'text': json.loads(mention.detail)['text'],
+            'api_url': mention.api_url})
+
+    users = db.session.query(models.User).all()
+    user_result = {'user': []}
+    for u in users:
+        user_result['user'].append({
+            'name': u.username
+        })
+
+    oauths = db.session.query(models.OAuth).all()
+    oauth_result = {'oauth': []}
+    for oauth in oauths:
+        oauth_result['oauth'].append({
+            'provider': oauth.provider,
+            'username': oauth.user.username,
+            'provider_user_id': oauth.provider_user_id
+        })
+
+    fbs = db.session.query(models.FacebookPost).all()
+    fb_result = {'fb': []}
+    for fb in fbs:
+        fb_result['fb'].append({
+            'id': fb.id, 'user': fb.user.username,
+            'text': json.loads(fb.detail),
+            'api_url': fb.api_url})
+
+    return jsonify(user_result, '=======',
+                   oauth_result, '=======',
+                   tweet_result, '=======',
+                   mention_result, '=======',
+                   fb_result, '=======')
+
+
 @app.route('/')
 def index():
     """Searches the database for entries, then displays them."""
