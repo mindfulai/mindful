@@ -130,6 +130,7 @@ def save_twitter_data(resp, user, csl):
 
 
 @app.route('/twitter/<int:user_id>/user_timeline')
+@login_required
 def twitter_user_timeline(user_id):
     """
     API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
@@ -162,6 +163,7 @@ def twitter_user_timeline(user_id):
 
 
 @app.route('/twitter/<int:user_id>/mentions_timeline')
+@login_required
 def twitter_mentions_timeline(user_id):
     """
     API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-mentions_timeline
@@ -208,6 +210,7 @@ def count_filter_by_date(csl, user, start_date, end_date):
 
 
 @app.route('/twitter/<int:user_id>/summary')
+@login_required
 def twitter_summary(user_id):
     user = models.User.query.get(user_id)
 
@@ -276,6 +279,7 @@ def facebook_auth(facebook_blueprint, token):
 
 
 @app.route('/facebook/<int:user_id>/posts')
+@login_required
 def facebook_posts(user_id):
     user = models.User.query.get(user_id)
 
@@ -307,6 +311,7 @@ def facebook_posts(user_id):
 
 
 @app.route('/facebook/<int:user_id>/summary')
+@login_required
 def facebook_summary(user_id):
     user = models.User.query.get(user_id)
 
@@ -353,9 +358,11 @@ def login():
 
 
 @app.route('/logout')
+@login_required
 def logout():
     """User logout/authentication/session management."""
     session.pop('logged_in', None)
+    logout_user()
     flash('You were logged out')
     return redirect(url_for('index'))
 
