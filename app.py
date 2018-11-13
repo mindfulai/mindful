@@ -316,6 +316,7 @@ def facebook_auth():
 @app.route('/facebook/<int:user_id>/posts')
 def facebook_posts(user_id):
     user = models.User.query.get(user_id)
+
     # 保存 posts
     resp = facebook.get('me?fields=posts')
     assert resp.ok
@@ -419,7 +420,3 @@ def search():
     if query:
         return render_template('search.html', entries=entries, query=query)
     return render_template('search.html')
-
-
-if __name__ == '__main__':
-    app.run(ssl_context='adhoc', debug=True, host="0.0.0.0", port=5000)
