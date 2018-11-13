@@ -45,67 +45,34 @@ def index():
 @app.route('/twitter_auth')
 def twitter_auth():
     """Searches the database for entries, then displays them."""
-    entries = db.session.query(models.Flaskr)
-
+    user = current_user
+    print(twitter.authorized)
     if not twitter.authorized:
+        print('not twitter.authorized')
         return redirect(url_for("twitter.login"))
     resp = twitter.get("account/settings.json")
+    print(resp.ok)
     assert resp.ok
 
-    # 查找创建用户
     screen_name = resp.json()['screen_name']
 
+    query = models.OAuth.query.filter_by(
+        provider=twitter_blueprint.name,
+        provider_user_id=screen_name
+    )
+
     try:
-        user = db.session.query(models.User).filter_by(
-            username=screen_name).one()
-    except:
-        user = models.User(username=screen_name)
-        db.session.add(user)
+        oauth = query.one()
+    except NoResultFound:
+        oauth = models.OAuth(
+            provider=twitter_blueprint.name,
+            provider_user_id=screen_name,
+            user=user
+        )
+        db.session.add(oauth)
         db.session.commit()
 
-    session['twitter_screen_name'] = user.username
-
-    # app.logger.info('%s logged in successfully', resp.json())
-
-    resp_user_account = json.dumps(resp.json(), indent=2, ensure_ascii=False)
-
-    # WON'T use account activity api
-    # FOR The account activity api has limitation on accounts subscribed, and we don't really need the realtime data.
-    # Instead query twitter user's tweets and mentions is just enough.
-
-    # WON'T use statuses/home_timeline.json
-    # FOR the response include tweets from followings
-    # resp = twitter.get("statuses/home_timeline.json")
-
-    # WILL use statuses/user_timeline.json
-    # FOR the 20 most recent tweets for the authenticating user.
-    #
-    # TODO:
-    #   * tweets_today(days=1)
-    resp = twitter.get("statuses/user_timeline.json?screen_name=" + screen_name)
-    assert resp.ok
-
-    app.logger.info('%s logged in successfully', resp.json())
-
-    resp_user_timeline = json.dumps(resp.json(), indent=2, ensure_ascii=False)
-
-    # WILL use statuses/mentions_timeline.json
-    # FOR the 20 most recent mentions for the authenticating user.
-    #
-    # TODO:
-    #   * mentions_today(days=1)
-    resp = twitter.get(
-        "statuses/mentions_timeline.json?screen_name=" + screen_name)
-    assert resp.ok
-
-    app.logger.info('%s logged in successfully', resp.json())
-
-    resp_mentions_timeline = json.dumps(
-        resp.json(), indent=2, ensure_ascii=False)
-
-    return render_template('twitter.html', screen_name=screen_name, resp_user_account=resp_user_account,
-                           entries=entries, resp_user_timeline=resp_user_timeline,
-                           resp_mentions_timeline=resp_mentions_timeline)
+    return jsonify({'msg': 'success'})
 
 
 def get_user_last_tweet_or_mention(user, csl):
@@ -305,7 +272,7 @@ def facebook_auth(facebook_blueprint, token):
         login_user(oauth.user)
         flash("Successfully signed in with Facebook.")
 
-    return render_template('facebook.html')
+    return jsonify({'user_id': user.id})
 
 
 @app.route('/facebook/<int:user_id>/posts')
