@@ -55,7 +55,7 @@
       <a class="btn btn-warning" role="button" href="{{ url_for('logout') }}">log out</a> {% endif %}
 
       <a class="btn btn-info" role="button" href="{{ url_for('search') }}">Search</a>
-      <a class="btn btn-info" role="button" href="{{ url_for('facebook_auth') }}">Facebook</a>
+      <a class="btn btn-info" role="button" href="{{ url_for('facebook.login') }}">Facebook</a>
       <a class="btn btn-info" role="button" href="{{ url_for('twitter_auth') }}">Twitter</a>
 
       <br><br> {% for message in get_flashed_messages() %}
