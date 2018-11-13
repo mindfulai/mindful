@@ -193,6 +193,22 @@ def save_twitter_data(resp, user, csl):
         db.session.commit()
 
 
+def get_twitter_screen_name(user):
+    query = models.OAuth.query.filter_by(
+        provider=twitter_blueprint.name,
+        user=user
+    )
+
+    try:
+        oauth = query.one()
+    except NoResultFound:
+        # FIXME: twitter oauth required
+        abort(401)
+
+    screen_name = oauth.provider_user_id
+    return screen_name
+
+
 @app.route('/twitter/<int:user_id>/user_timeline')
 @login_required
 def twitter_user_timeline(user_id):
@@ -200,12 +216,9 @@ def twitter_user_timeline(user_id):
     API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
     将用户 tweet 存入数据库
     """
-    # FIXME: 用户授权验证
-    screen_name = session.get('twitter_screen_name')
-    if not screen_name:
-        abort(401)
-
     user = db.session.query(models.User).get(user_id)
+
+    screen_name = get_twitter_screen_name(user)
 
     # 获取数据库中最后 tweet
     last_tweet = get_user_last_tweet_or_mention(user, models.Tweet)
@@ -233,12 +246,9 @@ def twitter_mentions_timeline(user_id):
     API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-mentions_timeline
     将用户 mentions 存入数据库
     """
-    # FIXME: 用户授权验证
-    screen_name = session.get('twitter_screen_name')
-    if not screen_name:
-        abort(401)
-
     user = db.session.query(models.User).get(user_id)
+
+    screen_name = get_twitter_screen_name(user)
 
     # 获取数据库中最后 mention
     last_mention = get_user_last_tweet_or_mention(user, models.TweetMention)
