@@ -245,7 +245,7 @@ def count_filter_by_date(csl, user, start_date, end_date):
 
 
 @app.route('/twitter/<int:user_id>/summary')
-def summary(user_id):
+def twitter_summary(user_id):
     user = models.User.query.get(user_id)
 
     dt = pendulum.parse(request.args.get('datetime'), strict=False)
