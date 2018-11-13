@@ -92,35 +92,49 @@ def index():
     return render_template('index.html', entries=entries)
 
 
-@app.route('/twitter_auth')
-def twitter_auth():
-    """Searches the database for entries, then displays them."""
-    user = current_user
-    print(twitter.authorized)
-    if not twitter.authorized:
-        print('not twitter.authorized')
-        return redirect(url_for("twitter.login"))
-    resp = twitter.get("account/settings.json")
-    print(resp.ok)
-    assert resp.ok
-
-    screen_name = resp.json()['screen_name']
-
+def get_oauth_or_create(user_id, user):
+    """获取或创建oauth
+    args:
+        user_id: 第三方授权的 user_id
+        user: 访问用户 object
+    return:
+        oauth: OAuth
+        created: 是否创建
+    """
     query = models.OAuth.query.filter_by(
         provider=twitter_blueprint.name,
-        provider_user_id=screen_name
+        provider_user_id=user_id
     )
 
     try:
         oauth = query.one()
+        created = False
     except NoResultFound:
         oauth = models.OAuth(
             provider=twitter_blueprint.name,
-            provider_user_id=screen_name,
+            provider_user_id=user_id,
             user=user
         )
         db.session.add(oauth)
         db.session.commit()
+        created = True
+    return oauth, created
+
+
+@app.route('/twitter_auth')
+@login_required
+def twitter_auth():
+    """Searches the database for entries, then displays them."""
+    user = current_user
+
+    if not twitter.authorized:
+        return redirect(url_for("twitter.login"))
+
+    resp = twitter.get("account/settings.json")
+    assert resp.ok
+
+    screen_name = resp.json()['screen_name']
+    oauth, created = get_oauth_or_create(screen_name, user)
 
     return jsonify({'msg': 'success'})
 
