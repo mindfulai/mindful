@@ -6,6 +6,55 @@
   <title>mindful</title>
   <link rel="stylesheet" href="./static/font-awesome/css/font-awesome.min.css" />
   <link rel="stylesheet" href="./static/css/app.css" />
+  <style>
+    .login_box {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: #333a45;
+      /* background: #4e7ca0; */
+    }
+
+    .login_header {
+      position: absolute;
+      top: 35%;
+      left: 0;
+      text-align: center;
+      font-size: 0.5rem;
+      color: #fff;
+      width: 100%;
+    }
+
+    .login {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.4rem;
+      width: 80%;
+      text-align: center;
+      height: 1rem;
+      line-height: 1rem;
+      /* background: #95b0c6; */
+      background: rgba(255, 255, 255, 0.4);
+      color: #fff;
+      border-radius: 0.2rem;
+      z-index: 100;
+    }
+
+    .facebook_logo {
+      float: right;
+      margin-right: 0.4rem;
+    }
+
+    i {
+      font-size: 0.5rem;
+      color: #fff;
+    }
+  </style>
+
 </head>
 
 <body>
@@ -59,53 +108,5 @@
     }
   });
 </script>
-<style scoped>
-  .login_box {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: #333a45;
-    /* background: #4e7ca0; */
-  }
-
-  .login_header {
-    position: absolute;
-    top: 35%;
-    left: 0;
-    text-align: center;
-    font-size: 0.5rem;
-    color: #fff;
-    width: 100%;
-  }
-
-  .login {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 0.4rem;
-    width: 80%;
-    text-align: center;
-    height: 1rem;
-    line-height: 1rem;
-    /* background: #95b0c6; */
-    background: rgba(255, 255, 255, 0.4);
-    color: #fff;
-    border-radius: 0.2rem;
-    z-index: 100;
-  }
-
-  .facebook_logo {
-    float: right;
-    margin-right: 0.4rem;
-  }
-
-  i {
-    font-size: 0.5rem;
-    color: #fff;
-  }
-</style>
 
 </html>

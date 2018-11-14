@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>mindful</title>
+  <link rel="stylesheet" href="./static/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="./static/css/app.css" />
+</head>
+
+<body>
+  <div id="app">
+    <header>
+      <a class="left setting" href="./index.html">
+        <i class="fa fa-th-large"></i>
+      </a>
+
+      <div class="right">
+        <!--<a class="search"><i class="fa fa-search"></i></a>-->
+        <a class="login" @click="showBar">linghongmin</a>
+      </div>
+
+      <div class="mine_bar" v-show="isShow">
+        <ul class="mine_bar_list">
+          <li>
+            <a href="./authorize.html">
+              <i class="fa fa-tasks"></i>&nbsp;&nbsp;&nbsp;Authorize</a>
+          </li>
+          <li>
+            <a href="./login.html">
+              <i class="fa fa-sign-out"></i>&nbsp;&nbsp;&nbsp;Log out</a>
+          </li>
+        </ul>
+      </div>
+    </header>
+    <div class="content">
+      <h3 class="connect_authorize">CONNECT AUTHORIZE</h3>
+      <div class="authorize_box">
+        <div class="authorize_meta">
+          Twitter &nbsp;&nbsp;
+          <i class="fa fa-twitter twitter_logo"></i>
+        </div>
+        <ul>
+          <li>
+            <a href="#">TRACKS</a>
+            <span class="span">Tweets,metions</span>
+          </li>
+          <li>
+            <a href="#">REQUIRES</a>
+            <span class="span">Twitter account</span>
+          </li>
+          <li>
+            <a href="#">PROVIDING</a>
+            <span class="span">Tweets</span>
+          </li>
+        </ul>
+        <div class="authorize_connect" @click="twitter">
+          <i class="fa fa-plus"></i>&nbsp; Connect
+        </div>
+      </div>
+      <div class="authorize_box">
+        <div class="authorize_meta facebook">
+          facebook
+          <!--<i class="fa fa-facebook"></i>-->
+        </div>
+        <ul>
+          <li>
+            <a href="#">TRACKS</a>
+            <span class="span">Posts, comments, reactions</span>
+          </li>
+          <li>
+            <a href="#">REQUIRES</a>
+            <span class="span">Facebook account</span>
+          </li>
+          <li>
+            <a href="#">PROVIDING</a>
+            <span class="span">Facebook posts</span>
+          </li>
+        </ul>
+        <div class="authorize_connect">
+          <i class="fa fa-plus"></i>&nbsp; Connect
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script src="./static/vue.min.js"></script>
+<script src="./static/axios.min.js"></script>
+<script src="./static/jquery.min.js"></script>
+<script>
+  new Vue({
+    el: "#app",
+    data() {
+      return {
+        isShow: false,
+      };
+    },
+    methods: {
+      twitter() {
+        this.$axios
+          .get(this.api + "/twitter_auth")
+          .then(res => {
+            alert(res);
+            if (res.status == 200) {
+            }
+          })
+          .catch(res => {
+            console.log(res);
+          });
+      },
+      showBar() {
+        this.isShow = !this.isShow;
+      },
+    },
+  })
+</script>
+
+</html>
