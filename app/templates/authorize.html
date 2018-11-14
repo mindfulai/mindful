@@ -11,13 +11,13 @@
 <body>
   <div id="app">
     <header>
-      <a class="left setting" href="./index.html">
+      <a class="left setting" href="/">
         <i class="fa fa-th-large"></i>
       </a>
 
       <div class="right">
         <!--<a class="search"><i class="fa fa-search"></i></a>-->
-        <a class="login" @click="showBar">linghongmin</a>
+        <a class="login" @click="showBar">{{ current_user.username }}</a>
       </div>
 
       <div class="mine_bar" v-show="isShow">
@@ -78,7 +78,7 @@
           </li>
         </ul>
         <div class="authorize_connect">
-          <i class="fa fa-plus"></i>&nbsp; Connect
+          <i class="fa fa-plus"></i>&nbsp; Disconnect
         </div>
       </div>
     </div>
