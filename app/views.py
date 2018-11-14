@@ -146,6 +146,10 @@ def twitter_auth():
     screen_name = resp.json()['screen_name']
     oauth, created = get_oauth_or_create(screen_name, user)
 
+    print('==== get twitter user timeline')
+    twitter_user_timeline(user.id)
+    print('==== get twitter user mention timeline')
+    twitter_mentions_timeline(user.id)
     return redirect(url_for('authorize'))
 
 
@@ -251,8 +255,8 @@ def twitter_user_timeline(user_id):
     return jsonify({'tweets': timeline})
 
 
-@app.route('/twitter/<int:user_id>/mentions_timeline')
-@login_required
+# @app.route('/twitter/<int:user_id>/mentions_timeline')
+# @login_required
 def twitter_mentions_timeline(user_id):
     """
     API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-mentions_timeline
