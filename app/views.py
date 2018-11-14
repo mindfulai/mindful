@@ -205,6 +205,7 @@ def get_twitter_screen_name(user):
         oauth = query.one()
     except NoResultFound:
         # FIXME: twitter oauth required
+        flash('Authoriza twitter firsh')
         abort(401)
 
     screen_name = oauth.provider_user_id
