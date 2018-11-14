@@ -131,7 +131,9 @@ def twitter_auth():
         return redirect(url_for("twitter.login"))
 
     resp = twitter.get("account/settings.json")
-    assert resp.ok
+    print(resp.ok)
+    if not resp.ok:
+        return jsonify({'msg': 'twitter not authorized.'})
 
     screen_name = resp.json()['screen_name']
     oauth, created = get_oauth_or_create(screen_name, user)
@@ -228,7 +230,8 @@ def twitter_user_timeline(user_id):
 
     # 访问 twitter API
     resp = twitter.get(path)
-    assert resp.ok
+    if not resp.ok:
+        return jsonify({'msg': 'get tweet error'})
 
     timeline = json.dumps(resp.json(), indent=2, ensure_ascii=False)
 
@@ -258,7 +261,8 @@ def twitter_mentions_timeline(user_id):
 
     # 更新最后 mention 之后的文章
     resp = twitter.get(path)
-    assert resp.ok
+    if not resp.ok:
+        return jsonify({'msg': 'get mention error'})
 
     # 存入数据库
     save_twitter_data(resp, user, models.TweetMention)
@@ -312,7 +316,9 @@ def facebook_auth(facebook_blueprint, token):
         return False
 
     resp = facebook.get('me')
-    assert resp.ok
+    print(resp.ok)
+    if not resp.ok:
+        return jsonify({'msg': 'get me error'})
 
     fb_name = resp.json()['name']
     fb_id = resp.json()['id']
@@ -359,7 +365,8 @@ def facebook_posts(user_id):
 
     # 保存 posts
     resp = facebook.get('me?fields=posts')
-    assert resp.ok
+    if not resp.ok:
+        return jsonify({'msg': 'get post error'})
 
     posts = resp.json()['posts']['data']
 
