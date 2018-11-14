@@ -415,7 +415,7 @@ def add_entry():
     return redirect(url_for('index'))
 
 
-@app.route('/login_frontend')
+@app.route('/Login')
 def login():
     return render_template('login.html')
 
