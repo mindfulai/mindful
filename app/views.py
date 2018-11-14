@@ -1,5 +1,6 @@
 import json
 import pendulum
+import requests
 
 from flask_dance.contrib.twitter import make_twitter_blueprint, twitter
 from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
@@ -9,7 +10,6 @@ from flask_login import login_required, login_user, logout_user, current_user
 
 from flask import request, session, redirect, url_for, \
     abort, render_template, flash, jsonify
-
 from app import app, db
 from app import models
 from app import login_manager
@@ -368,16 +368,44 @@ def facebook_auth(facebook_blueprint, token):
         login_user(oauth.user)
         flash("Successfully signed in with Facebook.")
 
+    # 更新获取 posts
+    print('=== get user posts')
+    facebook_posts(oauth.user.id)
+
     return redirect(url_for('index'))
 
 
-@app.route('/facebook/<int:user_id>/posts')
-@login_required
+# @app.route('/facebook/<int:user_id>/posts')
 def facebook_posts(user_id):
     user = models.User.query.get(user_id)
 
     # 保存 posts
-    resp = facebook.get('me?fields=posts')
+
+    redirect_uri = 'https://localhost:5000/facebook/{}/posts'.format(user.id)
+    code = request.args.get('code')
+
+    if not code:
+        # 获取 code
+        return redirect('https://www.facebook.com/dialog/oauth' +
+                        '?client_id={}&redirect_uri={}&scope={}'.format(
+                            facebook.client_id, redirect_uri, 'email,user_posts'
+                        ))
+
+    # 根据 code 换取 access_token
+    url = 'https://graph.facebook.com/oauth/access_token'
+    data = {
+        'client_id': facebook.client_id,
+        'redirect_uri': redirect_uri,
+        'client_secret': facebook_blueprint.client_secret,
+        'code': code
+    }
+    resp = requests.get(url, params=data)
+
+    access_token = json.loads(resp.text)['access_token']
+
+    # 使用 access_token 获取 posts
+    resp = facebook.get('me?fields=posts&access_token={}'.format(access_token))
+
     if not resp.ok:
         return jsonify(resp.json())
 
