@@ -121,6 +121,12 @@ def get_oauth_or_create(user_id, user):
     return oauth, created
 
 
+@app.route('/authorize')
+@login_required
+def authorize():
+    return render_template('authorize.html')
+
+
 @app.route('/twitter_auth')
 @login_required
 def twitter_auth():
@@ -138,7 +144,7 @@ def twitter_auth():
     screen_name = resp.json()['screen_name']
     oauth, created = get_oauth_or_create(screen_name, user)
 
-    return jsonify({'msg': 'success'})
+    return redirect(url_for('authorize'))
 
 
 def get_user_last_tweet_or_mention(user, csl):
