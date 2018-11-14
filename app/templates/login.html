@@ -1,41 +1,111 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Flaskr-TDD | Login</title>
-  <link rel="stylesheet" type="text/css" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>mindful</title>
+  <link rel="stylesheet" href="./static/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="./static/css/app.css" />
 </head>
+
 <body>
-
-  <div class="container">
-
-    <h1>Flaskr</h1>
-
-    <br><br>
-
-    {% for message in get_flashed_messages() %}
-      <div class="flash alert alert-success col-sm-4" role="success">{{ message }}</div>
-    {% endfor %}
-
-    <h3>Login</h3>
-
-    {% if error %}<p class="alert alert-danger col-sm-4" role="danger"><strong>Error:</strong> {{ error }}{% endif %}</p>
-    <form action="{{ url_for('login') }}" method="post" class="form-group">
-      <dl>
-        <dt>Username:</dt>
-        <dd><input type="text" name="username" class="form-control col-sm-4"></dd>
-        <dt>Password:</dt>
-        <dd><input type="password" name="password" class="form-control col-sm-4"></dd>
-        <br><br>
-        <dd><input type="submit" class="btn btn-primary" value="Login"></dd>
-        <span>Use "admin" for username and password</span>
-      </dl>
-    </form>
-
+  <div class="login_box" id="login">
+    <div class="login_header">Login</div>
+    <!-- <a class="login" @click="goHome"> Login with Facebook -->
+    <a class="login" href="/login/facebook"> Login with Facebook
+      <a class="facebook_logo">
+        <i class="fa fa-facebook-square"></i>
+      </a>
+    </a>
   </div>
-
-  <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
-  <script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="{{url_for('static', filename='main.js') }}"></script>
-
 </body>
+<script src="./static/vue.min.js"></script>
+<script src="./static/axios.min.js"></script>
+<script>
+  new Vue({
+    el: "#login",
+    data() {
+      return {};
+    },
+    methods: {
+      goHome() {
+        axios
+          .get("/facebook_auth")
+          .then(res => {
+            alert(res);
+            if (res.status == 200) {
+            }
+          })
+          .catch(res => {
+            console.log(res);
+          });
+      }
+      // goHome() {
+      //   alert(1);
+      //   FB.login(
+      //     function(response) {
+      //       alert(response);
+      //       if (response.status === "connected") {
+      //         FB.api("/me", function(response) {
+      //           console.log("Successful login for: " + response.name);
+      //         });
+      //       } else {
+      //         console.log("该用户没有登录");
+      //       }
+      //     },
+      //     { scope: "public_profile,email" }
+      //   );
+      // }
+    }
+  });
+</script>
+<style scoped>
+  .login_box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #333a45;
+    /* background: #4e7ca0; */
+  }
+
+  .login_header {
+    position: absolute;
+    top: 35%;
+    left: 0;
+    text-align: center;
+    font-size: 0.5rem;
+    color: #fff;
+    width: 100%;
+  }
+
+  .login {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.4rem;
+    width: 80%;
+    text-align: center;
+    height: 1rem;
+    line-height: 1rem;
+    /* background: #95b0c6; */
+    background: rgba(255, 255, 255, 0.4);
+    color: #fff;
+    border-radius: 0.2rem;
+    z-index: 100;
+  }
+
+  .facebook_logo {
+    float: right;
+    margin-right: 0.4rem;
+  }
+
+  i {
+    font-size: 0.5rem;
+    color: #fff;
+  }
+</style>
+
 </html>

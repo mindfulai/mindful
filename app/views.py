@@ -349,7 +349,7 @@ def facebook_auth(facebook_blueprint, token):
         login_user(oauth.user)
         flash("Successfully signed in with Facebook.")
 
-    return jsonify({'user_id': user.id})
+    return redirect(url_for('index'))
 
 
 @app.route('/facebook/<int:user_id>/posts')
@@ -415,20 +415,9 @@ def add_entry():
     return redirect(url_for('index'))
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login_frontend')
 def login():
-    """User login/authentication/session management."""
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            flash('You were logged in')
-            return redirect(url_for('index'))
-    return render_template('login.html', error=error)
+    return render_template('login.html')
 
 
 @app.route('/logout')
