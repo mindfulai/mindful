@@ -85,13 +85,6 @@ def debug():
                    fb_result, '=======')
 
 
-@app.route('/')
-def index():
-    """Searches the database for entries, then displays them."""
-    entries = db.session.query(models.Flaskr)
-    return render_template('index.html', entries=entries)
-
-
 def get_oauth_or_create(user_id, user):
     """获取或创建oauth
     args:
