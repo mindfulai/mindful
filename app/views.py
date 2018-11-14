@@ -415,20 +415,16 @@ def add_entry():
     return redirect(url_for('index'))
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/test', methods=['GET', 'POST'])
 def login():
     """User login/authentication/session management."""
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            flash('You were logged in')
-            return redirect(url_for('index'))
-    return render_template('login.html', error=error)
+    arg = request.args.get('arg')
+    if arg == 'login':
+        return redirect('/login/facebook')
+    else:
+        return jsonify({'msg': 'error'})
+
+    # return render_template('login.html', error=error)
 
 
 @app.route('/logout')
