@@ -12,7 +12,7 @@ PASSWORD = 'admin'
 DATABASE_PATH = os.path.join(basedir, DATABASE)
 
 # database config
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + DATABASE_PATH
+SQLALCHEMY_DATABASE_URI = 'postgres://qmxhgnyiiodlvx:daa9a651a943da6dc677f120e09d281bda1a48d4b7d77633e5b44b3b548663c6@ec2-75-101-138-165.compute-1.amazonaws.com:5432/dbe6bab21fo60n'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
