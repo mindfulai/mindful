@@ -375,14 +375,14 @@ def facebook_auth(facebook_blueprint, token):
     return redirect(url_for('index'))
 
 
-@app.route('/facebook/<int:user_id>/posts')
+@app.route('/facebook/posts')
+@login_required
 def facebook_posts(user_id):
-    user = models.User.query.get(user_id)
+    user = current_user
 
     # 保存 posts
 
-    redirect_uri = 'https://pocoweb-mindful.herokuapp.com/facebook/{}/posts'.format(
-        user.id)
+    redirect_uri = 'https://pocoweb-mindful.herokuapp.com/facebook/posts'
     code = request.args.get('code')
 
     if not code:
