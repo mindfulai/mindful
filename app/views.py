@@ -481,10 +481,9 @@ def login():
 @login_required
 def logout():
     """User logout/authentication/session management."""
-    session.pop('logged_in', None)
     logout_user()
     flash('You were logged out')
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 
 @app.route('/delete/<int:post_id>', methods=['GET'])
