@@ -377,7 +377,7 @@ def facebook_auth(facebook_blueprint, token):
 
 @app.route('/facebook/posts')
 @login_required
-def facebook_posts(user_id):
+def facebook_posts():
     user = current_user
 
     # 保存 posts
