@@ -126,7 +126,10 @@ def get_oauth_or_create(user_id, user):
 @app.route('/authorize')
 @login_required
 def authorize():
-    return render_template('authorize.html')
+    twitter_auth = twitter.authorized
+    fb_auth = facebook.authorized
+    return render_template('authorize.html',
+                           twitter_auth=twitter_auth, fb_auth=fb_auth)
 
 
 @oauth_authorized.connect_via(twitter_blueprint)

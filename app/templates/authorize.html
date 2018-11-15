@@ -54,9 +54,15 @@
             <span class="span">Tweets</span>
           </li>
         </ul>
-        <a class="authorize_connect" href="/login/twitter">
-          <i class="fa fa-plus"></i>&nbsp; {% if twitter_auth %}Disconnect{% else %}Connect{% endif %}
+        {% if twitter_auth %}
+        <a class="authorize_connect" href="">
+          <i class="fa fa-plus"></i>&nbsp; Disconnect
         </a>
+        {% else %}
+        <a class="authorize_connect" href="/login/twitter">
+          <i class="fa fa-plus"></i>&nbsp; Connect
+        </a>
+        {% endif %}
       </div>
       <div class="authorize_box">
         <div class="authorize_meta facebook">
@@ -77,9 +83,15 @@
             <span class="span">Facebook posts</span>
           </li>
         </ul>
-        <div class="authorize_connect">
-          <i class="fa fa-plus"></i>&nbsp; {% if fb_auth %}Disconnect{% else %}Connect{% endif %}
-        </div>
+        {% if fb_auth %}
+        <a class="authorize_connect" href="">
+          <i class="fa fa-plus"></i>&nbsp; Disconnect
+        </a>
+        {% else %}
+        <a class="authorize_connect" href="/login/facebook">
+          <i class="fa fa-plus"></i>&nbsp; Connect
+        </a>
+        {% endif %}
       </div>
     </div>
   </div>
