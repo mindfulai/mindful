@@ -129,14 +129,15 @@ def authorize():
     return render_template('authorize.html')
 
 
-@app.route('/twitter_auth')
-@login_required
-def twitter_auth():
+@oauth_authorized.connect_via(twitter_blueprint)
+def twitter_auth(twitter_blueprint, token):
     """Searches the database for entries, then displays them."""
-    user = current_user
+    print('===== twitter authorize')
 
-    if not twitter.authorized:
-        return redirect(url_for("twitter.login"))
+    if not token:
+        return False
+
+    user = current_user
 
     resp = twitter.get("account/settings.json")
     print(resp.ok)
@@ -152,7 +153,7 @@ def twitter_auth():
     twitter_user_timeline(user.id)
     print('==== get twitter user mention timeline')
     twitter_mentions_timeline(user.id)
-    return redirect(url_for('authorize'))
+    return redirect(url_for('index'))
 
 
 def get_user_last_tweet_or_mention(user, csl):
