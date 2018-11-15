@@ -127,7 +127,9 @@ def get_oauth_or_create(user_id, user):
 @login_required
 def authorize():
     twitter_auth = twitter.authorized
+    print('twitter_auth: {}'.format(twitter_auth))
     fb_auth = facebook.authorized
+    print('fb_auth: {}'.format(fb_auth))
     return render_template('authorize.html',
                            twitter_auth=twitter_auth, fb_auth=fb_auth)
 
