@@ -369,10 +369,9 @@ def facebook_auth(facebook_blueprint, token):
         flash("Successfully signed in with Facebook.")
 
     # 更新获取 posts
-    # print('=== get user posts')
-    # facebook_posts(oauth.user.id)
+    print('=== get user posts')
 
-    return redirect(url_for('index'))
+    return redirect(url_for('facebook_posts'))
 
 
 @app.route('/facebook/posts')
@@ -430,7 +429,7 @@ def facebook_posts():
             db.session.add(fb)
             db.session.commit()
 
-    return jsonify(posts)
+    return redirect(url_for('index'))
 
 
 @app.route('/facebook/<int:user_id>/summary')
