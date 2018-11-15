@@ -141,6 +141,8 @@ def twitter_auth():
     resp = twitter.get("account/settings.json")
     print(resp.ok)
     if not resp.ok:
+        if resp.json()['errors'][0]['message'] == "Invalid or expired token.":
+            return redirect(url_for("twitter.login"))
         return jsonify(resp.json())
 
     screen_name = resp.json()['screen_name']
@@ -199,12 +201,13 @@ def save_twitter_data(resp, user, csl):
         tweet_id = tweet['id_str']
         created_at = pendulum.parse(tweet['created_at'], strict=False)
         try:
+            t = csl.query.filter_by(tweet_id=tweet_id).one()
+
+        except NoResultFound:
             t = csl(detail=json.dumps(tweet), created_at=created_at,
                     user=user, api_url=resp.url, tweet_id=tweet_id)
-        except:
-            t = csl.query.filter_by(tweet_id=tweet_id)
-        db.session.add(t)
-        db.session.commit()
+            db.session.add(t)
+            db.session.commit()
 
 
 def get_twitter_screen_name(user):
@@ -255,8 +258,8 @@ def twitter_user_timeline(user_id):
     return jsonify({'tweets': timeline})
 
 
-# @app.route('/twitter/<int:user_id>/mentions_timeline')
-# @login_required
+@app.route('/twitter/<int:user_id>/mentions_timeline')
+@login_required
 def twitter_mentions_timeline(user_id):
     """
     API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-mentions_timeline
