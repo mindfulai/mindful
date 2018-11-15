@@ -23,11 +23,11 @@
       <div class="mine_bar" v-show="isShow">
         <ul class="mine_bar_list">
           <li>
-            <a href="./authorize.html">
+            <a href="/authorize">
               <i class="fa fa-tasks"></i>&nbsp;&nbsp;&nbsp;Authorize</a>
           </li>
           <li>
-            <a href="./login.html">
+            <a href="/Login">
               <i class="fa fa-sign-out"></i>&nbsp;&nbsp;&nbsp;Log out</a>
           </li>
         </ul>
@@ -54,15 +54,10 @@
             <span class="span">Tweets</span>
           </li>
         </ul>
-        {% if twitter_auth %}
-        <a class="authorize_connect" href="">
-          <i class="fa fa-plus"></i>&nbsp; Disconnect
-        </a>
-        {% else %}
         <a class="authorize_connect" href="/login/twitter">
-          <i class="fa fa-plus"></i>&nbsp; Connect
+          <i class="fa fa-plus"></i>&nbsp; Authorize
         </a>
-        {% endif %}
+
       </div>
       <div class="authorize_box">
         <div class="authorize_meta facebook">
@@ -83,15 +78,11 @@
             <span class="span">Facebook posts</span>
           </li>
         </ul>
-        {% if fb_auth %}
-        <a class="authorize_connect" href="">
-          <i class="fa fa-plus"></i>&nbsp; Disconnect
-        </a>
-        {% else %}
+
         <a class="authorize_connect" href="/login/facebook">
-          <i class="fa fa-plus"></i>&nbsp; Connect
+          <i class="fa fa-plus"></i>&nbsp; Authorize
         </a>
-        {% endif %}
+
       </div>
     </div>
   </div>
