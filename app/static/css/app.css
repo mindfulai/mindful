@@ -544,18 +544,12 @@ header .search i {
   line-height: 1rem;
   border-bottom: 1px solid #E1E2E9;
   padding: 0 0.2rem;
-  font-size: .32rem;
+  font-size: 0.32rem;
 }
 .authorize_box ul li a {
   float: left;
   width: 30%;
   color: #B2B6BB;
-}
-.authorize_box ul li .span{
-   font-size: 0.32rem; 
-   float:left;
-   width:70%;
-   font-weight:800;
 }
 .authorize_box .authorize_connect {
   height: 0.8rem;
