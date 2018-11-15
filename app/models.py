@@ -37,7 +37,7 @@ class Tweet(db.Model):
     __tablename__ = "tweets"
 
     id = db.Column(db.Integer, primary_key=True)
-    tweet_id = db.Column(db.Integer, unique=True)
+    tweet_id = db.Column(db.String, unique=True)
     created_at = db.Column(db.DateTime)
     user = db.relationship(User)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
@@ -49,7 +49,7 @@ class TweetMention(db.Model):
     __tablename__ = "tweet_mentions"
 
     id = db.Column(db.Integer, primary_key=True)
-    tweet_id = db.Column(db.Integer, unique=True)
+    tweet_id = db.Column(db.String, unique=True)
     created_at = db.Column(db.DateTime)
     user = db.relationship(User)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))

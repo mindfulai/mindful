@@ -196,7 +196,7 @@ def save_twitter_data(resp, user, csl):
         user: 当前用户 object
     """
     for tweet in resp.json():
-        tweet_id = tweet['id']
+        tweet_id = tweet['id_str']
         created_at = pendulum.parse(tweet['created_at'], strict=False)
         try:
             t = csl(detail=json.dumps(tweet), created_at=created_at,
