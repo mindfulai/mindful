@@ -35,6 +35,11 @@ def load_user(user_id):
     return models.User.query.get(int(user_id))
 
 
+##############################################
+#             Facebook API
+##############################################
+
+
 @oauth_authorized.connect_via(facebook_blueprint)
 def facebook_auth(facebook_blueprint, token):
     """ Facebook 登录 """
