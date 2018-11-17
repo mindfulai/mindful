@@ -306,6 +306,18 @@ def logout():
     return redirect(url_for('login'))
 
 
+@app.route('/user/<int:user_id>/authorized')
+@login_required
+def authorized(user_id):
+    user = load_user(user_id)
+
+    result = {
+        'twitter_auth': actions.is_authorized(twitter_blueprint.name, user),
+        'facebook_auth': actions.is_authorized(facebook_blueprint.name, user)
+    }
+    return jsonify(result)
+
+
 @app.route('/debug')
 def debug():
     tweets = db.session.query(models.Tweet).all()
@@ -354,18 +366,6 @@ def debug():
                    tweet_result, '=======',
                    mention_result, '=======',
                    fb_result, '=======')
-
-
-@app.route('/user/<int:user_id>/authorized')
-@login_required
-def authorized(user_id):
-    user = load_user(user_id)
-
-    result = {
-        'twitter_auth': actions.is_authorized(twitter_blueprint.name, user),
-        'facebook_auth': actions.is_authorized(facebook_blueprint.name, user)
-    }
-    return jsonify(result)
 
 
 @app.route('/add', methods=['POST'])
