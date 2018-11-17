@@ -35,6 +35,138 @@ def load_user(user_id):
     return models.User.query.get(int(user_id))
 
 
+@oauth_authorized.connect_via(facebook_blueprint)
+def facebook_auth(facebook_blueprint, token):
+    """ Facebook 登录 """
+    if not token:
+        return False
+
+    resp = facebook.get('me')
+    print(resp.ok)
+    if not resp.ok:
+        return jsonify(resp.json())
+
+    fb_name = resp.json()['name']
+    fb_id = resp.json()['id']
+
+    # Find this OAuth token in the database, or create it
+    query = models.OAuth.query.filter_by(
+        provider=facebook_blueprint.name,
+        provider_user_id=fb_id,
+    )
+
+    try:
+        # 查找用户授权
+        oauth = query.one()
+    except NoResultFound:
+        # 创建 OAuth
+        oauth = models.OAuth(
+            provider=facebook_blueprint.name,
+            provider_user_id=fb_id,
+        )
+
+    if oauth.user:
+        login_user(oauth.user)
+        flash("Successfully signed in with Facebook.")
+
+    else:
+        # Create a new local user account for this user
+        user = models.User(username=fb_name)
+        # Associate the new local user account with the OAuth token
+        oauth.user = user
+        # Save and commit our database models
+        db.session.add_all([user, oauth])
+        db.session.commit()
+        # Log in the new local user account
+        login_user(oauth.user)
+        flash("Successfully signed in with Facebook.")
+
+    # 更新获取 posts
+    print('=== get user posts')
+
+    return redirect(url_for('facebook_posts'))
+
+
+@app.route('/facebook/posts')
+@login_required
+def facebook_posts():
+    """ 获取 Facebook posts """
+    user = current_user
+
+    # 保存 posts
+
+    redirect_uri = 'https://pocoweb-mindful.herokuapp.com/facebook/posts'
+    code = request.args.get('code')
+
+    if not code:
+        # 获取 code
+        return redirect('https://www.facebook.com/dialog/oauth' +
+                        '?client_id={}&redirect_uri={}&scope={}'.format(
+                            facebook.client_id, redirect_uri, 'email,user_posts'
+                        ))
+
+    # 根据 code 换取 access_token
+    url = 'https://graph.facebook.com/oauth/access_token'
+    data = {
+        'client_id': facebook.client_id,
+        'redirect_uri': redirect_uri,
+        'client_secret': facebook_blueprint.client_secret,
+        'code': code
+    }
+    resp = requests.get(url, params=data)
+
+    access_token = json.loads(resp.text)['access_token']
+
+    # 使用 access_token 获取 posts
+    resp = facebook.get('me?fields=posts&access_token={}'.format(access_token))
+
+    if not resp.ok:
+        return jsonify(resp.json())
+
+    posts = resp.json()['posts']['data']
+
+    for post in posts:
+        created_at = pendulum.parse(post['created_time'])
+
+        try:
+            fb = db.session.query(models.FacebookPost).filter_by(
+                post_id=post['id']).one()
+
+        except NoResultFound:
+            fb = models.FacebookPost(
+                post_id=post['id'],
+                created_at=created_at,
+                detail=json.dumps(post),
+                api_url=resp.url,
+                user=user
+            )
+            db.session.add(fb)
+            db.session.commit()
+
+    return redirect('/static/dist/index.html#/index?name={}&id={}'.format(
+        user.username, user.id))
+
+
+@app.route('/facebook/<int:user_id>/summary')
+@login_required
+def facebook_summary(user_id):
+    """ Facebook 数据统计 """
+    user = models.User.query.get(user_id)
+
+    dt = pendulum.parse(request.args.get('datetime'), strict=False)
+    period = request.args.get('period', 'day')
+
+    start_date = dt.start_of(period)
+    end_date = dt.end_of(period)
+
+    posts = count_filter_by_date(
+        models.FacebookPost, user, start_date, end_date)
+    result = {
+        'posts': posts,
+    }
+    return jsonify(result)
+
+
 @app.route('/debug')
 def debug():
     tweets = db.session.query(models.Tweet).all()
@@ -318,136 +450,6 @@ def twitter_summary(user_id):
     result = {
         'tweets': tweet_count,
         'mentions': mention_count
-    }
-    return jsonify(result)
-
-
-@oauth_authorized.connect_via(facebook_blueprint)
-def facebook_auth(facebook_blueprint, token):
-    """Searches the database for entries, then displays them."""
-    if not token:
-        return False
-
-    resp = facebook.get('me')
-    print(resp.ok)
-    if not resp.ok:
-        return jsonify(resp.json())
-
-    fb_name = resp.json()['name']
-    fb_id = resp.json()['id']
-
-    # Find this OAuth token in the database, or create it
-    query = models.OAuth.query.filter_by(
-        provider=facebook_blueprint.name,
-        provider_user_id=fb_id,
-    )
-
-    try:
-        # 查找用户授权
-        oauth = query.one()
-    except NoResultFound:
-        # 创建 OAuth
-        oauth = models.OAuth(
-            provider=facebook_blueprint.name,
-            provider_user_id=fb_id,
-        )
-
-    if oauth.user:
-        login_user(oauth.user)
-        flash("Successfully signed in with Facebook.")
-
-    else:
-        # Create a new local user account for this user
-        user = models.User(username=fb_name)
-        # Associate the new local user account with the OAuth token
-        oauth.user = user
-        # Save and commit our database models
-        db.session.add_all([user, oauth])
-        db.session.commit()
-        # Log in the new local user account
-        login_user(oauth.user)
-        flash("Successfully signed in with Facebook.")
-
-    # 更新获取 posts
-    print('=== get user posts')
-
-    return redirect(url_for('facebook_posts'))
-
-
-@app.route('/facebook/posts')
-@login_required
-def facebook_posts():
-    user = current_user
-
-    # 保存 posts
-
-    redirect_uri = 'https://pocoweb-mindful.herokuapp.com/facebook/posts'
-    code = request.args.get('code')
-
-    if not code:
-        # 获取 code
-        return redirect('https://www.facebook.com/dialog/oauth' +
-                        '?client_id={}&redirect_uri={}&scope={}'.format(
-                            facebook.client_id, redirect_uri, 'email,user_posts'
-                        ))
-
-    # 根据 code 换取 access_token
-    url = 'https://graph.facebook.com/oauth/access_token'
-    data = {
-        'client_id': facebook.client_id,
-        'redirect_uri': redirect_uri,
-        'client_secret': facebook_blueprint.client_secret,
-        'code': code
-    }
-    resp = requests.get(url, params=data)
-
-    access_token = json.loads(resp.text)['access_token']
-
-    # 使用 access_token 获取 posts
-    resp = facebook.get('me?fields=posts&access_token={}'.format(access_token))
-
-    if not resp.ok:
-        return jsonify(resp.json())
-
-    posts = resp.json()['posts']['data']
-
-    for post in posts:
-        created_at = pendulum.parse(post['created_time'])
-
-        try:
-            fb = db.session.query(models.FacebookPost).filter_by(
-                post_id=post['id']).one()
-
-        except NoResultFound:
-            fb = models.FacebookPost(
-                post_id=post['id'],
-                created_at=created_at,
-                detail=json.dumps(post),
-                api_url=resp.url,
-                user=user
-            )
-            db.session.add(fb)
-            db.session.commit()
-
-    return redirect('/static/dist/index.html#/index?name={}&id={}'.format(
-        user.username, user.id))
-
-
-@app.route('/facebook/<int:user_id>/summary')
-@login_required
-def facebook_summary(user_id):
-    user = models.User.query.get(user_id)
-
-    dt = pendulum.parse(request.args.get('datetime'), strict=False)
-    period = request.args.get('period', 'day')
-
-    start_date = dt.start_of(period)
-    end_date = dt.end_of(period)
-
-    posts = count_filter_by_date(
-        models.FacebookPost, user, start_date, end_date)
-    result = {
-        'posts': posts,
     }
     return jsonify(result)
 
