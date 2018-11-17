@@ -13,6 +13,9 @@ from flask import request, session, redirect, url_for, \
 from app import app, db
 from app import models
 from app import login_manager
+from app.actions import get_user_last_tweet_or_mention, get_twitter_path,\
+    save_twitter_data, get_twitter_screen_name, count_filter_by_date, \
+    get_oauth_or_create
 
 
 from sqlalchemy.orm.exc import NoResultFound
@@ -200,7 +203,8 @@ def twitter_auth(twitter_blueprint, token):
     twitter_user_timeline(user.id)
     print('==== get twitter user mention timeline')
     twitter_mentions_timeline(user.id)
-    return redirect(url_for('index'))
+    return redirect('/static/dist/index.html#/index?name={}&id={}'.format(
+        user.username, user.id))
 
 
 @app.route('/twitter/<int:user_id>/user_timeline')
@@ -211,7 +215,7 @@ def twitter_user_timeline(user_id):
     """
     user = db.session.query(models.User).get(user_id)
 
-    screen_name = get_twitter_screen_name(user)
+    screen_name = get_twitter_screen_name(twitter_blueprint, user)
 
     # 获取数据库中最后 tweet
     last_tweet = get_user_last_tweet_or_mention(user, models.Tweet)
@@ -241,7 +245,7 @@ def twitter_mentions_timeline(user_id):
     """
     user = db.session.query(models.User).get(user_id)
 
-    screen_name = get_twitter_screen_name(user)
+    screen_name = get_twitter_screen_name(twitter_blueprint, user)
 
     # 获取数据库中最后 mention
     last_mention = get_user_last_tweet_or_mention(user, models.TweetMention)
@@ -281,6 +285,20 @@ def twitter_summary(user_id):
         'mentions': mention_count
     }
     return jsonify(result)
+
+
+##############################################
+#                 System
+##############################################
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    """User logout/authentication/session management."""
+    logout_user()
+    flash('You were logged out')
+    return redirect(url_for('login'))
 
 
 @app.route('/debug')
@@ -333,35 +351,6 @@ def debug():
                    fb_result, '=======')
 
 
-def get_oauth_or_create(user_id, user):
-    """获取或创建oauth
-    args:
-        user_id: 第三方授权的 user_id
-        user: 访问用户 object
-    return:
-        oauth: OAuth
-        created: 是否创建
-    """
-    query = models.OAuth.query.filter_by(
-        provider=twitter_blueprint.name,
-        provider_user_id=user_id
-    )
-
-    try:
-        oauth = query.one()
-        created = False
-    except NoResultFound:
-        oauth = models.OAuth(
-            provider=twitter_blueprint.name,
-            provider_user_id=user_id,
-            user=user
-        )
-        db.session.add(oauth)
-        db.session.commit()
-        created = True
-    return oauth, created
-
-
 @app.route('/authorize')
 @login_required
 def authorize():
@@ -371,95 +360,6 @@ def authorize():
     print('fb_auth: {}'.format(fb_auth))
     return render_template('authorize.html',
                            twitter_auth=twitter_auth, fb_auth=fb_auth)
-
-
-def get_user_last_tweet_or_mention(user, csl):
-    """获取数据库中最后的 tweet 或 mention
-    args:
-        user: 访问用户 object
-        csl: 需要查找的 Tweet 或者 TweetMention
-    retrun:
-        数据库中最新的 tweet 或 mention
-    """
-    return db.session.query(csl).filter_by(user=user).order_by(
-        csl.tweet_id.desc()).first()
-
-
-def get_twitter_path(last_article, screen_name, article_type):
-    """需要访问的路径
-    args:
-        last_tweet_or_mention: 数据库中最新的推文
-        screen_name: 当前用户 twtter 用户名
-        article_type: 是 twitter 还是 mention
-    retrun:
-        访问的 twitter API 路径
-
-    TODO: 从什么时间开始获取 tweets
-    """
-    if article_type == 'tweet':
-        api = 'statuses/user_timeline.json'
-    elif article_type == 'mention':
-        api = 'statuses/mentions_timeline.json'
-    if last_article:
-        max_tweet_id = last_article.tweet_id
-        path = "{}?screen_name={}&since_id={}".format(
-            api, screen_name, max_tweet_id)
-    else:
-        path = "{}?screen_name={}".format(api, screen_name)
-    return path
-
-
-def save_twitter_data(resp, user, csl):
-    """存储 twitter 获取的数据到数据库
-    args:
-        resp: twitter API response
-        user: 当前用户 object
-    """
-    for tweet in resp.json():
-        tweet_id = tweet['id_str']
-        created_at = pendulum.parse(tweet['created_at'], strict=False)
-        try:
-            t = csl.query.filter_by(tweet_id=tweet_id).one()
-
-        except NoResultFound:
-            t = csl(detail=json.dumps(tweet), created_at=created_at,
-                    user=user, api_url=resp.url, tweet_id=tweet_id)
-            db.session.add(t)
-            db.session.commit()
-
-
-def get_twitter_screen_name(user):
-    query = models.OAuth.query.filter_by(
-        provider=twitter_blueprint.name,
-        user=user
-    )
-
-    try:
-        oauth = query.one()
-    except NoResultFound:
-        # FIXME: twitter oauth required
-        flash('Authoriza twitter firsh')
-        abort(401)
-
-    screen_name = oauth.provider_user_id
-    return screen_name
-
-
-def count_filter_by_date(csl, user, start_date, end_date):
-    """计算用户在时间范围内 cls 的数量
-
-    args:
-        user: 访问用户 User
-        csl: 需要查找的表 例如，Tweet 或者 TweetMention
-    retrun:
-        用户在时间范围内 cls 的数量
-
-    """
-    return csl.query.filter(
-        csl.user == user,
-        csl.created_at >= start_date,
-        csl.created_at < end_date
-    ).count()
 
 
 @app.route('/add', methods=['POST'])
@@ -472,15 +372,6 @@ def add_entry():
     db.session.commit()
     flash('New entry was successfully posted')
     return redirect(url_for('index'))
-
-
-@app.route('/logout')
-@login_required
-def logout():
-    """User logout/authentication/session management."""
-    logout_user()
-    flash('You were logged out')
-    return redirect(url_for('login'))
 
 
 @app.route('/delete/<int:post_id>', methods=['GET'])
