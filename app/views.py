@@ -472,11 +472,6 @@ def add_entry():
     return redirect(url_for('index'))
 
 
-@app.route('/Login')
-def login():
-    return render_template('login.html')
-
-
 @app.route('/logout')
 @login_required
 def logout():
