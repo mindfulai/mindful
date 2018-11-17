@@ -8,7 +8,7 @@ from app import db, models
 
 
 def get_user_last_tweet_or_mention(user, csl):
-    """获取数据库中最后的 tweet 或 mention
+    """ 获取数据库中最后的 tweet 或 mention
     args:
         user: 访问用户 object
         csl: 需要查找的 Tweet 或者 TweetMention
@@ -20,7 +20,7 @@ def get_user_last_tweet_or_mention(user, csl):
 
 
 def get_twitter_path(last_article, screen_name, article_type):
-    """需要访问的路径
+    """ 需要访问的路径
     args:
         last_tweet_or_mention: 数据库中最新的推文
         screen_name: 当前用户 twtter 用户名
@@ -44,7 +44,7 @@ def get_twitter_path(last_article, screen_name, article_type):
 
 
 def save_twitter_data(resp, user, csl):
-    """存储 twitter 获取的数据到数据库
+    """ 存储 twitter 获取的数据到数据库
     args:
         resp: twitter API response
         user: 当前用户 object
@@ -80,7 +80,7 @@ def get_twitter_screen_name(buleprint, user):
 
 
 def count_filter_by_date(csl, user, start_date, end_date):
-    """计算用户在时间范围内 cls 的数量
+    """ 计算用户在时间范围内 cls 的数量
 
     args:
         user: 访问用户 User
@@ -97,7 +97,7 @@ def count_filter_by_date(csl, user, start_date, end_date):
 
 
 def get_oauth_or_create(blueprint, user_id, user):
-    """获取或创建oauth
+    """ 获取或创建oauth
     args:
         user_id: 第三方授权的 user_id
         user: 访问用户 object
@@ -123,3 +123,22 @@ def get_oauth_or_create(blueprint, user_id, user):
         db.session.commit()
         created = True
     return oauth, created
+
+
+def update_oauth_token(oauth, token):
+    """ 更新 OAuth token
+    """
+    oauth.token = token
+    db.session.add(oauth)
+    db.session.commit()
+
+
+def is_authorized(provide, user):
+    """ 判断用户是否授权过
+    """
+    query = models.OAuth.query.filter_by(user=user)
+    try:
+        query.filter_by(provider=provide).one()
+        return True
+    except NoResultFound:
+        return False

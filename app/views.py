@@ -17,6 +17,8 @@ from app.actions import get_user_last_tweet_or_mention, get_twitter_path,\
     save_twitter_data, get_twitter_screen_name, count_filter_by_date, \
     get_oauth_or_create
 
+from app import actions
+
 
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -88,6 +90,9 @@ def facebook_auth(facebook_blueprint, token):
         # Log in the new local user account
         login_user(oauth.user)
         flash("Successfully signed in with Facebook.")
+
+    # 更新 token
+    actions.update_oauth_token(oauth, token)
 
     # 更新获取 posts
     print('=== get user posts')
@@ -196,6 +201,8 @@ def twitter_auth(twitter_blueprint, token):
 
     screen_name = resp.json()['screen_name']
     oauth, created = get_oauth_or_create(twitter_blueprint, screen_name, user)
+
+    actions.update_oauth_token(oauth, token)
 
     print('==== get twitter user timeline')
     twitter_user_timeline(user.id)
@@ -349,12 +356,14 @@ def debug():
                    fb_result, '=======')
 
 
-@app.route('/authorize')
+@app.route('/user/<int:user_id>/authorized')
 @login_required
-def authorized():
+def authorized(user_id):
+    user = load_user(user_id)
+
     result = {
-        'twitter_auth': twitter.authorized,
-        'facebook_auth': facebook.authorized
+        'twitter_auth': actions.is_authorized(twitter_blueprint.name, user),
+        'facebook_auth': actions.is_authorized(facebook_blueprint.name, user)
     }
     return jsonify(result)
 
