@@ -429,7 +429,8 @@ def facebook_posts():
             db.session.add(fb)
             db.session.commit()
 
-    return redirect(url_for('index'))
+    return redirect('/static/dist/index.html#/index?name={}&id={}'.format(
+        user.username, user.id))
 
 
 @app.route('/facebook/<int:user_id>/summary')
