@@ -172,6 +172,117 @@ def facebook_summary(user_id):
     return jsonify(result)
 
 
+##############################################
+#             Twitter API
+##############################################
+
+@oauth_authorized.connect_via(twitter_blueprint)
+def twitter_auth(twitter_blueprint, token):
+    """ Twitter 授权 """
+    print('===== twitter authorize')
+
+    if not token:
+        return False
+
+    user = current_user
+
+    resp = twitter.get("account/settings.json")
+    print(resp.ok)
+    if not resp.ok:
+        if resp.json()['errors'][0]['message'] == "Invalid or expired token.":
+            return redirect(url_for("twitter.login"))
+        return jsonify(resp.json())
+
+    screen_name = resp.json()['screen_name']
+    oauth, created = get_oauth_or_create(screen_name, user)
+
+    print('==== get twitter user timeline')
+    twitter_user_timeline(user.id)
+    print('==== get twitter user mention timeline')
+    twitter_mentions_timeline(user.id)
+    return redirect(url_for('index'))
+
+
+@app.route('/twitter/<int:user_id>/user_timeline')
+@login_required
+def twitter_user_timeline(user_id):
+    """ 将用户 tweet 存入数据库
+    API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
+    """
+    user = db.session.query(models.User).get(user_id)
+
+    screen_name = get_twitter_screen_name(user)
+
+    # 获取数据库中最后 tweet
+    last_tweet = get_user_last_tweet_or_mention(user, models.Tweet)
+
+    # 获取 API 路径
+    path = get_twitter_path(last_tweet, screen_name, 'tweet')
+
+    # 访问 twitter API
+    resp = twitter.get(path)
+    if not resp.ok:
+        return jsonify(resp.json())
+
+    timeline = json.dumps(resp.json(), indent=2, ensure_ascii=False)
+
+    # 存入数据库
+    save_twitter_data(resp, user, models.Tweet)
+
+    # FIXME: response result
+    return jsonify({'tweets': timeline})
+
+
+@app.route('/twitter/<int:user_id>/mentions_timeline')
+@login_required
+def twitter_mentions_timeline(user_id):
+    """ 将用户 mentions 存入数据库
+    API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-mentions_timeline
+    """
+    user = db.session.query(models.User).get(user_id)
+
+    screen_name = get_twitter_screen_name(user)
+
+    # 获取数据库中最后 mention
+    last_mention = get_user_last_tweet_or_mention(user, models.TweetMention)
+
+    # 获取路径
+    path = get_twitter_path(last_mention, screen_name, 'mention')
+
+    # 更新最后 mention 之后的文章
+    resp = twitter.get(path)
+    if not resp.ok:
+        return jsonify(resp.json())
+
+    # 存入数据库
+    save_twitter_data(resp, user, models.TweetMention)
+
+    return jsonify(resp.json())
+
+
+@app.route('/twitter/<int:user_id>/summary')
+@login_required
+def twitter_summary(user_id):
+    """ Twitter 统计数据 """
+    user = models.User.query.get(user_id)
+
+    dt = pendulum.parse(request.args.get('datetime'), strict=False)
+    period = request.args.get('period', 'day')
+
+    start_date = dt.start_of(period)
+    end_date = dt.end_of(period)
+
+    tweet_count = count_filter_by_date(models.Tweet, user, start_date, end_date)
+    mention_count = count_filter_by_date(models.TweetMention, user,
+                                         start_date, end_date)
+
+    result = {
+        'tweets': tweet_count,
+        'mentions': mention_count
+    }
+    return jsonify(result)
+
+
 @app.route('/debug')
 def debug():
     tweets = db.session.query(models.Tweet).all()
@@ -262,33 +373,6 @@ def authorize():
                            twitter_auth=twitter_auth, fb_auth=fb_auth)
 
 
-@oauth_authorized.connect_via(twitter_blueprint)
-def twitter_auth(twitter_blueprint, token):
-    """Searches the database for entries, then displays them."""
-    print('===== twitter authorize')
-
-    if not token:
-        return False
-
-    user = current_user
-
-    resp = twitter.get("account/settings.json")
-    print(resp.ok)
-    if not resp.ok:
-        if resp.json()['errors'][0]['message'] == "Invalid or expired token.":
-            return redirect(url_for("twitter.login"))
-        return jsonify(resp.json())
-
-    screen_name = resp.json()['screen_name']
-    oauth, created = get_oauth_or_create(screen_name, user)
-
-    print('==== get twitter user timeline')
-    twitter_user_timeline(user.id)
-    print('==== get twitter user mention timeline')
-    twitter_mentions_timeline(user.id)
-    return redirect(url_for('index'))
-
-
 def get_user_last_tweet_or_mention(user, csl):
     """获取数据库中最后的 tweet 或 mention
     args:
@@ -361,65 +445,6 @@ def get_twitter_screen_name(user):
     return screen_name
 
 
-@app.route('/twitter/<int:user_id>/user_timeline')
-@login_required
-def twitter_user_timeline(user_id):
-    """
-    API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
-    将用户 tweet 存入数据库
-    """
-    user = db.session.query(models.User).get(user_id)
-
-    screen_name = get_twitter_screen_name(user)
-
-    # 获取数据库中最后 tweet
-    last_tweet = get_user_last_tweet_or_mention(user, models.Tweet)
-
-    # 获取 API 路径
-    path = get_twitter_path(last_tweet, screen_name, 'tweet')
-
-    # 访问 twitter API
-    resp = twitter.get(path)
-    if not resp.ok:
-        return jsonify(resp.json())
-
-    timeline = json.dumps(resp.json(), indent=2, ensure_ascii=False)
-
-    # 存入数据库
-    save_twitter_data(resp, user, models.Tweet)
-
-    # FIXME: response result
-    return jsonify({'tweets': timeline})
-
-
-@app.route('/twitter/<int:user_id>/mentions_timeline')
-@login_required
-def twitter_mentions_timeline(user_id):
-    """
-    API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-mentions_timeline
-    将用户 mentions 存入数据库
-    """
-    user = db.session.query(models.User).get(user_id)
-
-    screen_name = get_twitter_screen_name(user)
-
-    # 获取数据库中最后 mention
-    last_mention = get_user_last_tweet_or_mention(user, models.TweetMention)
-
-    # 获取路径
-    path = get_twitter_path(last_mention, screen_name, 'mention')
-
-    # 更新最后 mention 之后的文章
-    resp = twitter.get(path)
-    if not resp.ok:
-        return jsonify(resp.json())
-
-    # 存入数据库
-    save_twitter_data(resp, user, models.TweetMention)
-
-    return jsonify(resp.json())
-
-
 def count_filter_by_date(csl, user, start_date, end_date):
     """计算用户在时间范围内 cls 的数量
 
@@ -435,28 +460,6 @@ def count_filter_by_date(csl, user, start_date, end_date):
         csl.created_at >= start_date,
         csl.created_at < end_date
     ).count()
-
-
-@app.route('/twitter/<int:user_id>/summary')
-@login_required
-def twitter_summary(user_id):
-    user = models.User.query.get(user_id)
-
-    dt = pendulum.parse(request.args.get('datetime'), strict=False)
-    period = request.args.get('period', 'day')
-
-    start_date = dt.start_of(period)
-    end_date = dt.end_of(period)
-
-    tweet_count = count_filter_by_date(models.Tweet, user, start_date, end_date)
-    mention_count = count_filter_by_date(models.TweetMention, user,
-                                         start_date, end_date)
-
-    result = {
-        'tweets': tweet_count,
-        'mentions': mention_count
-    }
-    return jsonify(result)
 
 
 @app.route('/add', methods=['POST'])
