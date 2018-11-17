@@ -85,15 +85,6 @@ def debug():
                    fb_result, '=======')
 
 
-@app.route('/')
-@login_required
-def index():
-    """Searches the database for entries, then displays them."""
-    user = current_user
-    return redirect('/static/dist/index.html#/index?name={}&id={}'.format(
-        user.username, user.id))
-
-
 def get_oauth_or_create(user_id, user):
     """获取或创建oauth
     args:
