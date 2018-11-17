@@ -94,3 +94,32 @@ def count_filter_by_date(csl, user, start_date, end_date):
         csl.created_at >= start_date,
         csl.created_at < end_date
     ).count()
+
+
+def get_oauth_or_create(user_id, user):
+    """获取或创建oauth
+    args:
+        user_id: 第三方授权的 user_id
+        user: 访问用户 object
+    return:
+        oauth: OAuth
+        created: 是否创建
+    """
+    query = models.OAuth.query.filter_by(
+        provider=twitter_blueprint.name,
+        provider_user_id=user_id
+    )
+
+    try:
+        oauth = query.one()
+        created = False
+    except NoResultFound:
+        oauth = models.OAuth(
+            provider=twitter_blueprint.name,
+            provider_user_id=user_id,
+            user=user
+        )
+        db.session.add(oauth)
+        db.session.commit()
+        created = True
+    return oauth, created
