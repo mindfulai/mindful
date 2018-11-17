@@ -197,7 +197,7 @@ def twitter_auth(twitter_blueprint, token):
         return jsonify(resp.json())
 
     screen_name = resp.json()['screen_name']
-    oauth, created = get_oauth_or_create(screen_name, user)
+    oauth, created = get_oauth_or_create(twitter_blueprint, screen_name, user)
 
     print('==== get twitter user timeline')
     twitter_user_timeline(user.id)
