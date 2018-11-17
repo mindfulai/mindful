@@ -50,7 +50,7 @@ def facebook_auth(facebook_blueprint, token):
         return False
 
     resp = facebook.get('me')
-    print(resp.ok)
+
     if not resp.ok:
         return jsonify(resp.json())
 
@@ -91,8 +91,6 @@ def facebook_auth(facebook_blueprint, token):
 
     # 更新获取 posts
     print('=== get user posts')
-    print(facebook)
-    print(facebook.token)
 
     return redirect(url_for('facebook_posts'))
 
@@ -184,7 +182,6 @@ def facebook_summary(user_id):
 @oauth_authorized.connect_via(twitter_blueprint)
 def twitter_auth(twitter_blueprint, token):
     """ Twitter 授权 """
-    print('===== twitter authorize')
 
     if not token:
         return False
@@ -192,7 +189,6 @@ def twitter_auth(twitter_blueprint, token):
     user = current_user
 
     resp = twitter.get("account/settings.json")
-    print(resp.ok)
     if not resp.ok:
         if resp.json()['errors'][0]['message'] == "Invalid or expired token.":
             return redirect(url_for("twitter.login"))
@@ -205,8 +201,6 @@ def twitter_auth(twitter_blueprint, token):
     twitter_user_timeline(user.id)
     print('==== get twitter user mention timeline')
     twitter_mentions_timeline(user.id)
-    print('==== twitter authorized token')
-    print(twitter.token)
     return redirect('/static/dist/index.html#/index?name={}&id={}'.format(
         user.username, user.id))
 
@@ -362,14 +356,6 @@ def authorized():
         'twitter_auth': twitter.authorized,
         'facebook_auth': facebook.authorized
     }
-    print('======facebook token')
-    print(facebook.token)
-    print('======twitter token')
-    print(twitter.token)
-
-    print('===== session')
-    print(session.__getitem__)
-
     return jsonify(result)
 
 
