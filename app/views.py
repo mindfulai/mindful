@@ -91,6 +91,8 @@ def facebook_auth(facebook_blueprint, token):
 
     # 更新获取 posts
     print('=== get user posts')
+    print(facebook)
+    print(facebook.token)
 
     return redirect(url_for('facebook_posts'))
 
@@ -203,6 +205,8 @@ def twitter_auth(twitter_blueprint, token):
     twitter_user_timeline(user.id)
     print('==== get twitter user mention timeline')
     twitter_mentions_timeline(user.id)
+    print('==== twitter authorized token')
+    print(twitter.token)
     return redirect('/static/dist/index.html#/index?name={}&id={}'.format(
         user.username, user.id))
 
@@ -353,13 +357,20 @@ def debug():
 
 @app.route('/authorize')
 @login_required
-def authorize():
-    twitter_auth = twitter.authorized
-    print('twitter_auth: {}'.format(twitter_auth))
-    fb_auth = facebook.authorized
-    print('fb_auth: {}'.format(fb_auth))
-    return render_template('authorize.html',
-                           twitter_auth=twitter_auth, fb_auth=fb_auth)
+def authorized():
+    result = {
+        'twitter_auth': twitter.authorized,
+        'facebook_auth': facebook.authorized
+    }
+    print('======facebook token')
+    print(facebook.token)
+    print('======twitter token')
+    print(twitter.token)
+
+    print('===== session')
+    print(session.__getitem__)
+
+    return jsonify(result)
 
 
 @app.route('/add', methods=['POST'])
