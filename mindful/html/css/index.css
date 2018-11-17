@@ -1,0 +1,133 @@
+.tabs {
+  width: 100%;
+  background: #424C55;
+  height: 0.9rem;
+  display: flex;
+  box-sizing: border-box;
+  position: fixed;
+  top: 1.08rem;
+}
+.tabs .tab {
+  color: #fff;
+  font-size: 0.36rem;
+  flex: 1;
+  text-align: center;
+  height: 0.9rem;
+  line-height: 0.9rem;
+  box-sizing: border-box;
+}
+.tabs .active {
+  border-bottom: 0.1rem solid #FAFCA8;
+}
+.index_content {
+  top: 2.08rem;
+  padding: 0.1rem 0.3rem;
+}
+.content .date {
+  height: 1rem;
+  line-height: 1rem;
+  text-align: center;
+  font-size: 0.4rem;
+  margin-bottom: 0.1rem;
+}
+.content .date .arrow {
+  height: 1rem;
+  width: 1rem;
+  line-height: 1rem;
+  text-align: center;
+}
+.content .date .arrow i {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: #92979D;
+}
+.content .content_box {
+  border-radius: 0.3rem;
+  margin-bottom: 0.4rem;
+  background: #fff;
+  box-shadow: #c9cbd8 0 0.1rem 0.1rem;
+  -moz-box-shadow: #c9cbd8 0 0.1rem 0.1rem;
+  -o-box-shadow: #c9cbd8 0 0.1rem 0.1rem;
+  -webkit-box-shadow: #c9cbd8 0 0.1rem 0.1rem;
+}
+.content .content_box h4 {
+  font-size: 0.36rem;
+  background: #727983;
+  padding: 0.2rem;
+  color: #fff;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  margin: 0 0;
+  border-radius: 0.3rem 0.3rem 0 0;
+}
+.content .content_box .content_box_inner {
+  background: #fff;
+  padding: 0.2rem;
+  border-radius: 0 0 0.3rem 0.3rem;
+}
+.content .content_box .content_box_inner .mood {
+  height: 0.8rem;
+  text-align: left;
+}
+.content .content_box .content_box_inner .mood .mood_number {
+  height: 0.8rem;
+  width: 0.8rem;
+  border-radius: 0.4rem;
+  background: #808080;
+  text-align: center;
+  line-height: 0.8rem;
+  color: #333;
+  font-size: 0.34rem;
+  font-weight: 700;
+}
+.content .content_box .content_box_inner .mood .mood_active {
+  background: #00B50D;
+  color: #fff;
+}
+.content .content_box .content_box_inner .edit_mood {
+  display: block;
+  text-align: right;
+  color: #238BB0;
+  font-size: 0.32rem;
+  margin-bottom: 0.1rem;
+}
+.content .content_box .content_box_inner .line .left_table {
+  width: 80%;
+}
+.content .content_box .content_box_inner .line .right_icon {
+  width: 20%;
+  height: 100%;
+  text-align: center;
+}
+.content .content_box .content_box_inner .line .right_icon i {
+  font-size: 1rem;
+  color: #55acee;
+}
+.content .content_box .content_box_inner .line .right_icon .FB {
+  color: #4E7CA0;
+}
+.content .content_box .content_box_inner .line .right_icon .events {
+  color: #E1546C;
+}
+.content .content_box .content_box_inner .table {
+  width: 100%;
+  margin: 0.1rem 0 0.2rem;
+  font-size: 0.34rem;
+}
+.content .content_box .content_box_inner .table .percent-bg {
+  background: #dbdce5;
+  height: 0.1rem;
+  padding: 0;
+  border-radius: 0.02rem;
+  overflow: hidden;
+  margin-bottom: 1px;
+}
+.content .content_box .content_box_inner .table .percent-meter {
+  background: #50d29d;
+  height: 0.1rem;
+  min-width: 4px;
+}
+.content .content_box .content_box_inner .connector {
+  font-size: 0.32rem;
+  margin-bottom: 0.1rem;
+}
