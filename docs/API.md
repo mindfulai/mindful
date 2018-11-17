@@ -1,3 +1,15 @@
+## 登录
+URL: /user/<int:user_id>/authorized
+Method: GET
+
+Response:
+```json
+{
+    "tiwtter_auth": "Boolean",
+    "facebook_auth": "BOolean"
+}
+```
+
 ## Twitter 用户数据统计
 
 URL: /twitter/<user_id>/summary
