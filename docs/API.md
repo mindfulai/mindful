@@ -62,3 +62,21 @@ Response:
     "posts": "Integer",
 }
 ```
+
+## 获取用户地理位置接口
+URL: /user/<user_id>/location
+Method: POST
+Data:
+```json
+{
+    "latitude": "Float",
+    "longitude": "Float"
+}
+```
+
+Response:
+```json
+{
+    "msg": "success"
+}
+```
