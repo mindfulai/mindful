@@ -347,6 +347,30 @@ def save_location(user_id):
     return jsonify({'msg': 'success'})
 
 
+@app.route('/user/<int:user_id>/weather', methods=['POST'])
+def darksky(user_id):
+    """ 保存用户所在地理位置的天气 """
+    user = load_user(user_id)
+    user = models.User.query.get(user_id)
+    data = request.json
+
+    latitude = data['latitude']
+    longitude = data['longitude']
+
+    api_url = 'https://api.darksky.net/forecast'
+    time = int(pendulum.now().timestamp())
+    url = '{}/{}/{},{},{}?units=si'.format(
+        api_url, darksky_secret, latitude, longitude, time)
+
+    resp = requests.get(url)
+    result = json.loads(resp.text)
+
+    weather = models.Weather(user=user, data=result, api_url=url)
+    db.session.add(weather)
+    db.session.commit()
+    return jsonify(result)
+
+
 @app.route('/debug')
 def debug():
     tweets = db.session.query(models.Tweet).all()
