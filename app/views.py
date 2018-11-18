@@ -318,6 +318,35 @@ def authorized(user_id):
     return jsonify(result)
 
 
+##############################################
+#                 Darksky
+##############################################
+
+darksky_secret = 'bec7b6450421ba2b12b42fec0d98ad72'
+
+
+@app.route('/user/<int:user_id>/location', methods=['POST'])
+def save_location(user_id):
+    """ 保存用户地理位置 """
+    user = load_user(user_id)
+    user = models.User.query.get(user_id)
+    data = request.json
+
+    latitude = data['latitude']
+    longitude = data['longitude']
+
+    location = models.Location(
+        user=user,
+        latitude=latitude,
+        longitude=longitude
+    )
+
+    db.session.add(location)
+    db.session.commit()
+    print({'msg': 'success'})
+    return jsonify({'msg': 'success'})
+
+
 @app.route('/debug')
 def debug():
     tweets = db.session.query(models.Tweet).all()
