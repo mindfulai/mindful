@@ -2,6 +2,9 @@ from app import db
 
 from flask_login import UserMixin
 from flask_dance.consumer.backend.sqla import OAuthConsumerMixin
+from sqlalchemy.sql import func
+from sqlalchemy.ext.mutable import MutableDict
+from sqlalchemy_utils import JSONType
 
 
 class Flaskr(db.Model):
@@ -67,3 +70,25 @@ class FacebookPost(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     api_url = db.Column(db.String)
     detail = db.Column(db.String)
+
+
+class Location(db.Model):
+    __tablename__ = "locations"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.relationship(User)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
+    created_at = db.Column(db.DateTime, server_default=func.now())
+
+
+class Weather(db.Model):
+    __tablename__ = "weathers"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.relationship(User)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    created_at = db.Column(db.DateTime, server_default=func.now())
+    data = db.Column(MutableDict.as_mutable(JSONType))
+    api_url = db.Column(db.String)
