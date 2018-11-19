@@ -325,49 +325,21 @@ def authorized(user_id):
 darksky_secret = 'bec7b6450421ba2b12b42fec0d98ad72'
 
 
-@app.route('/user/<int:user_id>/location', methods=['POST'])
-def save_location(user_id):
-    """ 保存用户地理位置 """
+@app.route('/user/<int:user_id>/location_and_weather/create', methods=['POST'])
+def location_and_weather_create(user_id):
+    """ 保存用户所在的地理位置与天气 """
     user = load_user(user_id)
-    user = models.User.query.get(user_id)
     data = request.json
 
-    latitude = data['latitude']
-    longitude = data['longitude']
+    latitude = data.get('latitude')
+    longitude = data.get('longitude')
+    if not latitude or not longitude:
+        return jsonify({'msg': 'Error latitude or longitude'})
 
-    location = models.Location(
-        user=user,
-        latitude=latitude,
-        longitude=longitude
-    )
-
-    db.session.add(location)
-    db.session.commit()
-    print({'msg': 'success'})
-    return jsonify({'msg': 'success'})
-
-
-@app.route('/user/<int:user_id>/weather', methods=['POST'])
-def darksky(user_id):
-    """ 保存用户所在地理位置的天气 """
-    user = load_user(user_id)
-    user = models.User.query.get(user_id)
-    data = request.json
-
-    latitude = data['latitude']
-    longitude = data['longitude']
-
-    api_url = 'https://api.darksky.net/forecast'
-    time = int(pendulum.now().timestamp())
-    url = '{}/{}/{},{},{}?units=si'.format(
-        api_url, darksky_secret, latitude, longitude, time)
-
-    resp = requests.get(url)
-    result = json.loads(resp.text)
-
-    weather = models.Weather(user=user, data=result, api_url=url)
-    db.session.add(weather)
-    db.session.commit()
+    # 保存地理位置
+    actions.save_location(user, latitude, longitude)
+    # 保存天气
+    result = actions.save_weather(user, latitude, longitude)
     return jsonify(result)
 
 

@@ -64,7 +64,7 @@ Response:
 ```
 
 ## 获取用户地理位置接口
-URL: /user/<user_id>/location
+URL: /user/<user_id>/location_and_weather/create
 Method: POST
 Data:
 ```json

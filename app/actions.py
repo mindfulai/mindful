@@ -1,5 +1,6 @@
 import json
 import pendulum
+import requests
 
 from sqlalchemy.orm.exc import NoResultFound
 from flask import abort, flash
@@ -142,3 +143,33 @@ def is_authorized(provide, user):
         return True
     except NoResultFound:
         return False
+
+
+def save_location(user, latitude, longitude):
+    """ 保存用户地理位置 """
+    location = models.Location(
+        user=user,
+        latitude=latitude,
+        longitude=longitude
+    )
+
+    db.session.add(location)
+    db.session.commit()
+
+
+def save_weather(user, latitude, longitude):
+    """ 保存用户所在地理位置的天气 """
+    darksky_secret = 'bec7b6450421ba2b12b42fec0d98ad72'
+
+    api_url = 'https://api.darksky.net/forecast'
+    time = int(pendulum.now().timestamp())
+    url = '{}/{}/{},{},{}?units=si'.format(
+        api_url, darksky_secret, latitude, longitude, time)
+
+    resp = requests.get(url)
+    result = json.loads(resp.text)
+
+    weather = models.Weather(user=user, data=result, api_url=url)
+    db.session.add(weather)
+    db.session.commit()
+    return result
