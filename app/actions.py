@@ -162,9 +162,8 @@ def save_and_get_weather(user, latitude, longitude):
     darksky_secret = 'bec7b6450421ba2b12b42fec0d98ad72'
 
     api_url = 'https://api.darksky.net/forecast'
-    time = pendulum.now().int_timestamp
     url = '{}/{}/{},{},{}?units=si'.format(
-        api_url, darksky_secret, latitude, longitude, time)
+        api_url, darksky_secret, latitude, longitude)
 
     resp = requests.get(url)
     result = json.loads(resp.text)
