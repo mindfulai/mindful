@@ -131,7 +131,8 @@ def facebook_posts():
     access_token = json.loads(resp.text)['access_token']
 
     # 使用 access_token 获取 posts
-    resp = facebook.get('me?fields=posts&access_token={}'.format(access_token))
+    resp = requests.get(
+        'https://graph.facebook.com/me?fields=posts&access_token={}'.format(access_token))
 
     if not resp.ok:
         return jsonify(resp.json())
