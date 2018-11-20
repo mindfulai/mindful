@@ -157,7 +157,7 @@ def save_location(user, latitude, longitude):
     db.session.commit()
 
 
-def save_weather(user, latitude, longitude):
+def save_and_get_weather(user, latitude, longitude):
     """ 保存用户所在地理位置的天气 """
     darksky_secret = 'bec7b6450421ba2b12b42fec0d98ad72'
 
@@ -172,4 +172,4 @@ def save_weather(user, latitude, longitude):
     weather = models.Weather(user=user, data=result, api_url=url)
     db.session.add(weather)
     db.session.commit()
-    return result
+    return result['daily']

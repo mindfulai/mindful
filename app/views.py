@@ -339,7 +339,7 @@ def location_and_weather_create(user_id):
     # 保存地理位置
     actions.save_location(user, latitude, longitude)
     # 保存天气
-    result = actions.save_weather(user, latitude, longitude)
+    result = actions.save_and_get_weather(user, latitude, longitude)
     return jsonify(result)
 
 
