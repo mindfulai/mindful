@@ -408,7 +408,7 @@ def mood_average_list(user_id):
             models.Mood.user == user,
             models.Mood.created_at >= start_date,
             models.Mood.created_at <= end_date
-    ).all()
+    ).group_by('datetime').all()
     result = []
     for mood in moods:
         info = {
