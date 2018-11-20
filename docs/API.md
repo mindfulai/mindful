@@ -124,7 +124,7 @@ Response:
 
 
 ## 创建心情接口
-URL: /user/user_id/mood/create
+URL: /user/<user_id>/mood/create
 Method: POST
 Data:
 
