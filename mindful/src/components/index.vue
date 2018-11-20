@@ -127,13 +127,13 @@
             <h4>Mood</h4>
 
             <div class="content_box_inner">
-              <div class="mood clearfix" v-if="dailyMood.length==0">
+              <div class="mood clearfix" v-if="dailyMoods.length==0">
                 <div class="mood_number"></div>
                 <div class="mood_content">
                   <p>No note</p>
                 </div>
               </div>
-              <div class="mood clearfix" v-for="(item,index) in dailyMood" :key="index">
+              <div class="mood clearfix" v-for="(item,index) in dailyMoods" :key="index">
                 <div class="mood_number" :class="'mood_'+item.score">{{item.score}}</div>
                 <div class="mood_content">
                   <h3>{{formatTime(new Date(item.datetime)).slice(0,-5)}}</h3>
@@ -354,11 +354,13 @@
               <!-- mood -->
               <div class="line">
                 <h3 class="chart_header">Mood</h3>
-                <!-- <p class="chart_totals"><b>{{tweets}}</b> tweets</p> -->
-                <div class="month_day">
-                  <div v-for="(item,index) in moods" :key="index" class="day_list ">
-                    <a class=" chart_number mood_number" :class="'mood-'+item.mood">{{item.mood==''?'no':''}}</a>
-                    
+                <div class="calendar_wrapper">
+                  <div class="week_day border-bottom">
+                    <!-- week mood数据判断展示对应week的mood -->
+                    <div class="weeklist" v-for="(k,i) in 7" :key="i" >
+
+                      <a class=" chart_number mood_number"  v-for="(item,index) in periodMoods" :key="index" :class="item.day==k?'mood-'+item.score:''" >{{item.day==k?item.score:''}}</a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -510,9 +512,9 @@
                   <div class="weeklist">SAT</div>
                   <div class="weeklist">SUN</div>
                 </div>
-                <div class="month_day" v-for="(signDay,index) in signDays" :key="index">
+                <div class="month_day" v-for="(signDay,i) in signDays" :key="i">
                   <div class="day_list"  v-for="(item,index) in signDay" :key="index" >
-                    <a class="mood_a" v-if="item == null ? '' : item.normalday" :class="item.moodday?'mood-4':''">{{item == null ? '' : item.normalday}}</a>
+                    <a class="mood_a" v-if="item == null ? '' : item.normalday" v-for="(moodItem,j) in periodMoods" :key="j" :class="item.moodday&&moodItem.day==item.normalday?'mood-'+moodItem.score:''">{{item == null ? '' : item.normalday}}</a>
                     <!-- <p class="event_p" v-if="item == null ? '' : item.normalday" :class="item.eventday?'events_active':''">{{item.event}}</p> -->
                   </div>
                 </div>
@@ -601,17 +603,10 @@ export default {
       mentions: 0, //twitter中metions
       posts: 0, //facebook中posts
       daily: {}, //weather 当天数据
-      dailyMood: [],
+      dailyMoods: [], //每天的 mood 时间轴
+      periodMoods: [], //每周或者每月的 mood 平均
+
       signDays: null,
-      moods: [
-        { mood: 5 },
-        { mood: 2 },
-        { mood: "" },
-        { mood: 4 },
-        { mood: "" },
-        { mood: 1 },
-        { mood: "" }
-      ],
       event: 1,
       events: [
         { events: 1 },
@@ -708,17 +703,10 @@ export default {
     changeTab(i) {
       this.activeTab = i;
       var date = this.formatTime(new Date());
-      //this.getTwitter(date, i);
-      //this.getFacebook(date, i);
+      this.getTwitter(date, i);
+      this.getFacebook(date, i);
       this.getWeather();
       this.getMood(date, i);
-      if (i == "month") {
-        var getToday = new Date();
-        var todayDate = getToday.getDate();
-        var todayMonth = getToday.getMonth() + 1;
-        var todayYear = getToday.getFullYear();
-        this.buildCal(todayYear, todayMonth, [1, 4, 7, 13], [2, 6, 9, 14]);
-      }
     },
     //获取 twitter
     getTwitter(date, i) {
@@ -785,17 +773,44 @@ export default {
     //获取 mood
     getMood(date, i) {
       if (i == "day") {
-        this.get_day_mood(date);
+        this.getDayMood(date);
+      } else {
+        this.getPeriodMood(date, i);
       }
     },
-    get_day_mood(date) {
+    //获取当天 mood 时间线
+    getDayMood(date) {
       this.$axios
         .get(this.api + "/user/" + this.id + "/mood/list", {
           params: { datetime: date }
         })
         .then(res => {
-          console.log(res);
-          this.dailyMood = res.data;
+          this.dailyMoods = res.data;
+        });
+    },
+    //获取 week month 平均mood 值数据展示
+    getPeriodMood(date, i) {
+      if (i == "month") {
+        var getToday = new Date();
+        var todayDate = getToday.getDate();
+        var todayMonth = getToday.getMonth() + 1;
+        var todayYear = getToday.getFullYear();
+      }
+      var type = i;
+      this.$axios
+        .get(this.api + "/user/" + this.id + "/mood/average/list", {
+          params: { datetime: date, period: i }
+        })
+        .then(res => {
+          this.periodMoods = res.data;
+          //月 数据处理显示
+          if (type == "month") {
+            var mood_day = [];
+            for (var i = 0; i < this.periodMoods.length; i++) {
+              mood_day[i] = this.periodMoods[i].day;
+            }
+            this.buildCal(todayYear, todayMonth, mood_day, []);
+          }
         });
     },
     //日期带时区格式处理
@@ -857,23 +872,21 @@ export default {
       var d, w;
       for (d = iDayOfFirst - 1; d < 7; d++) {
         if (moodDay.indexOf(iVarDate) > -1) {
-          //console.log(111);
           aMonth[0][d] = {
-            moodday: 1,
+            moodday: true,
             normalday: iVarDate
           };
         } else {
-          //console.log(22);
           aMonth[0][d] = {
             moodday: false,
             normalday: iVarDate
           };
         }
-        if (eventDay.indexOf(iVarDate) > -1) {
-          aMonth[0][d].eventday = true;
-        } else {
-          aMonth[0][d].eventday = false;
-        }
+        // if (eventDay.indexOf(iVarDate) > -1) {
+        //   aMonth[0][d].eventday = true;
+        // } else {
+        //   aMonth[0][d].eventday = false;
+        // }
         iVarDate++;
       }
       //处理每月第一天出现位置
@@ -891,11 +904,11 @@ export default {
                 normalday: iVarDate
               };
             }
-            if (eventDay.indexOf(iVarDate) > -1) {
-              aMonth[w][d].eventday = true;
-            } else {
-              aMonth[w][d].eventday = false;
-            }
+            // if (eventDay.indexOf(iVarDate) > -1) {
+            //   aMonth[w][d].eventday = true;
+            // } else {
+            //   aMonth[w][d].eventday = false;
+            // }
             if (iVarDate == curMonthDays) {
               this.signDays = aMonth;
               return aMonth;
@@ -947,7 +960,7 @@ export default {
   text-align: center;
   line-height: 0.8rem;
 }
-.month_day {
+.border-bottom {
   border-bottom: 1px solid #e1e2e9;
 }
 .line {
