@@ -1,6 +1,7 @@
 import json
 import pendulum
 import requests
+import decimal
 
 from flask_dance.contrib.twitter import make_twitter_blueprint, twitter
 from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
