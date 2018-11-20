@@ -412,7 +412,8 @@ def mood_average_list(user_id):
     for mood in moods:
         info = {
             'datetime': mood.datetime,
-            'score': round(mood.average),
+            'score': int(decimal.Decimal(mood.average).quantize(
+                decimal.Decimal('1'), rounding=decimal.ROUND_HALF_UP)),
         }
         datetime = pendulum.parse(mood.datetime)
         if period == 'week':
