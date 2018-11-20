@@ -128,7 +128,7 @@
 
             <div class="content_box_inner">
               <div class="mood">
-                <div class="mood_number mood_active">5</div>
+                <div class="mood_number"></div>
               </div>
               <router-link class="edit_mood" to="/edit_mood">
                 <i class="fa fa-pencil"></i>
@@ -353,14 +353,14 @@
                 </div>
               </div>
               <!-- events -->
-              <div class="line bottom_border">
+              <!-- <div class="line bottom_border">
                 <h3 class="chart_header"><i class="fa fa-file-text events_icon"></i>Events</h3>
                 <p class="chart_totals"><b>{{event}}</b> events</p>
                 <div class="month_day">
                   <div class="day_list chart_number"  v-for="(item,index) in events" :key="index" :class="item.events?'events_active':''" >{{item == null ? '' : item.events}}
                   </div>
                 </div>
-              </div>
+              </div> -->
               <!-- weather -->
               <div class="line">
                 <h3 class="chart_header"><i class="fa fa-sun-o weather_icon"></i>Weather</h3>
