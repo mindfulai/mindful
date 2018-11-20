@@ -369,8 +369,7 @@ def mood_create(user_id):
 @app.route('/user/<int:user_id>/mood/list')
 def mood_list(user_id):
     user = load_user(user_id)
-    a = request.args.get('datetime')
-    print(a)
+
     dt = pendulum.parse(request.args.get('datetime'), strict=False)
     start_date = dt.start_of('day')
     end_date = dt.end_of('day')
@@ -379,8 +378,8 @@ def mood_list(user_id):
         models.Mood.user == user,
         models.Mood.created_at >= start_date,
         models.Mood.created_at <= end_date
-    ).all()
-    print(moods)
+    ).order_by(models.Mood.created_at.desc()).all()
+
     result = []
     for mood in moods:
         result.append({
