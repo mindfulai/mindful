@@ -345,7 +345,6 @@ def location_and_weather_create(user_id):
     return jsonify(result)
 
 
-
 ##############################################
 #                 Mood
 ##############################################
@@ -409,6 +408,7 @@ def mood_average_list(user_id):
             models.Mood.created_at >= start_date,
             models.Mood.created_at <= end_date
     ).group_by('datetime').all()
+    print(moods)
     result = []
     for mood in moods:
         info = {
@@ -416,6 +416,7 @@ def mood_average_list(user_id):
             'score': int(decimal.Decimal(mood.average).quantize(
                 decimal.Decimal('1'), rounding=decimal.ROUND_HALF_UP)),
         }
+        print(mood.datetime)
         datetime = pendulum.parse(mood.datetime)
         if period == 'week':
             info['day'] = datetime.day_of_week
