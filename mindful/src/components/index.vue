@@ -144,7 +144,7 @@
             </div>
           </div>
           <!--Events-->
-          <div class="content_box">
+          <!-- <div class="content_box">
             <h4>Events</h4>
 
             <div class="content_box_inner">
@@ -188,7 +188,7 @@
               <div class="chart">
               </div>
             </div>
-          </div>
+          </div> -->
           <!--Location-->
           <div class="content_box">
             <h4>Location</h4>
@@ -213,16 +213,16 @@
             <div class="content_box_inner">
               <div class="line clearfix">
                 <div class="left left_table">
-                  <div class="temp"> <span class="min_temp">11</span> / <span class="max_temp">21</span> ℃</div>
+                  <div class="temp"> <span class="min_temp">{{daily.temperatureMin}}</span> / <span class="max_temp">{{daily.temperatureMax}}</span> ℃</div>
                   <ul class="weather_tab clearfix">
-                    <li>Precipitation <span class="weather_num">0.0</span></li>
-                    <li>Air pressure <span  class="weather_num">1,016</span></li>
-                    <li>Cloud cover <span  class="weather_num">2%</span></li>
-                    <li>Humidity <span class="weather_num">35%</span></li>
-                    <li>Wind speed <span  class="weather_num">0.9</span></li>
-                    <li>Day length <span class="weather_num">10:23</span></li>
+                    <li>Precipitation <span class="weather_num">{{daily.precipIntensity}}</span></li>
+                    <li>Air pressure <span  class="weather_num">{{daily.pressure}}</span></li>
+                    <li>Cloud cover <span  class="weather_num">{{daily.cloudCover}}</span></li>
+                    <li>Humidity <span class="weather_num">{{daily.humidity}}</span></li>
+                    <li>Wind speed <span  class="weather_num">{{daily.windSpeed}}</span></li>
+                    <li>Day length <span class="weather_num">{{daily.dailyLength}}</span></li>
                   </ul>
-                  <p class="weather_summary">Clear throughout the day.</p>
+                  <p class="weather_summary">{{daily.summary}}</p>
                 </div>
                 <div class="right right_icon">
                   <i class="fa fa-sun-o weather"></i>
@@ -503,7 +503,7 @@
                 <div class="month_day" v-for="(signDay,index) in signDays" :key="index">
                   <div class="day_list"  v-for="(item,index) in signDay" :key="index" >
                     <a class="mood_a" v-if="item == null ? '' : item.normalday" :class="item.moodday?'mood-4':''">{{item == null ? '' : item.normalday}}</a>
-                    <p class="event_p" v-if="item == null ? '' : item.normalday" :class="item.eventday?'events_active':''">{{item.event}}</p>
+                    <!-- <p class="event_p" v-if="item == null ? '' : item.normalday" :class="item.eventday?'events_active':''">{{item.event}}</p> -->
                   </div>
                 </div>
               </div>
@@ -587,9 +587,11 @@ export default {
       name: "",
       id: "",
       activeTab: "day",
-      tweets: 0,
-      mentions: 0,
-      posts: 0,
+      tweets: 0, //twitter中tweets
+      mentions: 0, //twitter中metions
+      posts: 0, //facebook中posts
+      daily: {}, //weather 当天数据
+
       signDays: null,
       moods: [
         { mood: 5 },
@@ -697,6 +699,9 @@ export default {
       var date = this.formatTime(new Date());
       this.getTwitter(date, i);
       this.getFacebook(date, i);
+      if (i == "day") {
+        this.getWeather();
+      }
       if (i == "month") {
         var getToday = new Date();
         var todayDate = getToday.getDate();
@@ -705,6 +710,7 @@ export default {
         this.buildCal(todayYear, todayMonth, [1, 4, 7, 13], [2, 6, 9, 14]);
       }
     },
+    //获取 twitter
     getTwitter(date, i) {
       this.$axios
         .get(this.api + "/twitter/" + this.id + "/summary", {
@@ -717,6 +723,7 @@ export default {
           }
         });
     },
+    //获取 facebook
     getFacebook(date, i) {
       this.$axios
         .get(this.api + "/facebook/" + this.id + "/summary", {
@@ -727,6 +734,43 @@ export default {
             this.posts = res.data.posts;
           }
         });
+    },
+    //获取 天气
+    getWeather() {
+      var that = this;
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function(position) {
+            var longitude = position.coords.longitude;
+            var latitude = position.coords.latitude;
+            that.$axios
+              .post(
+                that.api + "/user/" + that.id + "/location_and_weather/create",
+                {
+                  longitude: longitude,
+                  latitude: latitude
+                }
+              )
+              .then(res => {
+                if (res.status == 200) {
+                  that.daily = res.data.data[0];
+                  that.daily.dailyLength = that.dailyLength(
+                    that.daily.sunsetTime,
+                    that.daily.sunriseTime
+                  );
+                }
+              });
+          },
+          function(e) {
+            that.$toast({
+              message: "Error : " + e.message,
+              duration: 5000
+            });
+          }
+        );
+      } else {
+        that.$toast("Sorry Browser not support!");
+      }
     },
     //日期带时区格式处理
     formatTime(date) {
@@ -750,6 +794,16 @@ export default {
     formatNumber(n) {
       n = n.toString();
       return n[1] ? n : "0" + n;
+    },
+    //day length = 日落时间戳-日出时间戳
+    dailyLength(sunsetTime, sunriseTime) {
+      return (
+        parseInt((sunsetTime - sunriseTime) / 3600) +
+        ":" +
+        parseInt(((sunsetTime - sunriseTime) % 3600) / 60) +
+        ":" +
+        ((sunsetTime - sunriseTime) % 3600) % 60
+      );
     },
     //月份调用
     buildCal(iYear, iMonth, moodDay, eventDay) {

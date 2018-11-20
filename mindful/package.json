@@ -16,6 +16,7 @@
     "font-awesome": "^4.7.0",
     "hellojs": "^1.17.1",
     "jquery": "^3.3.1",
+    "mint-ui": "^2.2.13",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },
