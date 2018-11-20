@@ -77,8 +77,8 @@ export default {
     },
     //保存数据
     save() {
-      if (!(this.score || this.note)) {
-        this.$toast("Mood or Note cannot all be empty");
+      if (!this.score) {
+        this.$toast("Mood cannot be empty");
         return;
       }
       this.$axios

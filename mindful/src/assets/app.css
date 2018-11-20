@@ -308,8 +308,9 @@ header .search i {
   border-radius: 0 0 0.3rem 0.3rem;
 }
 .content .content_box .content_box_inner .mood {
-  height: 0.8rem;
+  height: auto;
   text-align: left;
+  margin-bottom:.15rem;
 }
 .content .content_box .content_box_inner .mood .mood_number {
   height: 0.8rem;
@@ -321,8 +322,25 @@ header .search i {
   color: #333;
   font-size: 0.3rem;
   font-weight: 700;
+  float:left;
 }
-.content .content_box .content_box_inner .mood .mood_active {
+.content .content_box .content_box_inner .mood .mood_1 {
+  background: #df3e3e;
+  color: #fff;
+}
+.content .content_box .content_box_inner .mood .mood_2 {
+  background: #df953e;
+  color: #fff;
+}
+.content .content_box .content_box_inner .mood .mood_3 {
+  background: #b1d020;
+  color: #fff;
+}
+.content .content_box .content_box_inner .mood .mood_4 {
+  background: #68db36;
+  color: #fff;
+}
+.content .content_box .content_box_inner .mood .mood_5 {
   background: #00B50D;
   color: #fff;
 }

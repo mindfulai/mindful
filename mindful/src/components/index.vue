@@ -127,8 +127,18 @@
             <h4>Mood</h4>
 
             <div class="content_box_inner">
-              <div class="mood">
+              <div class="mood clearfix" v-if="dailyMood.length==0">
                 <div class="mood_number"></div>
+                <div class="mood_content">
+                  <p>No note</p>
+                </div>
+              </div>
+              <div class="mood clearfix" v-for="(item,index) in dailyMood" :key="index">
+                <div class="mood_number" :class="'mood_'+item.score">{{item.score}}</div>
+                <div class="mood_content">
+                  <h3>{{formatTime(new Date(item.datetime)).slice(0,-5)}}</h3>
+                  <p>{{item.detail?item.detail:'No note'}}</p>
+                </div>
               </div>
               <router-link class="edit_mood" to="/edit_mood">
                 <i class="fa fa-pencil"></i>
@@ -347,7 +357,7 @@
                 <!-- <p class="chart_totals"><b>{{tweets}}</b> tweets</p> -->
                 <div class="month_day">
                   <div v-for="(item,index) in moods" :key="index" class="day_list ">
-                    <a class=" chart_number mood_number" :class="'mood-'+item.mood">{{item.mood==''?'no rate':''}}</a>
+                    <a class=" chart_number mood_number" :class="'mood-'+item.mood">{{item.mood==''?'no':''}}</a>
                     
                   </div>
                 </div>
@@ -591,7 +601,7 @@ export default {
       mentions: 0, //twitter中metions
       posts: 0, //facebook中posts
       daily: {}, //weather 当天数据
-
+      dailyMood: [],
       signDays: null,
       moods: [
         { mood: 5 },
@@ -694,14 +704,14 @@ export default {
     this.changeTab("day");
   },
   methods: {
+    //切换 tab
     changeTab(i) {
       this.activeTab = i;
       var date = this.formatTime(new Date());
-      this.getTwitter(date, i);
-      this.getFacebook(date, i);
-      if (i == "day") {
-        this.getWeather();
-      }
+      //this.getTwitter(date, i);
+      //this.getFacebook(date, i);
+      this.getWeather();
+      this.getMood(date, i);
       if (i == "month") {
         var getToday = new Date();
         var todayDate = getToday.getDate();
@@ -771,6 +781,22 @@ export default {
       } else {
         that.$toast("Sorry Browser not support!");
       }
+    },
+    //获取 mood
+    getMood(date, i) {
+      if (i == "day") {
+        this.get_day_mood(date);
+      }
+    },
+    get_day_mood(date) {
+      this.$axios
+        .get(this.api + "/user/" + this.id + "/mood/list", {
+          params: { datetime: date }
+        })
+        .then(res => {
+          console.log(res);
+          this.dailyMood = res.data;
+        });
     },
     //日期带时区格式处理
     formatTime(date) {
@@ -1061,5 +1087,18 @@ export default {
 .day_length_active {
   background: #00b50d;
   color: #fff;
+}
+.mood_content {
+  float: right;
+  width: 85%;
+}
+.mood_content h3 {
+  font-size: 0.3rem;
+  font-weight: 400;
+  margin-bottom: 0.1rem;
+}
+.mood_content p {
+  font-size: 0.3rem;
+  line-height: 0.6rem;
 }
 </style>
