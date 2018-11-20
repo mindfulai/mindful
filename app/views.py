@@ -410,10 +410,19 @@ def mood_average_list(user_id):
     ).all()
     result = []
     for mood in moods:
-        result.append({
+        info = {
             'datetime': mood.datetime,
-            'score': round(mood.average)
-        })
+            'score': round(mood.average),
+        }
+        datetime = pendulum.parse(mood.datetime)
+        if period == 'week':
+            info['day'] = datetime.day_of_week
+        elif period == 'month':
+            info['day'] = datetime.day
+        elif period == 'year':
+            info['day'] = datetime.day_of_year
+
+        result.append(info)
 
     return jsonify(result)
 
