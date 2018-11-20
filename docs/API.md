@@ -142,3 +142,28 @@ Response:
     "msg": "success"
 }
 ```
+
+## 展示心情列表接口
+URL: /user/<user_id>/mood/list
+Method: GET
+Data:
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```
+
+```json
+[
+    {
+        "datetime": "Tue, 20 Nov 2018 05:03:40 GMT",
+        "detail": "",
+        "score": 4
+    },
+    {
+        "datetime": "Tue, 20 Nov 2018 06:13:59 GMT",
+        "detail": "happy",
+        "score": 4
+    }
+]
+```

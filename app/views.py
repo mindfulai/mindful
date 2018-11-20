@@ -365,6 +365,33 @@ def mood_create(user_id):
     return jsonify({'msg': 'success'})
 
 
+@app.route('/user/<int:user_id>/mood/list')
+def mood_list(user_id):
+    user = load_user(user_id)
+    a = request.args.get('datetime')
+    print(a)
+    dt = pendulum.parse(request.args.get('datetime'), strict=False)
+    start_date = dt.start_of('day')
+    end_date = dt.end_of('day')
+
+    moods = models.Mood.query.filter(
+        models.Mood.user == user,
+        models.Mood.created_at >= start_date,
+        models.Mood.created_at <= end_date
+    ).all()
+    print(moods)
+    result = []
+    for mood in moods:
+        result.append({
+            'datetime': mood.created_at,
+            'score': mood.score,
+            'detail': mood.detail
+        })
+    print(result)
+
+    return jsonify(result)
+
+
 @app.route('/debug')
 def debug():
     tweets = db.session.query(models.Tweet).all()
