@@ -79,24 +79,6 @@ export default {
           }
         });
     }
-    // connect(network) {
-    //   let provider = this.$hello(network);
-    //   provider.login().then(
-    //     response => {
-    //       //授权 facebook 登录后发送信息给后端
-    //       console.log(response);
-    //       // provider.api("me/share", "get").then(res => {
-    //       //   console.log(res);
-    //       // });
-    //       // this.$router.push({
-    //       //   path: "/index"
-    //       // });
-    //     },
-    //     e => {
-    //       console.log(e);
-    //     }
-    //   );
-    // }
   },
   components: {
     navHeader

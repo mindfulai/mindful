@@ -3,12 +3,12 @@
     <nav-header :name='name'></nav-header>
     <div class="content">
       <div class="content_box">
-        <h4>Review Sunday 04 Nov 2018</h4>
+        <h4>{{date}}</h4>
 
         <div class="content_box_inner">
-          <form method="post" action="" class="basic">
-            <b>Mood:Great</b>
-            <ul class="mood_rate clearfix" id="select">
+          <div class="basic">
+            <b>Mood:</b>
+            <ul class="mood_rate clearfix" id="mood_select">
               <li class="mood-1" @click="selected($event,1)">1</li>
               <li class="mood-2" @click="selected($event,2)">2</li>
               <li class="mood-3" @click="selected($event,3)">3</li>
@@ -22,9 +22,9 @@
             </ul>
             <div class="form-group">
               <b>Note:</b>
-              <textarea rows="4" name="note" maxlength="240" class="form-control"></textarea>
+              <textarea rows="4" name="note" maxlength="240" class="form-control" v-model="note"></textarea>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
               <b>Custom tags:</b>
               <div class="clearfix taggle_holder">
                 <input class="taggle_placeholder" style="opacity: 1;" placeholder="Enter tags...">
@@ -32,13 +32,13 @@
               <div class="help-block">
                 Use a comma (,) to separate tags
               </div>
-            </div>
+            </div> -->
             <p>
-              <button type="submit" name="submit" class="save" ><i class="fa fa-check"></i> Save
+              <button type="submit" name="submit" class="save" @click="save"><i class="fa fa-check"></i> Save
               </button>
-              or <a>Cancel</a>
+              or <a class="cancel" @click="cancel">Cancel</a>
             </p>
-          </form>
+          </div>
         </div>
       </div>
     </div>
@@ -52,15 +52,21 @@ export default {
   data() {
     return {
       name: "",
-      id: ""
+      id: "",
+      date: "",
+      score: "",
+      note: ""
     };
   },
   mounted() {
     this.name = window.localStorage.getItem("name");
     this.id = window.localStorage.getItem("id");
+    this.date = this.formatDate(new Date());
   },
   methods: {
+    //选择 mood
     selected(e, i) {
+      this.score = i;
       var target = e.target;
       $(target)
         .removeClass("noselected")
@@ -68,6 +74,54 @@ export default {
         .siblings()
         .removeClass("selected")
         .addClass("noselected");
+    },
+    //保存数据
+    save() {
+      if (!(this.score || this.note)) {
+        this.$toast("Mood or Note cannot all be empty");
+        return;
+      }
+      this.$axios
+        .post(this.api + "/user/" + this.id + "/mood/create", {
+          detail: this.note,
+          score: this.score
+        })
+        .then(res => {
+          if (res.status == 200 && res.data.msg === "success") {
+            this.$router.push({
+              path: "/index"
+            });
+          } else {
+            this.$toast("error: save failed! Please try again!");
+          }
+        })
+        .catch(error => {
+          this.$toast("Server error: save failed! Please try again!");
+        });
+    },
+    //取消
+    cancel() {
+      $("#mood_select")
+        .children("li")
+        .removeClass("selected");
+      $("#mood_select")
+        .children("li")
+        .removeClass("noselected");
+      this.score = "";
+      this.note = "";
+    },
+    //获取时间格式
+    formatDate(date) {
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var day = date.getDate();
+      var weekDay = date.getDay();
+      return [year, month, day].map(this.formatNumber).join("-");
+    },
+    //数字格式
+    formatNumber(n) {
+      n = n.toString();
+      return n[1] ? n : "0" + n;
     }
   },
   components: {
@@ -78,4 +132,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.cancel {
+  height: 100%;
+}
 </style>
