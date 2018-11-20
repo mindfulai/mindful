@@ -162,7 +162,7 @@ def save_and_get_weather(user, latitude, longitude):
     darksky_secret = 'bec7b6450421ba2b12b42fec0d98ad72'
 
     api_url = 'https://api.darksky.net/forecast'
-    url = '{}/{}/{},{},{}?units=si'.format(
+    url = '{}/{}/{},{}?units=si'.format(
         api_url, darksky_secret, latitude, longitude)
 
     resp = requests.get(url)
