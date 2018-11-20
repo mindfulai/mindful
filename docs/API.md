@@ -153,6 +153,8 @@ Data:
 }
 ```
 
+Response:
+
 ```json
 [
     {
@@ -163,6 +165,27 @@ Data:
     {
         "datetime": "Tue, 20 Nov 2018 06:13:59 GMT",
         "detail": "happy",
+        "score": 4
+    }
+]
+```
+
+## 展示心情平均值列表接口
+URL: /user/<user_id>/mood/average/list
+Method: GET
+Data:
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800",
+    "period": "String"
+}
+```
+
+Response:
+```json
+[
+    {
+        "datetime": "2018-11-20",
         "score": 4
     }
 ]

@@ -19,8 +19,8 @@ from app.actions import get_user_last_tweet_or_mention, get_twitter_path,\
 
 from app import actions
 
-
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.sql import func
 
 # Twitter
 twitter_blueprint = make_twitter_blueprint(
@@ -388,6 +388,32 @@ def mood_list(user_id):
             'detail': mood.detail
         })
     print(result)
+
+    return jsonify(result)
+
+
+@app.route('/user/<int:user_id>/mood/average/list')
+def mood_average_list(user_id):
+    """ 展示用户每日心情平均值列表 """
+    user = load_user(user_id)
+
+    dt = pendulum.parse(request.args.get('datetime'), strict=False)
+    period = request.args.get('period')
+    start_date = dt.start_of(period)
+    end_date = dt.end_of(period)
+
+    moods = db.session.query(func.avg(models.Mood.score).label('average'), func.date(
+        models.Mood.created_at).label('datetime')).filter(
+            models.Mood.user == user,
+            models.Mood.created_at >= start_date,
+            models.Mood.created_at <= end_date
+    ).all()
+    result = []
+    for mood in moods:
+        result.append({
+            'datetime': mood.datetime,
+            'score': round(mood.average)
+        })
 
     return jsonify(result)
 
