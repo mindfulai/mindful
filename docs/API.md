@@ -6,7 +6,7 @@ Response:
 ```json
 {
     "tiwtter_auth": "Boolean",
-    "facebook_auth": "BOolean"
+    "facebook_auth": "Boolean"
 }
 ```
 
@@ -63,7 +63,7 @@ Response:
 }
 ```
 
-## 获取用户地理位置接口
+## 存储用户地理位置及天气接口，并展示当日天气
 URL: /user/<user_id>/location_and_weather/create
 Method: POST
 Data:
@@ -77,6 +77,47 @@ Data:
 Response:
 ```json
 {
-    "msg": "success"
+    "data": [
+        {
+            "apparentTemperatureHigh": 11.39,
+            "apparentTemperatureHighTime": 1542693600,
+            "apparentTemperatureLow": -0.46,
+            "apparentTemperatureLowTime": 1542758400,
+            "apparentTemperatureMax": 11.39,
+            "apparentTemperatureMaxTime": 1542693600,
+            "apparentTemperatureMin": -7.22,
+            "apparentTemperatureMinTime": 1542657600,
+            "cloudCover": 0.55,
+            "dewPoint": -8.93,
+            "humidity": 0.44,
+            "icon": "partly-cloudy-night",
+            "moonPhase": 0.39,
+            "ozone": 335.53,
+            "precipIntensity": 0,
+            "precipIntensityMax": 0.0025,
+            "precipIntensityMaxTime": 1542675600,
+            "precipProbability": 0,
+            "pressure": 1024.2,
+            "summary": "Mostly cloudy throughout the day.",
+            "sunriseTime": 1542668765,
+            "sunsetTime": 1542704183,
+            "temperatureHigh": 11.39,
+            "temperatureHighTime": 1542693600,
+            "temperatureLow": 0.66,
+            "temperatureLowTime": 1542754800,
+            "temperatureMax": 11.39,
+            "temperatureMaxTime": 1542693600,
+            "temperatureMin": -3.09,
+            "temperatureMinTime": 1542657600,
+            "time": 1542643200,
+            "uvIndex": 2,
+            "uvIndexTime": 1542682800,
+            "visibility": 16.09,
+            "windBearing": 21,
+            "windGust": 4.1,
+            "windGustTime": 1542704400,
+            "windSpeed": 1.28
+        }
+    ]
 }
 ```
