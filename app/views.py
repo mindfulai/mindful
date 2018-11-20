@@ -343,6 +343,28 @@ def location_and_weather_create(user_id):
     return jsonify(result)
 
 
+
+##############################################
+#                 Mood
+##############################################
+
+@app.route('/user/<int:user_id>/mood/create', methods=['POST'])
+def mood_create(user_id):
+    """ 创建用户心情
+    """
+    user = load_user(user_id)
+    data = request.json
+
+    detail = data['detail']
+    score = data['score']
+
+    mood = models.Mood(user=user, detail=detail, score=score)
+    db.session.add(mood)
+    db.session.commit()
+
+    return jsonify({'msg': 'success'})
+
+
 @app.route('/debug')
 def debug():
     tweets = db.session.query(models.Tweet).all()
