@@ -403,28 +403,27 @@ def mood_average_list(user_id):
     end_date = dt.end_of(period)
 
     moods = db.session.query(func.avg(models.Mood.score).label('average'), func.date(
-        models.Mood.created_at).label('datetime')).filter(
+        models.Mood.created_at).label('date')).filter(
             models.Mood.user == user,
             models.Mood.created_at >= start_date,
             models.Mood.created_at <= end_date
-    ).group_by('datetime').all()
-    print(moods)
+    ).group_by('date').all()
+
     result = []
     for mood in moods:
+        dt = pendulum.parse(mood.date)
         info = {
-            'datetime': mood.datetime,
+            'datetime': mood.date,
             'score': int(decimal.Decimal(mood.average).quantize(
                 decimal.Decimal('1'), rounding=decimal.ROUND_HALF_UP)),
         }
-        print(mood.datetime)
 
-        datetime = pendulum.parse(str(mood.datetime))
         if period == 'week':
-            info['day'] = datetime.day_of_week
+            info['day'] = dt.day_of_week
         elif period == 'month':
-            info['day'] = datetime.day
+            info['day'] = dt.day
         elif period == 'year':
-            info['day'] = datetime.day_of_year
+            info['day'] = dt.day_of_year
 
         result.append(info)
 
