@@ -204,10 +204,10 @@
             <h4>Location</h4>
 
             <div class="content_box_inner">
-                <!-- <div id="map" style="display:block;height:3rem;width:100%;"></div> -->
-                <a style="display:block;height:100%;" target="_blank" href="https://google.com/maps/@37.87,-122.26,16z">
+                <div id="map" style="display:block;height:3rem;width:100%;"></div>
+                <!-- <a style="display:block;height:100%;" target="_blank" href="https://google.com/maps/@37.87,-122.26,16z">
                   <img style="width:100%;" src="https://api.mapbox.com/styles/v1/joshsharp/cjmfw5rw71t0m2rrwsj8ywbi1/static/-122.26,37.87,12,0/360x160?access_token=pk.eyJ1Ijoiam9zaHNoYXJwIiwiYSI6ImNqbHJta2ozMjA2b20zc3RhNTFuMm4zZGEifQ.sN74U85oG02UI3juN-NZtA" alt="Map">
-                </a>
+                </a> -->
               <div class="connector">
                 <i class="fa fa-exchange"></i>
                 Android
@@ -596,7 +596,7 @@
 
 <script>
 import navHeader from "@/components/header";
-import google from "google";
+// import google from "google";
 export default {
   name: "index",
   data() {
@@ -692,7 +692,9 @@ export default {
         { day_length: "09:45" },
         { day_length: "" },
         { day_length: "09:38" }
-      ]
+      ],
+      longitude: "",
+      latitude: ""
     };
   },
   mounted() {
@@ -701,7 +703,6 @@ export default {
     window.localStorage.setItem("name", this.name);
     window.localStorage.setItem("id", this.id);
     this.changeTab("day");
-    //this.getWeather();
   },
   methods: {
     //切换 tab
@@ -739,7 +740,20 @@ export default {
         });
     },
     //获取地理位置
-
+    getLocation(latitude, longitude) {
+      var latlng = new google.maps.LatLng(latitude, longitude);
+      var myOptions = {
+        zoom: 8, //设定方法倍数
+        center: latlng, //将地图中心设定为指定的坐标点
+        mapTypeId: google.maps.MapTypeId.ROADMAP, //制定地图类型
+        scrollwheel: true //是否允许滚轮滑动进行缩放
+      };
+      var map = new google.maps.Map(document.getElementById("map"), myOptions);
+      var marker = new google.maps.Marker({
+        position: latlng, //将前面设定的坐标标出来
+        map: map //将该标注设定在刚才创建的map中
+      });
+    },
     //获取 天气
     getWeather() {
       var that = this;
@@ -748,33 +762,8 @@ export default {
           function(position) {
             var longitude = position.coords.longitude;
             var latitude = position.coords.latitude;
-
-            // console.log(new google());
-            // var latlng = new google.maps.LatLng(latitude, longitude);
-            // var myOptions = {
-            //   zoom: 8, //设定方法倍数
-            //   center: latlng, //将地图中心设定为指定的坐标点
-            //   mapTypeId: google.maps.MapTypeId.ROADMAP //制定地图类型
-            // };
-            // var map = new google.maps.Map(
-            //   document.getElementById("map"),
-            //   myOptions
-            // );
-
-            // var marker = new google.maps.Marker({
-            //   position: latlng, //将前面设定的坐标标出来
-            //   map: map //将该标注设定在刚才创建的map中
-            // });
-
-            // var infoWindow = new google.maps.InfoWindow({
-            //   content:
-            //     "当前位置：<br/>经度：" +
-            //     latlng.lat() +
-            //     "<br/>纬度：" +
-            //     latlng.lng()
-            // });
-
-            //infoWindow.open(map, marker);
+            console.log(latitude + "--" + longitude);
+            that.getLocation(latitude, longitude);
             that.$axios
               .post(
                 that.api + "/user/" + that.id + "/location_and_weather/create",
