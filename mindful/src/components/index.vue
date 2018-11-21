@@ -144,10 +144,10 @@
                 <i class="fa fa-pencil"></i>
                 Rate day
               </router-link>
-              <div class="connector">
+              <!-- <div class="connector">
                 <i class="fa fa-exchange"></i>
                 Android
-              </div>
+              </div> -->
               <div class="chart">
 
               </div>
@@ -208,10 +208,10 @@
                 <!-- <a style="display:block;height:100%;" target="_blank" href="https://google.com/maps/@37.87,-122.26,16z">
                   <img style="width:100%;" src="https://api.mapbox.com/styles/v1/joshsharp/cjmfw5rw71t0m2rrwsj8ywbi1/static/-122.26,37.87,12,0/360x160?access_token=pk.eyJ1Ijoiam9zaHNoYXJwIiwiYSI6ImNqbHJta2ozMjA2b20zc3RhNTFuMm4zZGEifQ.sN74U85oG02UI3juN-NZtA" alt="Map">
                 </a> -->
-              <div class="connector">
+              <!-- <div class="connector">
                 <i class="fa fa-exchange"></i>
                 Android
-              </div>
+              </div> -->
               <div class="chart">
               </div>
             </div>
@@ -743,7 +743,7 @@ export default {
     getLocation(latitude, longitude) {
       var latlng = new google.maps.LatLng(latitude, longitude);
       var myOptions = {
-        zoom: 8, //设定方法倍数
+        zoom: 16, //设定方法倍数
         center: latlng, //将地图中心设定为指定的坐标点
         mapTypeId: google.maps.MapTypeId.ROADMAP, //制定地图类型
         scrollwheel: true //是否允许滚轮滑动进行缩放
