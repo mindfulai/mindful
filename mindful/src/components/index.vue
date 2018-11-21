@@ -204,7 +204,7 @@
             <h4>Location</h4>
 
             <div class="content_box_inner">
-              
+                <!-- <div id="map" style="display:block;height:3rem;width:100%;"></div> -->
                 <a style="display:block;height:100%;" target="_blank" href="https://google.com/maps/@37.87,-122.26,16z">
                   <img style="width:100%;" src="https://api.mapbox.com/styles/v1/joshsharp/cjmfw5rw71t0m2rrwsj8ywbi1/static/-122.26,37.87,12,0/360x160?access_token=pk.eyJ1Ijoiam9zaHNoYXJwIiwiYSI6ImNqbHJta2ozMjA2b20zc3RhNTFuMm4zZGEifQ.sN74U85oG02UI3juN-NZtA" alt="Map">
                 </a>
@@ -357,9 +357,12 @@
                 <div class="calendar_wrapper">
                   <div class="week_day border-bottom">
                     <!-- week mood数据判断展示对应week的mood -->
-                    <div class="weeklist" v-for="(k,i) in 7" :key="i" >
-
-                      <a class=" chart_number mood_number"  v-for="(item,index) in periodMoods" :key="index" :class="item.day==k?'mood-'+item.score:''" >{{item.day==k?item.score:''}}</a>
+                    <!-- <div class="weeklist" v-for="(k,i) in 7" :key="i" >
+                     
+                      <a class=" chart_number mood_number"  v-for="(item,index) in periodMoods" :key="index" v-if='item.day==k' :class="item.day==k?'mood-'+item.score:''" >{{item.day==k?item.score:''}}</a>
+                    </div> -->
+                    <div class="weeklist" v-for="(item,index) in periodMoods" :key="index" >
+                      <a class=" chart_number mood_number" :class="item.day?'mood-'+item.score:''" >{{item.day?item.score:''}}</a>
                     </div>
                   </div>
                 </div>
@@ -514,7 +517,8 @@
                 </div>
                 <div class="month_day" v-for="(signDay,i) in signDays" :key="i">
                   <div class="day_list"  v-for="(item,index) in signDay" :key="index" >
-                    <a class="mood_a" v-if="item == null ? '' : item.normalday" v-for="(moodItem,j) in periodMoods" :key="j" :class="item.moodday&&moodItem.day==item.normalday?'mood-'+moodItem.score:''">{{item == null ? '' : item.normalday}}</a>
+                    <a class="mood_a" v-if="item == null ? '' : item.normalday"  :class="item.moodday?'mood-'+item.moodday:''">{{item == null ? '' : item.normalday}}</a>
+                    <!-- <a class="mood_a" v-if="item == null ? '' : item.normalday" v-for="(moodItem,j) in periodMoods" :key="j"  :class="item.moodday&&moodItem.day==item.normalday?'mood-'+moodItem.score:''">{{item == null ? '' : item.normalday}}</a> -->
                     <!-- <p class="event_p" v-if="item == null ? '' : item.normalday" :class="item.eventday?'events_active':''">{{item.event}}</p> -->
                   </div>
                 </div>
@@ -592,6 +596,7 @@
 
 <script>
 import navHeader from "@/components/header";
+import google from "google";
 export default {
   name: "index",
   data() {
@@ -606,6 +611,7 @@ export default {
       dailyMoods: [], //每天的 mood 时间轴
       periodMoods: [], //每周或者每月的 mood 平均
 
+      periodMoods: [{ score: 3, day: 2 }, { score: 4, day: 3 }],
       signDays: null,
       event: 1,
       events: [
@@ -697,6 +703,7 @@ export default {
     window.localStorage.setItem("name", this.name);
     window.localStorage.setItem("id", this.id);
     this.changeTab("day");
+    //this.getWeather();
   },
   methods: {
     //切换 tab
@@ -733,6 +740,8 @@ export default {
           }
         });
     },
+    //获取地理位置
+
     //获取 天气
     getWeather() {
       var that = this;
@@ -741,6 +750,33 @@ export default {
           function(position) {
             var longitude = position.coords.longitude;
             var latitude = position.coords.latitude;
+
+            // console.log(new google());
+            // var latlng = new google.maps.LatLng(latitude, longitude);
+            // var myOptions = {
+            //   zoom: 8, //设定方法倍数
+            //   center: latlng, //将地图中心设定为指定的坐标点
+            //   mapTypeId: google.maps.MapTypeId.ROADMAP //制定地图类型
+            // };
+            // var map = new google.maps.Map(
+            //   document.getElementById("map"),
+            //   myOptions
+            // );
+
+            // var marker = new google.maps.Marker({
+            //   position: latlng, //将前面设定的坐标标出来
+            //   map: map //将该标注设定在刚才创建的map中
+            // });
+
+            // var infoWindow = new google.maps.InfoWindow({
+            //   content:
+            //     "当前位置：<br/>经度：" +
+            //     latlng.lat() +
+            //     "<br/>纬度：" +
+            //     latlng.lng()
+            // });
+
+            //infoWindow.open(map, marker);
             that.$axios
               .post(
                 that.api + "/user/" + that.id + "/location_and_weather/create",
@@ -803,13 +839,22 @@ export default {
         })
         .then(res => {
           this.periodMoods = res.data;
-          //月 数据处理显示
-          if (type == "month") {
-            var mood_day = [];
-            for (var i = 0; i < this.periodMoods.length; i++) {
-              mood_day[i] = this.periodMoods[i].day;
+          //周 数据处理显示
+          if (type == "week") {
+            var mm = [];
+            for (var i = 0; i < 7; i++) {
+              mm[i] = {};
+              for (var j = 0; j < this.periodMoods.length; j++) {
+                if (this.periodMoods[j].day == i + 1) {
+                  mm[i] = this.periodMoods[j];
+                  continue;
+                }
+              }
             }
-            this.buildCal(todayYear, todayMonth, mood_day, []);
+            this.periodMoods = mm;
+          } else if (type == "month") {
+            //月 数据处理显示
+            this.buildCal(todayYear, todayMonth, this.periodMoods, []);
           }
         });
     },
@@ -871,17 +916,31 @@ export default {
 
       var d, w;
       for (d = iDayOfFirst - 1; d < 7; d++) {
-        if (moodDay.indexOf(iVarDate) > -1) {
-          aMonth[0][d] = {
-            moodday: true,
-            normalday: iVarDate
-          };
-        } else {
-          aMonth[0][d] = {
-            moodday: false,
-            normalday: iVarDate
-          };
+        aMonth[0][d] = {
+          moodday: false,
+          normalday: iVarDate
+        };
+        for (var i = 0; i < moodDay.length; i++) {
+          var day = moodDay[i].day;
+          if (day == iVarDate) {
+            aMonth[0][d] = {
+              moodday: moodDay[i].score,
+              normalday: iVarDate
+            };
+            continue;
+          }
         }
+        // if (moodDay.indexOf(iVarDate) > -1) {
+        //   aMonth[0][d] = {
+        //     moodday: true,
+        //     normalday: iVarDate
+        //   };
+        // } else {
+        //   aMonth[0][d] = {
+        //     moodday: false,
+        //     normalday: iVarDate
+        //   };
+        // }
         // if (eventDay.indexOf(iVarDate) > -1) {
         //   aMonth[0][d].eventday = true;
         // } else {
@@ -893,17 +952,31 @@ export default {
       for (w = 1; w < 6; w++) {
         for (d = 0; d < 7; d++) {
           if (iVarDate <= iDaysInMonth) {
-            if (moodDay.indexOf(iVarDate) > -1) {
-              aMonth[w][d] = {
-                moodday: true,
-                normalday: iVarDate
-              };
-            } else {
-              aMonth[w][d] = {
-                moodday: false,
-                normalday: iVarDate
-              };
+            aMonth[w][d] = {
+              moodday: false,
+              normalday: iVarDate
+            };
+            for (var i = 0; i < moodDay.length; i++) {
+              var day = moodDay[i].day;
+              if (day == iVarDate) {
+                aMonth[w][d] = {
+                  moodday: moodDay[i].score,
+                  normalday: iVarDate
+                };
+                continue;
+              }
             }
+            // if (moodDay.indexOf(iVarDate) > -1) {
+            //   aMonth[w][d] = {
+            //     moodday: true,
+            //     normalday: iVarDate
+            //   };
+            // } else {
+            //   aMonth[w][d] = {
+            //     moodday: false,
+            //     normalday: iVarDate
+            //   };
+            // }
             // if (eventDay.indexOf(iVarDate) > -1) {
             //   aMonth[w][d].eventday = true;
             // } else {
@@ -1002,7 +1075,7 @@ export default {
 .chart_number {
   line-height: 0.18rem;
   background: #dbdce5;
-  font-size: 0.16rem;
+  font-size: 0.28rem;
   color: #6f7680;
   border-radius: 0.06rem;
 }

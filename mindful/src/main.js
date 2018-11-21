@@ -23,10 +23,10 @@ Vue.use(MintUI)
 Vue.config.productionTip = false
 
 import "@/assets/app.css"
-
+Vue.prototype.api = ''
 //Vue.prototype.api = "http://192.168.1.237:5000"
 //Vue.prototype.api = 'https://pocoweb-mindful.herokuapp.com'
-Vue.prototype.api = ''
+//Vue.prototype.api = ''
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

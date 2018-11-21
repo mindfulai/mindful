@@ -14,11 +14,6 @@
               <li class="mood-3" @click="selected($event,3)">3</li>
               <li class="mood-4" @click="selected($event,4)">4</li>
               <li class="mood-5" @click="selected($event,5)">5</li>
-              <!-- <li><a class="mood-1" @click="selected($event,1)">1</a></li>
-              <li><a class="mood-2" @click="selected($event,2)">2</a></li>
-              <li><a class="mood-3" @click="selected($event,3)">3</a></li>
-              <li><a class="mood-4" @click="selected($event,4)">4</a></li>
-              <li><a class="mood-5" @click="selected($event,5)">5</a></li> -->
             </ul>
             <div class="form-group">
               <b>Note:</b>
@@ -88,6 +83,7 @@ export default {
         })
         .then(res => {
           if (res.status == 200 && res.data.msg === "success") {
+            this.$toast("Save success!");
             this.$router.push({
               path: "/index"
             });
