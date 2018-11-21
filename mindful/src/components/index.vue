@@ -610,8 +610,6 @@ export default {
       daily: {}, //weather 当天数据
       dailyMoods: [], //每天的 mood 时间轴
       periodMoods: [], //每周或者每月的 mood 平均
-
-      periodMoods: [{ score: 3, day: 2 }, { score: 4, day: 3 }],
       signDays: null,
       event: 1,
       events: [
