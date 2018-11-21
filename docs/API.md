@@ -185,7 +185,7 @@ Response:
 ```json
 [
     {
-        "datetime": "2018-11-20",
+        "date": "2018-11-20",
         "score": 4,
         "day_of_week": 2
     }

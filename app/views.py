@@ -412,7 +412,7 @@ def mood_average_list(user_id):
     result = []
     for mood in moods:
         info = {
-            'datetime': mood.date,
+            'date': mood.date,
             'score': int(decimal.Decimal(mood.average).quantize(
                 decimal.Decimal('1'), rounding=decimal.ROUND_HALF_UP)),
         }
