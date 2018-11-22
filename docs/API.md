@@ -10,6 +10,11 @@ Response:
 }
 ```
 
+## Twitter 授权
+URL: /twitter/authorize
+Method: GET
+
+
 ## Twitter 用户数据统计
 
 URL: /twitter/<user_id>/summary
