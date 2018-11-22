@@ -22,6 +22,7 @@ from app import actions
 
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import func
+from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
 
 # Twitter
 twitter_blueprint = make_twitter_blueprint(
@@ -35,6 +36,12 @@ facebook_blueprint = make_facebook_blueprint(
     client_secret="bfbf2231584f211669debf63467e58e9",
     scope="email,user_posts"
 )
+
+
+twitter_blueprint.backend = SQLAlchemyBackend(models.OAuth,
+                                              db.session, user=current_user)
+facebook_blueprint.backend = SQLAlchemyBackend(models.OAuth,
+                                               db.session, user=current_user)
 
 
 @login_manager.user_loader
