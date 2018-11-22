@@ -171,12 +171,13 @@ def facebook_summary(user_id):
 #             Twitter API
 ##############################################
 
-@oauth_authorized.connect_via(twitter_blueprint)
-def twitter_auth(twitter_blueprint, token):
+@app.route('/twitter/authorize')
+@login_required
+def twitter_auth():
     """ Twitter 授权 """
 
-    if not token:
-        return False
+    if not twitter.authorized:
+        return redirect(url_for('twitter.login'))
 
     user = current_user
 
@@ -189,7 +190,7 @@ def twitter_auth(twitter_blueprint, token):
     screen_name = resp.json()['screen_name']
     oauth, created = get_oauth_or_create(twitter_blueprint, screen_name, user)
 
-    actions.update_oauth_token(oauth, token)
+    actions.update_oauth_token(oauth, twitter.token)
 
     print('==== get twitter user timeline')
     twitter_user_timeline(user.id)
