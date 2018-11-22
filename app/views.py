@@ -109,7 +109,7 @@ def facebook_posts():
 
     # 保存 posts
 
-    redirect_uri = 'https://pocoweb-mindful.herokuapp.com/facebook/posts'
+    redirect_uri = 'https://mindful-ucb.herokuapp.com/facebook/posts'
     code = request.args.get('code')
 
     if not code:
