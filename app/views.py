@@ -33,6 +33,7 @@ twitter_blueprint = make_twitter_blueprint(
 facebook_blueprint = make_facebook_blueprint(
     client_id="176320989922581",
     client_secret="bfbf2231584f211669debf63467e58e9",
+    scope="email,user_posts"
 )
 
 
