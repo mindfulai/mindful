@@ -115,33 +115,10 @@ def facebook_posts():
     """ 获取 Facebook posts """
     user = current_user
 
-    # 保存 posts
+    if not facebook.authorized:
+        return redirect(url_for('facebook.login'))
 
-    redirect_uri = 'https://mindful-ucb.herokuapp.com/facebook/posts'
-    code = request.args.get('code')
-
-    if not code:
-        # 获取 code
-        return redirect('https://www.facebook.com/dialog/oauth' +
-                        '?client_id={}&redirect_uri={}&scope={}'.format(
-                            facebook.client_id, redirect_uri, 'email,user_posts'
-                        ))
-
-    # 根据 code 换取 access_token
-    url = 'https://graph.facebook.com/oauth/access_token'
-    data = {
-        'client_id': facebook.client_id,
-        'redirect_uri': redirect_uri,
-        'client_secret': facebook_blueprint.client_secret,
-        'code': code
-    }
-    resp = requests.get(url, params=data)
-
-    access_token = json.loads(resp.text)['access_token']
-
-    # 使用 access_token 获取 posts
-    resp = requests.get(
-        'https://graph.facebook.com/me?fields=posts&access_token={}'.format(access_token))
+    resp = facebook.get('me?fields=posts')
 
     if not resp.ok:
         return jsonify(resp.json())
