@@ -86,7 +86,7 @@ def facebook_auth(facebook_blueprint, token):
 
     if oauth.user:
         login_user(oauth.user)
-        flash("Successfully signed in with Facebook.")
+        # flash("Successfully signed in with Facebook.")
 
     else:
         # Create a new local user account for this user
@@ -98,7 +98,7 @@ def facebook_auth(facebook_blueprint, token):
         db.session.commit()
         # Log in the new local user account
         login_user(oauth.user)
-        flash("Successfully signed in with Facebook.")
+        # flash("Successfully signed in with Facebook.")
 
     # 更新 token
     actions.update_oauth_token(oauth, token)
@@ -289,6 +289,8 @@ def twitter_summary(user_id):
 @login_required
 def logout():
     """User logout/authentication/session management."""
+    # flash('You were logged out')
+    print(session['facebook_auth_token'])
     logout_user()
     flash('You were logged out')
     return redirect(url_for('login'))
@@ -474,7 +476,7 @@ def add_entry():
     new_entry = models.Flaskr(request.form['title'], request.form['text'])
     db.session.add(new_entry)
     db.session.commit()
-    flash('New entry was successfully posted')
+    # flash('New entry was successfully posted')
     return redirect(url_for('index'))
 
 
@@ -487,7 +489,7 @@ def delete_entry(post_id):
         db.session.query(models.Flaskr).filter_by(post_id=new_id).delete()
         db.session.commit()
         result = {'status': 1, 'message': "Post Deleted"}
-        flash('The entry was deleted.')
+        # flash('The entry was deleted.')
     except Exception as e:
         result = {'status': 0, 'message': repr(e)}
     return jsonify(result)
