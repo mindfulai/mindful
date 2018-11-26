@@ -207,6 +207,10 @@ def twitter_user_timeline(user_id):
     """ 将用户 tweet 存入数据库
     API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
     """
+
+    if not twitter.authorized:
+        return redirect(url_for('twitter_auth'))
+
     user = db.session.query(models.User).get(user_id)
 
     screen_name = get_twitter_screen_name(twitter_blueprint, user)
@@ -236,6 +240,10 @@ def twitter_mentions_timeline(user_id):
     """ 将用户 mentions 存入数据库
     API: https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-mentions_timeline
     """
+
+    if not twitter.authorized:
+        return redirect(url_for('twitter_auth'))
+
     user = db.session.query(models.User).get(user_id)
 
     screen_name = get_twitter_screen_name(twitter_blueprint, user)
