@@ -68,6 +68,17 @@ Response:
 }
 ```
 
+## Facebook 更新 Posts
+URL: /user/<user_id>/facebook/posts/update
+Method: GET
+
+Response:
+```json
+{
+    "msg": "success"
+}
+```
+
 ## 存储用户地理位置及天气接口，并展示当日天气
 URL: /user/<user_id>/location_and_weather/create
 Method: POST
