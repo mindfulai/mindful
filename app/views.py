@@ -114,13 +114,20 @@ def facebook_auth(facebook_blueprint, token):
 @app.route('/user/<int:user_id>/facebook/posts/update')
 @login_required
 def facebook_posts(user_id):
-    """ 获取 Facebook posts """
+    """ 获取 Facebook posts
+
+    API: https://developers.facebook.com/docs/graph-api/reference/v3.2/user/feed
+    """
     user = load_user(user_id)
 
     if not facebook.authorized:
         return redirect(url_for('facebook.login'))
 
-    resp = facebook.get('me?fields=posts')
+    last_post = models.FacebookPost.query.filter_by(
+        user=user).order_by(models.FacebookPost.created_at.desc()).first()
+    last_post_time = pendulum.instance(last_post.created_at).timestamp()
+
+    resp = facebook.get('3.2/me/feed?since={}'.format(last_post_time))
 
     if not resp.ok:
         return jsonify(resp.json())
