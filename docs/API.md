@@ -17,7 +17,7 @@ Method: GET
 
 ## Twitter 用户数据统计
 
-URL: /twitter/<user_id>/summary
+URL: /user/<user_id>/twitter/summary
 Method: GET
 Data:
 ```json
@@ -68,7 +68,7 @@ Response:
 
 ## Facebook 用户统计接口
 
-URL: /facebook/<user_id>/summary
+URL: /user/<user_id>/facebook/summary
 Method: GET
 Data:
 ```json

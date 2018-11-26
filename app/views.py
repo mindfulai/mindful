@@ -148,7 +148,7 @@ def facebook_posts(user_id):
     return jsonify({"msg": "success"})
 
 
-@app.route('/facebook/<int:user_id>/summary')
+@app.route('/user/<int:user_id>/facebook/summary')
 @login_required
 def facebook_summary(user_id):
     """ Facebook 数据统计 """
@@ -257,7 +257,7 @@ def twitter_mentions_timeline(user_id):
     return jsonify({'msg': 'success'})
 
 
-@app.route('/twitter/<int:user_id>/summary')
+@app.route('/user/<int:user_id>/twitter/summary')
 @login_required
 def twitter_summary(user_id):
     """ Twitter 统计数据 """
