@@ -13,7 +13,7 @@
       <li><a href="#">PROVIDING</a><strong>Tweets</strong></li>
     </ul>
     <!-- https://pocoweb-mindful.herokuapp.com -->
-    <a  v-if="!twitter_auth" class="authorize_connect" href="/login/twitter">
+    <a  v-if="!twitter_auth" class="authorize_connect" href="/twitter/authorize">
       <i class="fa fa-plus"></i>&nbsp;
       Authorize
     </a>
