@@ -42,6 +42,30 @@ Response:
 }
 ```
 
+## Twitter 更新 Tweets
+URL: /user/<user_id>/twitter/user_timeline/update
+Method: GET
+
+Response:
+```json
+{
+    "msg": "success"
+}
+```
+
+
+## Twitter 更新 Mentions
+URL: /user/<user_id>/twitter/mentions_timeline/update
+Method: GET
+
+Response:
+```json
+{
+    "msg": "success"
+}
+```
+
+
 ## Facebook 用户统计接口
 
 URL: /facebook/<user_id>/summary
