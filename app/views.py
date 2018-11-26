@@ -183,9 +183,8 @@ def facebook_summary(user_id):
 #             Twitter API
 ##############################################
 
-@app.route('/twitter/authorize')
-@login_required
-def twitter_auth():
+@oauth_authorized.connect_via(twitter_blueprint)
+def twitter_login(twitter_blueprint, token):
     """ Twitter 授权 """
 
     if not twitter.authorized:
