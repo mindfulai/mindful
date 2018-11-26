@@ -717,7 +717,7 @@ export default {
     //获取 twitter
     getTwitter(date, i) {
       this.$axios
-        .get(this.api + "/twitter/" + this.id + "/summary", {
+        .get(this.api + "/user/" + this.id + "/twitter/summary", {
           params: { datetime: date, period: i }
         })
         .then(res => {
@@ -730,7 +730,7 @@ export default {
     //获取 facebook
     getFacebook(date, i) {
       this.$axios
-        .get(this.api + "/facebook/" + this.id + "/summary", {
+        .get(this.api + "/user/" + this.id + "/facebook/summary", {
           params: { datetime: date, period: i }
         })
         .then(res => {

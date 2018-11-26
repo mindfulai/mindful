@@ -4,31 +4,6 @@
     <div class="content">
   <h3 class="connect_authorize">CONNECT AUTHORIZE</h3>
   <div class="authorize_box">
-    <div class="authorize_meta">
-      Twitter &nbsp;&nbsp;<i class="fa fa-twitter twitter_logo"></i>
-    </div>
-    <ul>
-      <li><a href="#">TRACKS</a><strong>Tweets,metions</strong></li>
-      <li><a href="#">REQUIRES</a><strong>Twitter account</strong></li>
-      <li><a href="#">PROVIDING</a><strong>Tweets</strong></li>
-    </ul>
-    <!-- https://pocoweb-mindful.herokuapp.com -->
-    <a  v-if="!twitter_auth" class="authorize_connect" href="/twitter/authorize">
-      <i class="fa fa-plus"></i>&nbsp;
-      Authorize
-    </a>
-    <a v-if="twitter_auth" class="authorize_connect">
-      Authorized
-    </a>
-    <a class="authorize_connect" @click="updateData('twitter')">
-     Update data
-    </a>
-    <!-- <div class="authorize_connect"  @click="connect('twitter')">
-      <i class="fa fa-plus"></i>&nbsp;
-      Connect
-    </div> -->
-  </div>
-  <div class="authorize_box">
     <div class="authorize_meta facebook">
       facebook <!--<i class="fa fa-facebook"></i>-->
     </div>
@@ -47,6 +22,31 @@
     <a class="authorize_connect" @click="updateData('facebook')">
      Update data
     </a>
+  </div>
+  <div class="authorize_box">
+    <div class="authorize_meta">
+      Twitter &nbsp;&nbsp;<i class="fa fa-twitter twitter_logo"></i>
+    </div>
+    <ul>
+      <li><a href="#">TRACKS</a><strong>Tweets,metions</strong></li>
+      <li><a href="#">REQUIRES</a><strong>Twitter account</strong></li>
+      <li><a href="#">PROVIDING</a><strong>Tweets</strong></li>
+    </ul>
+    <!-- https://pocoweb-mindful.herokuapp.com -->
+    <a  v-if="!twitter_auth" class="authorize_connect" href="/login/twitter">
+      <i class="fa fa-plus"></i>&nbsp;
+      Authorize
+    </a>
+    <a v-if="twitter_auth" class="authorize_connect">
+      Authorized
+    </a>
+    <!-- <a class="authorize_connect" @click="updateData('twitter')">
+     Update data
+    </a> -->
+    <!-- <div class="authorize_connect"  @click="connect('twitter')">
+      <i class="fa fa-plus"></i>&nbsp;
+      Connect
+    </div> -->
   </div>
 </div>
   </div>
@@ -101,7 +101,7 @@ export default {
         this.updateFacebook();
       } else if (type == "twitter") {
         this.updateTweets();
-        this.updateMetions();
+        // this.updateMetions();
       }
     },
     updateFacebook() {
@@ -117,10 +117,19 @@ export default {
               message: "Update success",
               duration: 5000
             });
+          } else {
+            this.$toast({
+              message: "Update failed",
+              duration: 5000
+            });
           }
         })
         .catch(err => {
           this.$indicator.close();
+          this.$toast({
+            message: "Server error",
+            duration: 5000
+          });
         });
     },
     updateTweets() {
@@ -136,10 +145,19 @@ export default {
               message: "Update success",
               duration: 5000
             });
+          } else {
+            this.$toast({
+              message: "Update failed",
+              duration: 5000
+            });
           }
         })
         .catch(err => {
           this.$indicator.close();
+          this.$toast({
+            message: "Server error",
+            duration: 5000
+          });
         });
     },
     updateMetions() {
@@ -167,7 +185,7 @@ export default {
         .catch(err => {
           this.$indicator.close();
           this.$toast({
-            message: "Update failed",
+            message: "Server error",
             duration: 5000
           });
         });
