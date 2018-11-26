@@ -105,15 +105,17 @@ def facebook_auth(facebook_blueprint, token):
 
     # 更新获取 posts
     print('=== get user posts')
+    facebook_posts(oauth.user.id)
 
-    return redirect(url_for('facebook_posts'))
+    return redirect('/static/dist/index.html#/index?name={}&id={}'.format(
+        oauth.user.username, oauth.user.id))
 
 
-@app.route('/facebook/posts')
+@app.route('/user/<int:user_id>/facebook/posts/update')
 @login_required
-def facebook_posts():
+def facebook_posts(user_id):
     """ 获取 Facebook posts """
-    user = current_user
+    user = load_user(user_id)
 
     if not facebook.authorized:
         return redirect(url_for('facebook.login'))
@@ -143,8 +145,7 @@ def facebook_posts():
             db.session.add(fb)
             db.session.commit()
 
-    return redirect('/static/dist/index.html#/index?name={}&id={}'.format(
-        user.username, user.id))
+    return jsonify({"msg": "success"})
 
 
 @app.route('/facebook/<int:user_id>/summary')
