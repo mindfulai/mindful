@@ -128,14 +128,15 @@ def facebook_posts(user_id):
 
     if last_post:
         last_post_time = pendulum.instance(last_post.created_at).timestamp()
-        resp = facebook.get('3.2/me/feed?since={}'.format(last_post_time))
+        resp = facebook.get('v3.2/me/feed?since={}'.format(last_post_time))
     else:
-        resp = facebook.get('3.2/me/feed')
+        resp = facebook.get('v3.2/me/feed')
 
     if not resp.ok:
+        app.logger.error(resp.json())
         return jsonify(resp.json())
 
-    posts = resp.json()['posts']['data']
+    posts = resp.json()['data']
 
     for post in posts:
         created_at = pendulum.parse(post['created_time'])
