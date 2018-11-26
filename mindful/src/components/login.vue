@@ -1,9 +1,8 @@
 <template>
     <div class="login_box">
       <div class="login_header">Login</div>
-      <!-- <fb:login-button class="login" scope="public_profile,email,user_posts"   onlogin="checkLoginState()"></fb:login-button> -->
       <!-- <a class="login" @click="login('facebook',{scope:'user_posts,email'})"> Login with Facebook<a class="facebook_logo"><i class="fa fa-facebook-square"></i></a>  -->
-      <!-- https://pocoweb-mindful.herokuapp.com -->
+      <!-- https://mindful-ucb.herokuapp.com -->
       <a class="login" href="/login/facebook"> Login with Facebook<a class="facebook_logo"><i class="fa fa-facebook-square"></i></a> 
       </a>
     </div>
@@ -62,30 +61,12 @@ export default {
     //       console.log(res);
     //     });
     // },
-    // checkLoginState() {
-    //   FB.getLoginStatus(function(response) {
-    //     console.log(response);
-    //     this.statusChangeCallback(response);
-    //   });
-    // },
-    // statusChangeCallback(response) {
-    //   if (response.status === "connected") {
-    //     //登陆状态已连接
-    //     fbToken = response.authResponse.accessToken;
-    //     this.getUserInfo();
-    //   } else if (response.status === "not_authorized") {
-    //     //未经授权
-    //     console.log("facebook未经授权");
-    //   } else {
-    //     console.log("不是登陆到Facebook;不知道是否授权");
-    //   }
-    // },
-    // getUserInfo() {
-    //   FB.api("/me", function(response) {
-    //     //response.id / response.name
-    //     console.log("Successful login for: " + response.name);
-    //     //把用户token信息交给后台
-    //     self.location = "/home/login.fbLogin.do?accessToken=" + fbToken;
+    // goHome() {
+    //   this.$.ajax({
+    //     url: this.api + "/login/facebook",
+    //     success: function(res) {
+    //       console.log(res);
+    //     }
     //   });
     // }
   }
