@@ -125,9 +125,12 @@ def facebook_posts(user_id):
 
     last_post = models.FacebookPost.query.filter_by(
         user=user).order_by(models.FacebookPost.created_at.desc()).first()
-    last_post_time = pendulum.instance(last_post.created_at).timestamp()
 
-    resp = facebook.get('3.2/me/feed?since={}'.format(last_post_time))
+    if last_post:
+        last_post_time = pendulum.instance(last_post.created_at).timestamp()
+        resp = facebook.get('3.2/me/feed?since={}'.format(last_post_time))
+    else:
+        resp = facebook.get('3.2/me/feed')
 
     if not resp.ok:
         return jsonify(resp.json())
