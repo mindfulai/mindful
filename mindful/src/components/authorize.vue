@@ -20,6 +20,9 @@
     <a v-if="twitter_auth" class="authorize_connect">
       Authorized
     </a>
+    <a class="authorize_connect" @click="updateData('twitter')">
+     Update data
+    </a>
     <!-- <div class="authorize_connect"  @click="connect('twitter')">
       <i class="fa fa-plus"></i>&nbsp;
       Connect
@@ -40,6 +43,9 @@
     </a>
     <a v-if="facebook_auth" class="authorize_connect">
       Authorized
+    </a>
+    <a class="authorize_connect" @click="updateData('facebook')">
+     Update data
     </a>
   </div>
 </div>
@@ -70,13 +76,100 @@ export default {
   // },
   methods: {
     getAuthorize() {
+      this.$indicator.open({
+        spinnerType: "fading-circle"
+      });
       this.$axios
         .get(this.api + "/user/" + this.id + "/authorized")
         .then(res => {
+          this.$indicator.close();
           if (res.status == 200) {
             this.facebook_auth = res.data.facebook_auth;
             this.twitter_auth = res.data.twitter_auth;
           }
+        })
+        .catch(err => {
+          this.$indicator.close();
+          this.$toast({
+            message: "Server error",
+            duration: 5000
+          });
+        });
+    },
+    updateData(type) {
+      if (type == "facebook") {
+        this.updateFacebook();
+      } else if (type == "twitter") {
+        this.updateTweets();
+        this.updateMetions();
+      }
+    },
+    updateFacebook() {
+      this.$indicator.open({
+        spinnerType: "fading-circle"
+      });
+      this.$axios
+        .get(this.api + "/user/" + this.id + "/facebook/posts/update")
+        .then(res => {
+          this.$indicator.close();
+          if (res.status == 200 && res.data.msg == "success") {
+            this.$toast({
+              message: "Update success",
+              duration: 5000
+            });
+          }
+        })
+        .catch(err => {
+          this.$indicator.close();
+        });
+    },
+    updateTweets() {
+      this.$indicator.open({
+        spinnerType: "fading-circle"
+      });
+      this.$axios
+        .get(this.api + "/user/" + this.id + "/twitter/user_timeline/update")
+        .then(res => {
+          this.$indicator.close();
+          if (res.status == 200 && res.data.msg == "success") {
+            this.$toast({
+              message: "Update success",
+              duration: 5000
+            });
+          }
+        })
+        .catch(err => {
+          this.$indicator.close();
+        });
+    },
+    updateMetions() {
+      this.$indicator.open({
+        spinnerType: "fading-circle"
+      });
+      this.$axios
+        .get(
+          this.api + "/user/" + this.id + "/twitter/mentions_timeline/update"
+        )
+        .then(res => {
+          this.$indicator.close();
+          if (res.status == 200 && res.data.msg == "success") {
+            this.$toast({
+              message: "Update success",
+              duration: 5000
+            });
+          } else {
+            this.$toast({
+              message: "Update failed",
+              duration: 5000
+            });
+          }
+        })
+        .catch(err => {
+          this.$indicator.close();
+          this.$toast({
+            message: "Update failed",
+            duration: 5000
+          });
         });
     }
   },
