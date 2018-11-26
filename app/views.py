@@ -201,7 +201,7 @@ def twitter_auth():
         user.username, user.id))
 
 
-@app.route('/twitter/<int:user_id>/user_timeline')
+@app.route('/user/<int:user_id>/twitter/user_timeline/update')
 @login_required
 def twitter_user_timeline(user_id):
     """ 将用户 tweet 存入数据库
@@ -227,11 +227,10 @@ def twitter_user_timeline(user_id):
     # 存入数据库
     save_twitter_data(resp, user, models.Tweet)
 
-    # FIXME: response result
-    return jsonify({'tweets': timeline})
+    return jsonify({'msg': 'success'})
 
 
-@app.route('/twitter/<int:user_id>/mentions_timeline')
+@app.route('/user/<int:user_id>/twitter/mentions_timeline/update')
 @login_required
 def twitter_mentions_timeline(user_id):
     """ 将用户 mentions 存入数据库
@@ -255,7 +254,7 @@ def twitter_mentions_timeline(user_id):
     # 存入数据库
     save_twitter_data(resp, user, models.TweetMention)
 
-    return jsonify(resp.json())
+    return jsonify({'msg': 'success'})
 
 
 @app.route('/twitter/<int:user_id>/summary')
