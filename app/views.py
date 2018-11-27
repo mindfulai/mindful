@@ -184,11 +184,11 @@ def facebook_summary(user_id):
 ##############################################
 
 @oauth_authorized.connect_via(twitter_blueprint)
-def twitter_login(twitter_blueprint, token):
+def twitter_auth(twitter_blueprint, token):
     """ Twitter 授权 """
 
-    if not twitter.authorized:
-        return redirect(url_for('twitter.login'))
+    if not token:
+        return False
 
     user = current_user
 
@@ -219,13 +219,12 @@ def twitter_user_timeline(user_id):
     """
 
     if not twitter.authorized:
-        print('================ twitter.authorized')
         return redirect(url_for('twitter.login'))
 
     user = db.session.query(models.User).get(user_id)
 
     screen_name = get_twitter_screen_name(twitter_blueprint, user)
-    print('============ SCREEN_NAME:{}'.format(screen_name))
+
     # 获取数据库中最后 tweet
     last_tweet = get_user_last_tweet_or_mention(user, models.Tweet)
 
@@ -235,7 +234,6 @@ def twitter_user_timeline(user_id):
     # 访问 twitter API
     resp = twitter.get(path)
     if not resp.ok:
-        print('=========== get twitter not ok ')
         return jsonify(resp.json())
 
     timeline = json.dumps(resp.json(), indent=2, ensure_ascii=False)
