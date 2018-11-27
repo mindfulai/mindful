@@ -107,7 +107,7 @@ def facebook_auth(facebook_blueprint, token):
     print('=== get user posts')
     facebook_posts(oauth.user.id)
 
-    return redirect('/static/dist/index.html#/index?name={}&id={}'.format(
+    return redirect('/#/index?name={}&id={}'.format(
         oauth.user.username, oauth.user.id))
 
 
@@ -207,7 +207,7 @@ def twitter_auth(twitter_blueprint, token):
     twitter_user_timeline(user.id)
     print('==== get twitter user mention timeline')
     twitter_mentions_timeline(user.id)
-    return redirect('/static/dist/index.html#/index?name={}&id={}'.format(
+    return redirect('/#/index?name={}&id={}'.format(
         user.username, user.id))
 
 
