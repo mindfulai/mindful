@@ -66,7 +66,7 @@ export default {
 }
 .login_header {
   position: absolute;
-  top: 35%;
+  top: 30%;
   left: 0;
   text-align: center;
   font-size: 0.5rem;
