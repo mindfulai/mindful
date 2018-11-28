@@ -118,9 +118,11 @@ body {
 }
 /*头部*/
 header {
-  position: fixed;
-  left: 0;
+  max-width:750px;
   width: 100%;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
   height: 1.08rem;
   line-height: 1.08rem;
   text-align: center;
@@ -151,9 +153,12 @@ header .search i {
   color: #616976;
 }
 .content {
+  max-width:750px;
   position: fixed;
   top: 1.08rem;
   bottom: 0.2rem;
+  left:50%;
+  transform: translateX(-50%);
   width: 100%;
   overflow: auto;
   padding: 0.3rem;
@@ -241,6 +246,7 @@ header .search i {
   }
 }*/
 .tabs {
+  max-width:750px;
   width: 100%;
   background: #424C55;
   height: 0.9rem;
@@ -248,6 +254,8 @@ header .search i {
   box-sizing: border-box;
   position: fixed;
   top: 1.08rem;
+  left:50%;
+  transform: translateX(-50%);
 }
 .tabs .tab {
   color: #fff;
