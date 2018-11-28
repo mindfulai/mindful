@@ -15,10 +15,8 @@ Vue.use(MintUI)
 // import hello from "hellojs/dist/hello.all";
 // Vue.prototype.$hello = hello
 //全局引入jquery
-import $ from 'jquery'
-Vue.prototype.$ = $
-
-//import "font-awesome/css/font-awesome.min.css"
+// import $ from 'jquery'
+// Vue.prototype.$ = $
 
 Vue.config.productionTip = false
 
@@ -26,7 +24,6 @@ import "@/assets/app.css"
 Vue.prototype.api = ''
 //Vue.prototype.api = "http://192.168.1.237:5000"
 //Vue.prototype.api = 'https://mindful-ucb.herokuapp.com'
-//Vue.prototype.api = ''
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

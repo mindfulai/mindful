@@ -2,53 +2,68 @@
   <div>
     <nav-header :name="name"></nav-header>
     <div class="content">
-  <h3 class="connect_authorize">CONNECT AUTHORIZE</h3>
-  <div class="authorize_box">
-    <div class="authorize_meta facebook">
-      facebook <!--<i class="fa fa-facebook"></i>-->
+      <h3 class="connect_authorize">CONNECT AUTHORIZE</h3>
+      <!-- facebook -->
+      <div class="authorize_box">
+        <div class="authorize_meta facebook">
+          facebook <!--<i class="fa fa-facebook"></i>-->
+        </div>
+        <ul>
+          <li><a href="#">TRACKS</a><strong>Posts, comments, reactions</strong></li>
+          <li><a href="#">REQUIRES</a><strong>Facebook account</strong></li>
+          <li><a href="#">PROVIDING</a><strong>Facebook posts</strong></li>
+        </ul>
+        <a  v-if="!facebook_auth" class="authorize_connect">
+          <i class="fa fa-plus"></i>&nbsp;
+          Authorize
+        </a>
+        <a v-if="facebook_auth" class="authorize_connect">
+          Authorized
+        </a>
+        <a class="authorize_connect" @click="updateData('facebook')">
+        Update data
+        </a>
+      </div>
+      <!-- twitter -->
+      <div class="authorize_box">
+        <div class="authorize_meta">
+          Twitter &nbsp;&nbsp;<i class="fa fa-twitter twitter_logo"></i>
+        </div>
+        <ul>
+          <li><a href="#">TRACKS</a><strong>Tweets,metions</strong></li>
+          <li><a href="#">REQUIRES</a><strong>Twitter account</strong></li>
+          <li><a href="#">PROVIDING</a><strong>Tweets</strong></li>
+        </ul>
+        <a  v-if="!twitter_auth" class="authorize_connect" href="/login/twitter">
+          <i class="fa fa-plus"></i>&nbsp;
+          Authorize
+        </a>
+        <a v-if="twitter_auth" class="authorize_connect">
+          Authorized
+        </a>
+        <!-- <a class="authorize_connect" @click="updateData('twitter')">
+        Update data
+        </a> -->
+      </div>
+      <!-- fitbit -->
+      <div class="authorize_box">
+        <div class="authorize_meta">
+          Fitbit &nbsp;&nbsp;<i class="fa fa-fitbit fitbit_logo"></i>
+        </div>
+        <ul>
+          <li><a href="#">TRACKS</a><strong>Steps,workouts</strong></li>
+          <li><a href="#">REQUIRES</a><strong>Fitbit device</strong></li>
+          <li><a href="#">PROVIDING</a><strong>Steps,Active</strong></li>
+        </ul>
+        <a  v-if="!fitbit_auth" class="authorize_connect">
+          <i class="fa fa-plus"></i>&nbsp;
+          Authorize
+        </a>
+        <a v-if="fitbit_auth" class="authorize_connect">
+          Authorized
+        </a>
+      </div>
     </div>
-    <ul>
-      <li><a href="#">TRACKS</a><strong>Posts, comments, reactions</strong></li>
-      <li><a href="#">REQUIRES</a><strong>Facebook account</strong></li>
-      <li><a href="#">PROVIDING</a><strong>Facebook posts</strong></li>
-    </ul>
-    <a  v-if="!facebook_auth" class="authorize_connect">
-      <i class="fa fa-plus"></i>&nbsp;
-      Authorize
-    </a>
-    <a v-if="facebook_auth" class="authorize_connect">
-      Authorized
-    </a>
-    <a class="authorize_connect" @click="updateData('facebook')">
-     Update data
-    </a>
-  </div>
-  <div class="authorize_box">
-    <div class="authorize_meta">
-      Twitter &nbsp;&nbsp;<i class="fa fa-twitter twitter_logo"></i>
-    </div>
-    <ul>
-      <li><a href="#">TRACKS</a><strong>Tweets,metions</strong></li>
-      <li><a href="#">REQUIRES</a><strong>Twitter account</strong></li>
-      <li><a href="#">PROVIDING</a><strong>Tweets</strong></li>
-    </ul>
-    <!-- https://pocoweb-mindful.herokuapp.com -->
-    <a  v-if="!twitter_auth" class="authorize_connect" href="/login/twitter">
-      <i class="fa fa-plus"></i>&nbsp;
-      Authorize
-    </a>
-    <a v-if="twitter_auth" class="authorize_connect">
-      Authorized
-    </a>
-    <!-- <a class="authorize_connect" @click="updateData('twitter')">
-     Update data
-    </a> -->
-    <!-- <div class="authorize_connect"  @click="connect('twitter')">
-      <i class="fa fa-plus"></i>&nbsp;
-      Connect
-    </div> -->
-  </div>
-</div>
   </div>
 </template>
 
@@ -61,7 +76,8 @@ export default {
       name: "",
       id: "",
       facebook_auth: false,
-      twitter_auth: false
+      twitter_auth: false,
+      fitbit_auth: false
     };
   },
   mounted() {
@@ -69,11 +85,6 @@ export default {
     this.id = window.localStorage.getItem("id");
     this.getAuthorize();
   },
-  // mounted() {
-  //   this.$hello.init({
-  //     twitter: "devnDViKMhTY4J5AwVKW7NewW"
-  //   });
-  // },
   methods: {
     getAuthorize() {
       this.$indicator.open({
