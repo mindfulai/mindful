@@ -256,7 +256,7 @@
         <div v-show="activeTab=='week'">
           <!--Facebook-->
           <div class="content_box">
-            <h4>Total posts for this week</h4>
+            <h4>Posts for this week</h4>
 
             <div class="content_box_inner">
               <div class="line clearfix">
@@ -283,7 +283,7 @@
           </div>
           <!--Twitter-->
           <div class="content_box">
-            <h4>Total tweets and mentions for this week</h4>
+            <h4>Tweets and Mentions for this week</h4>
 
             <div class="content_box_inner">
               <div class="line clearfix">
@@ -321,7 +321,7 @@
           </div> 
           <!-- others -->
           <div class="content_box">
-            <h4>Total others for this week</h4>
+            <h4>Others for this week</h4>
             
             <div class="content_box_inner">
               <!-- week -->
@@ -432,7 +432,7 @@
         <div v-show="activeTab=='month'">
           <!--Facebook-->
           <div class="content_box">
-            <h4>Total posts for this month</h4>
+            <h4>Posts for this month</h4>
 
             <div class="content_box_inner">
               <div class="line clearfix">
@@ -459,7 +459,7 @@
           </div>
           <!--Twitter-->
           <div class="content_box">
-            <h4>Total tweets and mentions for this month</h4>
+            <h4>Tweets and Mentions for this month</h4>
 
             <div class="content_box_inner">
               <div class="line clearfix">
@@ -504,7 +504,7 @@
           </div>
           <!-- moods/events -->
           <div class="content_box">
-            <h4>Total moods for this month</h4>
+            <h4>Moods for this month</h4>
             
             <div class="content_box_inner">
               <!-- week -->
@@ -530,7 +530,7 @@
           </div>
           <!-- others -->
           <div class="content_box">
-            <h4>Total weathers for this month</h4>
+            <h4>Weathers for this month</h4>
             
             <div class="content_box_inner">
               <!-- week -->
