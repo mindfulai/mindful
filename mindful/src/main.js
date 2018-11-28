@@ -15,8 +15,8 @@ Vue.use(MintUI)
 // import hello from "hellojs/dist/hello.all";
 // Vue.prototype.$hello = hello
 //全局引入jquery
-import $ from 'jquery'
-Vue.prototype.$ = $
+// import $ from 'jquery'
+// Vue.prototype.$ = $
 
 //import "font-awesome/css/font-awesome.min.css"
 

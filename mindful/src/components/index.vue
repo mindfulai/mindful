@@ -253,7 +253,7 @@
         <div v-show="activeTab=='week'">
           <!--Facebook-->
           <div class="content_box">
-            <h4>Totals posts for this week</h4>
+            <h4>Total posts for this week</h4>
 
             <div class="content_box_inner">
               <div class="line clearfix">
@@ -280,7 +280,7 @@
           </div>
           <!--Twitter-->
           <div class="content_box">
-            <h4>Totals tweets and mentions for this week</h4>
+            <h4>Total tweets and mentions for this week</h4>
 
             <div class="content_box_inner">
               <div class="line clearfix">
@@ -318,7 +318,7 @@
           </div> 
           <!-- others -->
           <div class="content_box">
-            <h4>Totals others for this week</h4>
+            <h4>Total others for this week</h4>
             
             <div class="content_box_inner">
               <!-- week -->
@@ -429,7 +429,7 @@
         <div v-show="activeTab=='month'">
           <!--Facebook-->
           <div class="content_box">
-            <h4>Totals posts for this month</h4>
+            <h4>Total posts for this month</h4>
 
             <div class="content_box_inner">
               <div class="line clearfix">
@@ -456,7 +456,7 @@
           </div>
           <!--Twitter-->
           <div class="content_box">
-            <h4>Totals tweets and mentions for this month</h4>
+            <h4>Total tweets and mentions for this month</h4>
 
             <div class="content_box_inner">
               <div class="line clearfix">
@@ -501,7 +501,7 @@
           </div>
           <!-- moods/events -->
           <div class="content_box">
-            <h4>Totals moods and events for this month</h4>
+            <h4>Total moods for this month</h4>
             
             <div class="content_box_inner">
               <!-- week -->
@@ -527,7 +527,7 @@
           </div>
           <!-- others -->
           <div class="content_box">
-            <h4>Totals weather for this month</h4>
+            <h4>Total weathers for this month</h4>
             
             <div class="content_box_inner">
               <!-- week -->
@@ -1060,9 +1060,10 @@ export default {
   font-weight: 900;
 }
 .chart_number {
-  line-height: 0.18rem;
+  height: 0.26rem;
+  line-height: 0.3rem;
   background: #dbdce5;
-  font-size: 0.28rem;
+  font-size: 0.2rem;
   color: #6f7680;
   border-radius: 0.06rem;
 }
