@@ -441,17 +441,21 @@ def mood_average_list(user_id):
 ##############################################
 
 
+fitbit = Fitbit(client_id='22D6BS',
+                client_secret='5cf4f501414edbe53904cf473c833d5f')
+
+
 @app.route('/login/fitbit')
 @login_required
 def fitbit_auth():
     user = current_user
-    fitbit = Fitbit(client_id='22D6BS',
-                    client_secret='5cf4f501414edbe53904cf473c833d5f',
-                    redirect_uri=url_for('fitbit_auth', _external=True))
+
+    fitbit.redirect_uri = url_for('fitbit_auth', _external=True)
 
     code = request.args.get('code')
     if not code:
-        url, _ = fitbit.client.authorize_token_url()
+        url, _ = fitbit.client.authorize_token_url(
+            redirect_uri=fitbit.redirect_uri)
         return redirect(url)
 
     token = fitbit.client.fetch_access_token(code=code)
