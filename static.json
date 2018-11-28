@@ -1,0 +1,11 @@
+{
+    "headers": {
+        "/login/**": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": true,
+        }
+    },
+    "routes": {
+        "/*": "/dist/",
+    }
+}

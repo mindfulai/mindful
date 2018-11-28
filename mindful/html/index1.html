@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>mindful</title>
+  <link rel="stylesheet" href="./css/app.css"/>
+  <link rel="stylesheet" href="./../static/font-awesome/css/font-awesome.min.css"/>
+</head>
+<body>
+<header>
+  <a class="left setting"><i class="fa fa-th-large"></i></a>
+
+  <div class="right">
+    <!--<a class="search"><i class="fa fa-search"></i></a>-->
+    <a class="login">mine</a>
+  </div>
+</header>
+<div class="mine_bar">
+  <ul class="mine_bar_list">
+    <li><a href="./authorize.html"><i class="fa fa-tasks"></i>&nbsp;&nbsp;&nbsp;&nbsp;Authorize</a></li>
+    <li><a href="#"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;&nbsp;&nbsp;Log out</a></li>
+  </ul>
+</div>
+<div class="tabs">
+  <div class="tab active">Day</div>
+  <div class="tab">Week</div>
+  <div class="tab">Month</div>
+</div>
+<div class="content index_content">
+  <div class="date">
+    <div class="arrow left"><i class="fa fa-angle-left"></i></div>
+    2018-11-05
+    <div class="arrow right"><i class="fa fa-angle-right"></i></div>
+  </div>
+  <div class="content_box">
+    <h4>Mood</h4>
+
+    <div class="content_box_inner">
+      <div class="mood">
+        <div class="mood_number mood_active">5</div>
+      </div>
+      <a class="edit_mood" href="./edit_mood.html">
+        <i class="fa fa-pencil"></i>
+        Rete day
+      </a>
+      <div class="connector">
+        <i class="fa fa-exchange"></i>
+        Android
+      </div>
+      <div class="chart">
+
+      </div>
+    </div>
+  </div>
+  <div class="content_box">
+    <h4>Events</h4>
+
+    <div class="content_box_inner">
+      <div class="line clearfix">
+        <div class="left left_table">
+          <table class="table">
+            <tbody>
+            <tr>
+              <td class="left" valign="bottom"><b>0</b> today</td>
+              <td class="right" valign="bottom"><b>0</b> avg</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="percent-bg">
+                <div class="percent-meter" style="width: 0%; background-color: #E1546C"></div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <table class="table">
+            <tbody>
+            <tr>
+              <td class="left" valign="bottom"><b>00:00</b> in events</td>
+              <td class="right" valign="bottom"><b>00:00</b> avg</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="percent-bg">
+                <div class="percent-meter" style="width: 0%; background-color: #E1546C"></div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="right right_icon">
+          <i class="fa fa-file-text events"></i>
+        </div>
+      </div>
+      <div class="connector">
+        <i class="fa fa-exchange"></i>
+        Events
+      </div>
+      <div class="chart">
+      </div>
+    </div>
+  </div>
+  <div class="content_box">
+    <h4>Twitter</h4>
+
+    <div class="content_box_inner">
+      <div class="line clearfix">
+        <div class="left left_table">
+          <table class="table">
+            <tbody>
+            <tr>
+              <td class="left" valign="bottom"><b>0</b> tweets</td>
+              <td class="right" valign="bottom"><b>0</b> avg</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="percent-bg">
+                <div class="percent-meter" style="width: 0%; background-color: #55acee"></div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <table class="table">
+            <tbody>
+            <tr>
+              <td class="left" valign="bottom"><b>0</b> mentions</td>
+              <td class="right" valign="bottom"><b>0</b> avg</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="percent-bg">
+                <div class="percent-meter" style="width: 0%; background-color: #55acee"></div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="right right_icon">
+          <i class="fa fa-twitter-square"></i>
+          <!--<i class="fa fa-facebook-square"></i>-->
+        </div>
+      </div>
+      <div class="connector">
+        <i class="fa fa-exchange"></i>
+        Twitter
+      </div>
+      <div class="chart">
+      </div>
+    </div>
+  </div>
+  <div class="content_box">
+    <h4>FaceBook</h4>
+
+    <div class="content_box_inner">
+      <div class="line clearfix">
+        <div class="left left_table">
+          <table class="table">
+            <tbody>
+            <tr>
+              <td class="left" valign="bottom"><b>0</b> FB posts</td>
+              <td class="right" valign="bottom"><b>0</b> avg</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="percent-bg">
+                <div class="percent-meter" style="width: 0%; background-color: #4E7CA0"></div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <table class="table">
+            <tbody>
+            <tr>
+              <td class="left" valign="bottom"><b>0</b> FB reactions</td>
+              <td class="right" valign="bottom"><b>0</b> avg</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="percent-bg">
+                <div class="percent-meter" style="width: 0%; background-color: #4E7CA0"></div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <table class="table">
+            <tbody>
+            <tr>
+              <td class="left" valign="bottom"><b>0</b> FB comments</td>
+              <td class="right" valign="bottom"><b>0</b> avg</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="percent-bg">
+                <div class="percent-meter" style="width: 0%; background-color: #4E7CA0"></div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="right right_icon">
+          <i class="fa fa-facebook-square FB"></i>
+        </div>
+      </div>
+      <div class="connector">
+        <i class="fa fa-exchange"></i>
+        FaceBook
+      </div>
+      <div class="chart">
+      </div>
+    </div>
+  </div>
+</div>
+<!--<div class="tab_bar">
+  <div class="tab_bar_close"> <i class="fa fa-remove"></i></div>
+  <h4 class="tab_bar_header">Mine</h4>
+  <ul class="tab_bar_list">
+    <li><a href="#"><i class="fa fa-tasks"></i>&nbsp;&nbsp;&nbsp;&nbsp;Authorize</a></li>
+    <li><a href="#"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;&nbsp;&nbsp;Log out</a></li>
+  </ul>
+</div>-->
+</body>
+</html>
