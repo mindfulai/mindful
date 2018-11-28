@@ -17,7 +17,6 @@ Vue.use(MintUI)
 //全局引入jquery
 // import $ from 'jquery'
 // Vue.prototype.$ = $
-
 Vue.config.productionTip = false
 
 import "@/assets/app.css"

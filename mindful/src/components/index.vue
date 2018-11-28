@@ -69,6 +69,9 @@
               <div class="connector">
                 <i class="fa fa-exchange"></i>
                 FaceBook
+                <a class="authorize" @click="updateData('facebook')">
+                 Update data
+                </a>
               </div>
               <div class="chart">
               </div>
@@ -312,7 +315,8 @@
         <div v-show="activeTab=='week'">
           <!--Facebook-->
           <div class="content_box">
-            <h4>Total posts for this week</h4>
+
+            <h4>Posts for this week</h4>
 
             <div class="content_box_inner">
               <div class="line clearfix">
@@ -338,9 +342,7 @@
             </div>
           </div>
           <!--Twitter-->
-          <div class="content_box">
-            <h4>Total tweets and mentions for this week</h4>
-
+          <div class="content_box"><h4>Tweets and  mentions for this week</h4>
             <div class="content_box_inner">
               <div class="line clearfix">
                 <div class="left left_table">
@@ -507,7 +509,7 @@
         <div v-show="activeTab=='month'">
           <!--Facebook-->
           <div class="content_box">
-            <h4>Total posts for this month</h4>
+            <h4>Posts for this month</h4>
 
             <div class="content_box_inner">
               <div class="line clearfix">
@@ -534,8 +536,7 @@
           </div>
           <!--Twitter-->
           <div class="content_box">
-            <h4>Total tweets and mentions for this month</h4>
-
+            <h4>Tweets and mentions for this month</h4>
             <div class="content_box_inner">
               <div class="line clearfix">
                 <div class="left left_table">
@@ -579,8 +580,7 @@
           </div>
           <!-- moods/events -->
           <div class="content_box">
-            <h4>Total moods for this month</h4>
-            
+            <h4>Moods for this month</h4>  
             <div class="content_box_inner">
               <!-- week -->
               <div class="calendar_wrapper">
@@ -605,8 +605,7 @@
           </div>
           <!-- weather -->
           <div class="content_box">
-            <h4>Total weather for this month</h4>
-            
+            <h4>Weather for this month</h4>
             <div class="content_box_inner">
               <!-- week -->
               <div class="calendar_wrapper">
@@ -1056,6 +1055,42 @@ export default {
           }
         }
       }
+    },
+    updateData(type) {
+      if (type == "facebook") {
+        this.updateFacebook();
+      } else if (type == "twitter") {
+        //this.updateTweets();
+        // this.updateMetions();
+      }
+    },
+    updateFacebook() {
+      this.$indicator.open({
+        spinnerType: "fading-circle"
+      });
+      this.$axios
+        .get(this.api + "/user/" + this.id + "/facebook/posts/update")
+        .then(res => {
+          this.$indicator.close();
+          if (res.status == 200 && res.data.msg == "success") {
+            this.$toast({
+              message: "Update success",
+              duration: 5000
+            });
+          } else {
+            this.$toast({
+              message: "Update failed",
+              duration: 5000
+            });
+          }
+        })
+        .catch(err => {
+          this.$indicator.close();
+          this.$toast({
+            message: "Server error",
+            duration: 5000
+          });
+        });
     }
   },
   components: {
