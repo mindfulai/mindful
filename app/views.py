@@ -436,6 +436,31 @@ def mood_average_list(user_id):
 
     return jsonify(result)
 
+##############################################
+#                 Fitbit
+##############################################
+
+
+@app.route('/login/fitbit')
+@login_required
+def fitbit_auth():
+    user = current_user
+    fitbit = Fitbit(client_id='22D6BS',
+                    client_secret='5cf4f501414edbe53904cf473c833d5f',
+                    redirect_uri=url_for('fitbit_auth', _external=True))
+
+    code = request.args.get('code')
+    if not code:
+        url, _ = fitbit.client.authorize_token_url()
+        return redirect(url)
+
+    token = fitbit.client.fetch_access_token(code=code)
+
+    oauth, created = get_oauth_or_create('fitbit', token['user_id'], user)
+
+    return jsonify({'msg': 'success'})
+
+
 
 @app.route('/debug')
 def debug():
