@@ -19,9 +19,9 @@
     <a v-if="facebook_auth" class="authorize_connect">
       Authorized
     </a>
-    <a class="authorize_connect" @click="updateData('facebook')">
+    <!-- <a class="authorize_connect" @click="updateData('facebook')">
      Update data
-    </a>
+    </a> -->
   </div>
   <div class="authorize_box">
     <div class="authorize_meta">
@@ -32,7 +32,6 @@
       <li><a href="#">REQUIRES</a><strong>Twitter account</strong></li>
       <li><a href="#">PROVIDING</a><strong>Tweets</strong></li>
     </ul>
-    <!-- https://pocoweb-mindful.herokuapp.com -->
     <a  v-if="!twitter_auth" class="authorize_connect" href="/login/twitter">
       <i class="fa fa-plus"></i>&nbsp;
       Authorize
@@ -43,10 +42,6 @@
     <!-- <a class="authorize_connect" @click="updateData('twitter')">
      Update data
     </a> -->
-    <!-- <div class="authorize_connect"  @click="connect('twitter')">
-      <i class="fa fa-plus"></i>&nbsp;
-      Connect
-    </div> -->
   </div>
 </div>
   </div>
