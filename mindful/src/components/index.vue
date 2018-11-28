@@ -283,7 +283,7 @@
           </div>
           <!--Twitter-->
           <div class="content_box">
-            <h4>Tweets and Mentions for this week</h4>
+            <h4>Tweets and  mentions for this week</h4>
 
             <div class="content_box_inner">
               <div class="line clearfix">
@@ -459,7 +459,7 @@
           </div>
           <!--Twitter-->
           <div class="content_box">
-            <h4>Tweets and Mentions for this month</h4>
+            <h4>Tweets and mentions for this month</h4>
 
             <div class="content_box_inner">
               <div class="line clearfix">
@@ -530,7 +530,7 @@
           </div>
           <!-- others -->
           <div class="content_box">
-            <h4>Weathers for this month</h4>
+            <h4>Weather for this month</h4>
             
             <div class="content_box_inner">
               <!-- week -->
