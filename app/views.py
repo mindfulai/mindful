@@ -199,7 +199,8 @@ def twitter_auth(twitter_blueprint, token):
         return jsonify(resp.json())
 
     screen_name = resp.json()['screen_name']
-    oauth, created = get_oauth_or_create(twitter_blueprint, screen_name, user)
+    oauth, created = get_oauth_or_create(
+        twitter_blueprint.name, screen_name, user)
 
     actions.update_oauth_token(oauth, twitter.token)
 
