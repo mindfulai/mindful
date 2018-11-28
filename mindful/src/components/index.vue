@@ -69,6 +69,9 @@
               <div class="connector">
                 <i class="fa fa-exchange"></i>
                 FaceBook
+                <a class="authorize" @click="updateData('facebook')">
+                 Update data
+                </a>
               </div>
               <div class="chart">
               </div>
@@ -978,6 +981,42 @@ export default {
           }
         }
       }
+    },
+    updateData(type) {
+      if (type == "facebook") {
+        this.updateFacebook();
+      } else if (type == "twitter") {
+        //this.updateTweets();
+        // this.updateMetions();
+      }
+    },
+    updateFacebook() {
+      this.$indicator.open({
+        spinnerType: "fading-circle"
+      });
+      this.$axios
+        .get(this.api + "/user/" + this.id + "/facebook/posts/update")
+        .then(res => {
+          this.$indicator.close();
+          if (res.status == 200 && res.data.msg == "success") {
+            this.$toast({
+              message: "Update success",
+              duration: 5000
+            });
+          } else {
+            this.$toast({
+              message: "Update failed",
+              duration: 5000
+            });
+          }
+        })
+        .catch(err => {
+          this.$indicator.close();
+          this.$toast({
+            message: "Server error",
+            duration: 5000
+          });
+        });
     }
   },
   components: {

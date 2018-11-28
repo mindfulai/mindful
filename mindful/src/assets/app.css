@@ -421,7 +421,8 @@ header .search i {
   text-align:left;
 }
 .content .content_box .content_box_inner .connector .authorize{
-  float:right;
+  /*float:right;*/
+  margin-left:.2rem;
   font-size:.28rem;
   color:#55acee;
 }
