@@ -462,7 +462,9 @@ def fitbit_auth():
 
     oauth, created = get_oauth_or_create('fitbit', token['user_id'], user)
 
-    return jsonify({'msg': 'success'})
+    return redirect('/#/index?name={}&id={}'.format(user.username, user.id))
+
+
 
 
 

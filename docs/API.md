@@ -231,3 +231,8 @@ Response:
     }
 ]
 ```
+
+
+## Fitbit 授权
+URL: ／login/fitbit
+Method: GET
