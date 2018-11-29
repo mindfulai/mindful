@@ -267,3 +267,33 @@ Response:
     }
 }
 ```
+
+## Fitbit Activities
+URL: /user/<int:user_id>/fitbit/activity/day  
+Method: GET  
+Data:  
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```   
+
+Response:
+```json
+[
+    {
+        "activityId":51007,
+        "activityParentId":90019,
+        "calories":230,
+        "description":"7mph",
+        "distance":2.04,
+        "duration":1097053,
+        "hasStartTime":true,
+        "isFavorite":true,
+        "logId":1154701,
+        "name":"Treadmill, 0% Incline",
+        "startTime":"00:25",
+        "steps":3783
+    }
+]
+```
