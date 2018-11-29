@@ -467,7 +467,6 @@ def fitbit_auth():
     return redirect('/#/index?name={}&id={}'.format(user.username, user.id))
 
 
-
 @app.route('/user/<int:user_id>/fitbit/sleep/day')
 @login_required
 def fitbit_sleep(user_id):
@@ -521,20 +520,31 @@ def fitbit_activity(user_id):
     dt = pendulum.parse(dt_str, strict=False)
 
     # 获取 activity
-    data = fitbit.activities(user_id=token['user_id'])
+    data = fitbit.activities(date=dt.date(), user_id=token['user_id'])
     print('==== activities from fitbit')
     print(data)
 
-    # 存储 activity
-    activities = models.Activity(
+    query = models.Activity.query.filter_by(
         user=user,
-        data=data,
         date=dt.date()
     )
-    db.session.add(activities)
-    db.session.commit()
 
-    return jsonify(activities['activities'])
+    try:
+        activities = query.one()
+        activities.data = data
+        db.session.add(activities)
+        db.session.commit()
+    except NoResultFound:
+        # 存储 activity
+        activities = models.Activity(
+            user=user,
+            data=data,
+            date=dt.date()
+        )
+        db.session.add(activities)
+        db.session.commit()
+
+    return jsonify(activities.data['activities'])
 
 
 @app.route('/debug')
