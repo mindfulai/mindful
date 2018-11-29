@@ -469,22 +469,40 @@ def fitbit_auth():
 
 
 @app.route('/user/<int:user_id>/fitbit/sleep/day')
+@login_required
 def fitbit_sleep(user_id):
-    """ 创建今天的 sleep 记录 """
+    """ 创建或更新今天的 sleep 记录 """
     user = load_user(user_id)
     token = fitbit.client.session.token
     if not token:
         return redirect(url_for('fitbit_auth'))
+
     oauth, _ = get_oauth_or_create('fitbit', user=user)
 
-    sleep_data = fitbit.sleep(user_id=oauth.provider_user_id)
+    # TODO: 如果没有 datetime 参数处理
+    dt_str = request.args.get('datetime')
+    dt = pendulum.parse(dt_str, strict=False)
 
-    sleep = models.Sleep(
+    sleep_data = fitbit.sleep(date=dt.date(), user_id=oauth.provider_user_id)
+
+    query = models.Sleep.query.filter_by(
         user=user,
-        data=sleep_data
+        date=dt.date()
     )
-    db.session.add(sleep)
-    db.session.commit()
+
+    try:
+        sleep = query.one()
+        sleep.data = sleep_data
+        db.session.add(sleep)
+        db.session.commit()
+    except NoResultFound:
+        sleep = models.Sleep(
+            user=user,
+            data=sleep_data,
+            date=dt.date()
+        )
+        db.session.add(sleep)
+        db.session.commit()
 
     return jsonify(sleep.data['summary'])
 

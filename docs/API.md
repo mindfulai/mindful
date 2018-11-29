@@ -244,3 +244,25 @@ score   | 平均分（1 - 5） | 4
 ## Fitbit 授权
 URL: ／login/fitbit
 Method: GET
+
+## Fitbit Sleep
+URL: /user/<int:user_id>/fitbit/sleep/day    
+Method: GET  
+Data:
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```   
+
+Response:
+```json
+{
+    "sleep": [],
+    "summary": {
+        "totalMinutesAsleep": 0,
+        "totalSleepRecords": 0,
+        "totalTimeInBed": 0
+    }
+}
+```
