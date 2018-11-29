@@ -97,7 +97,7 @@ def count_filter_by_date(csl, user, start_date, end_date):
     ).count()
 
 
-def get_oauth_or_create(provider, provider_user_id, user):
+def get_oauth_or_create(provider, user, provider_user_id=None):
     """ 获取或创建oauth
     args:
         provider_user_id: 第三方授权的 user_id
@@ -108,7 +108,7 @@ def get_oauth_or_create(provider, provider_user_id, user):
     """
     query = models.OAuth.query.filter_by(
         provider=provider,
-        provider_user_id=provider_user_id
+        user=user
     )
 
     try:

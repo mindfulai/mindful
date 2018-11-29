@@ -200,7 +200,7 @@ def twitter_auth(twitter_blueprint, token):
 
     screen_name = resp.json()['screen_name']
     oauth, created = get_oauth_or_create(
-        twitter_blueprint.name, screen_name, user)
+        twitter_blueprint.name, user, screen_name)
 
     actions.update_oauth_token(oauth, twitter.token)
 
@@ -460,7 +460,7 @@ def fitbit_auth():
 
     token = fitbit.client.fetch_access_token(code=code)
 
-    oauth, created = get_oauth_or_create('fitbit', token['user_id'], user)
+    oauth, created = get_oauth_or_create('fitbit', user, token['user_id'])
 
     return redirect('/#/index?name={}&id={}'.format(user.username, user.id))
 
