@@ -507,6 +507,36 @@ def fitbit_sleep(user_id):
     return jsonify(sleep.data['summary'])
 
 
+@app.route('/user/<int:user_id>/fitbit/activity/day')
+def fitbit_activity(user_id):
+    """ 存储今天的 activity 记录"""
+    user = load_user(user_id)
+
+    # 验证 token
+    token = fitbit.client.session.token
+    if not token:
+        return redirect(url_for('fitbit_auth'))
+
+    dt_str = request.args.get('datetime')
+    dt = pendulum.parse(dt_str, strict=False)
+
+    # 获取 activity
+    data = fitbit.activities(user_id=token['user_id'])
+    print('==== activities from fitbit')
+    print(data)
+
+    # 存储 activity
+    activities = models.Activity(
+        user=user,
+        data=data,
+        date=dt.date()
+    )
+    db.session.add(activities)
+    db.session.commit()
+
+    return jsonify(activities['activities'])
+
+
 @app.route('/debug')
 def debug():
     tweets = db.session.query(models.Tweet).all()

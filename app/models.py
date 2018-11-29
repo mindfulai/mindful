@@ -116,3 +116,16 @@ class Sleep(db.Model):
     date = db.Column(db.Date)
     data = db.Column(MutableDict.as_mutable(JSONType))
     api_url = db.Column(db.String)
+
+
+class Activity(db.Model):
+    __tablename__ = 'activities'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.relationship(User)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    created_at = db.Column(db.DateTime, server_default=func.now())
+    updated_at = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+    date = db.Column(db.Date)
+    data = db.Column(MutableDict.as_mutable(JSONType))
+    api_url = db.Column(db.String)
