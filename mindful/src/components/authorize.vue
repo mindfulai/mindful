@@ -51,11 +51,11 @@
           Fitbit &nbsp;&nbsp;<i class="fa fa-fitbit fitbit_logo"></i>
         </div>
         <ul>
-          <li><a href="#">TRACKS</a><strong>Steps,workouts</strong></li>
+          <li><a href="#">TRACKS</a><strong>Activity,Sleep</strong></li>
           <li><a href="#">REQUIRES</a><strong>Fitbit device</strong></li>
-          <li><a href="#">PROVIDING</a><strong>Steps,Active</strong></li>
+          <li><a href="#">PROVIDING</a><strong>Active,Sleep</strong></li>
         </ul>
-        <a  v-if="!fitbit_auth" class="authorize_connect">
+        <a  v-if="!fitbit_auth" class="authorize_connect" href="/login/fitbit ">
           <i class="fa fa-plus"></i>&nbsp;
           Authorize
         </a>
