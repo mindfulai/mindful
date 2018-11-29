@@ -24,6 +24,8 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import func
 from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
 
+from fitbit import Fitbit
+
 # Twitter
 twitter_blueprint = make_twitter_blueprint(
     api_key="devnDViKMhTY4J5AwVKW7NewW",
