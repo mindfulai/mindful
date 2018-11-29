@@ -470,7 +470,9 @@ def fitbit_auth():
 @app.route('/user/<int:user_id>/fitbit/sleep/day')
 @login_required
 def fitbit_sleep(user_id):
-    """ 创建或更新今天的 sleep 记录 """
+    """ 创建或更新今天的 sleep 记录
+    API: https://dev.fitbit.com/build/reference/web-api/sleep/
+    """
     user = load_user(user_id)
     token = fitbit.client.session.token
     if not token:
@@ -532,7 +534,9 @@ def fitbit_sleep_week(user_id):
 
 @app.route('/user/<int:user_id>/fitbit/activity/day')
 def fitbit_activity(user_id):
-    """ 存储今天的 activity 记录"""
+    """ 存储今天的 activity 记录
+    API: https://dev.fitbit.com/build/reference/web-api/activity/
+    """
     user = load_user(user_id)
 
     # 验证 token
