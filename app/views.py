@@ -575,6 +575,32 @@ def fitbit_activity(user_id):
     return jsonify(activities.data['activities'])
 
 
+@app.route('/user/<int:user_id>/fitbit/activity/week')
+def fitbit_activity_week(user_id):
+    """ 每周的 activities 数据 """
+    user = load_user(user_id)
+    dt_str = request.args.get('datetime')
+    dt = pendulum.parse(dt_str, strict=False)
+    start_date = dt.start_of('week')
+    end_date = dt.end_of('week')
+
+    activities = models.Activity.query.filter(
+        models.Activity.user == user,
+        models.Activity.date >= start_date,
+        models.Activity.date <= end_date
+    ).all()
+
+    result = []
+    for row in activities:
+        data = {
+            'activities': row.data['activities'],
+            'day': pendulum.parse(str(row.date)).day_of_week
+        }
+        result.append(data)
+
+    return jsonify(result)
+
+
 @app.route('/debug')
 def debug():
     tweets = db.session.query(models.Tweet).all()
