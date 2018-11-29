@@ -268,6 +268,34 @@ Response:
 }
 ```
 
+## Fitbit Sleep 周数据
+URL: /user/<user_id>/fitbit/sleep/week  
+Method: GET  
+Data:
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```
+
+Response:
+```json
+[
+    {
+        "day": 3,
+        "totalMinutesAsleep": 0,
+        "totalSleepRecords": 0,
+        "totalTimeInBed": 0
+    }
+    {
+        "day": 4,
+        "totalMinutesAsleep": 0,
+        "totalSleepRecords": 0,
+        "totalTimeInBed": 0
+    }
+]
+```
+
 ## Fitbit Activities
 URL: /user/<int:user_id>/fitbit/activity/day  
 Method: GET  
