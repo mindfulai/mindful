@@ -47,8 +47,6 @@
                  Update data
                 </a>
               </div>
-              <div class="chart">
-              </div>
             </div>
           </div>
           <!--Twitter-->
@@ -92,11 +90,66 @@
                 <i class="fa fa-exchange"></i>
                 Twitter
               </div>
-              <div class="chart">
-              </div>
             </div>
           </div>
           <!--Fitbit-->
+          <div class="content_box">
+            <h4>Sleep</h4>
+
+            <div class="content_box_inner">
+              <div class="line clearfix">
+                <div class="left left_table">
+                  <table class="table">
+                    <tbody>
+                    <tr>
+                      <td class="left" valign="bottom"><b>00:00</b> total minutes asleep</td>
+                      <td class="right" valign="bottom"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" class="percent-bg">
+                        <div class="percent-meter" style="width: 0%; background-color: #6780ff"></div>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <table class="table">
+                    <tbody>
+                    <tr>
+                      <td class="left" valign="bottom"><b>00:00</b> total time inbed</td>
+                      <td class="right" valign="bottom"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" class="percent-bg">
+                        <div class="percent-meter" style="width: 0%; background-color: #6780ff"></div>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <table class="table">
+                    <tbody>
+                    <tr>
+                      <td class="left" valign="bottom"><b>0</b> total sleep records</td>
+                      <td class="right" valign="bottom"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" class="percent-bg">
+                        <div class="percent-meter" style="width: 0%; background-color: #6780ff"></div>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="right right_icon">
+                  <i class="fa fa-moon-o sleep_icon"></i>
+                </div>
+              </div>
+              <div class="connector">
+                <i class="fa fa-exchange"></i>
+                Fitbit
+              </div>
+            </div>
+          </div>
+          <!-- Activity -->
           <div class="content_box">
             <h4>Activity</h4>
 
@@ -143,12 +196,13 @@
                     </tbody>
                   </table>
                 </div>
+                <div class="right right_icon">
+                  <i class="fa fa-soccer-ball-o activity_icon"></i>
+                </div>
               </div>
               <div class="connector">
                 <i class="fa fa-exchange"></i>
                 Fitbit
-              </div>
-              <div class="chart">
               </div>
             </div>
           </div>
@@ -174,9 +228,6 @@
                 <i class="fa fa-pencil"></i>
                 Rate day
               </router-link>
-              <div class="chart">
-
-              </div>
             </div>
           </div>
           <!--Location-->
@@ -214,8 +265,6 @@
               <div class="connector">
                 <i class="fa fa-exchange"></i>
                 Dark Sky
-              </div>
-              <div class="chart">
               </div>
             </div>
           </div>
@@ -307,7 +356,26 @@
               </div>
               <!-- Fitbit -->
               <div class="line bottom_border">
-                <h3 class="chart_header">Activity</h3>
+                <h3 class="chart_header"><i class="fa fa-moon-o"></i>Sleep</h3>
+                <p class="chart_totals"><b>{{event}}</b> asleep</p>
+                <div class="month_day">
+                  <div class="day_list chart_number"  v-for="(item,index) in events" :key="index" :class="item.events?'sleep_active':''" >{{item == null ? '' : item.events}}
+                  </div>
+                </div>
+                <p class="chart_totals"><b>{{event}}</b> inbed</p>
+                <div class="month_day">
+                  <div class="day_list chart_number"  v-for="(item,index) in events" :key="index" :class="item.events?'sleep_active':''" >{{item == null ? '' : item.events}}
+                  </div>
+                </div>
+                <p class="chart_totals"><b>{{event}}</b> sleep records</p>
+                <div class="month_day">
+                  <div class="day_list chart_number"  v-for="(item,index) in events" :key="index" :class="item.events?'sleep_active':''" >{{item == null ? '' : item.events}}
+                  </div>
+                </div>
+              </div>
+              <!-- Fitbit -->
+              <div class="line bottom_border">
+                <h3 class="chart_header"><i class="fa fa-soccer-ball-o"></i>Activity</h3>
                 <p class="chart_totals"><b>{{event}}</b> steps</p>
                 <div class="month_day">
                   <div class="day_list chart_number"  v-for="(item,index) in events" :key="index" :class="item.events?'activity_active':''" >{{item == null ? '' : item.events}}
@@ -326,7 +394,7 @@
               </div>
               <!-- mood -->
               <div class="line">
-                <h3 class="chart_header">Mood</h3>
+                <h3 class="chart_header"><i class="fa fa-meh-o"></i>Mood</h3>
                 <div class="calendar_wrapper">
                   <div class="week_day border-bottom">
                     <!-- week mood数据判断展示对应week的mood -->
@@ -338,7 +406,10 @@
               </div>
               <!-- weather -->
               <div class="line">
-                <h3 class="chart_header"><i class="fa fa-sun-o weather_icon"></i>Weather</h3>
+                <h3 class="chart_header">
+                  <i class="fa fa-sun-o"></i>
+                  Weather
+                </h3>
                 <p class="chart_totals">Max temp</p>
                 <div class="month_day">
                   <div class="day_list chart_number"  v-for="(item,index) in maxTemp" :key="index" :class="item.temp?'max_temp_active':''">{{item == null ? '' : item.temp}}
@@ -957,7 +1028,7 @@ export default {
   border-bottom: 0.03rem solid #e1e2e9;
 }
 .chart_header {
-  padding: 0 0.2rem;
+  /* padding: 0 0.2rem; */
   line-height: 0.6rem;
   font-size: 0.32rem;
 }
@@ -970,6 +1041,9 @@ export default {
 }
 .twitter_icon {
   color: #55acee;
+}
+.activity_icon {
+  color: #50d29d;
 }
 .events_icon {
   color: #e1546c;
@@ -1051,6 +1125,10 @@ export default {
 }
 .mood-5 {
   background: #00b50d;
+  color: #fff;
+}
+.sleep_active {
+  background: #6780ff;
   color: #fff;
 }
 .activity_active {
