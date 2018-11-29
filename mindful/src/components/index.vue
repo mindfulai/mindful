@@ -35,32 +35,6 @@
                     </tr>
                     </tbody>
                   </table>
-                  <!-- <table class="table">
-                    <tbody>
-                    <tr>
-                      <td class="left" valign="bottom"><b>0</b> FB reactions</td>
-                      <td class="right" valign="bottom"></td>
-                    </tr>
-                    <tr>
-                      <td colspan="2" class="percent-bg">
-                        <div class="percent-meter" style="width: 0%; background-color: #4E7CA0"></div>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-                  <table class="table">
-                    <tbody>
-                    <tr>
-                      <td class="left" valign="bottom"><b>0</b> FB comments</td>
-                      <td class="right" valign="bottom"></td>
-                    </tr>
-                    <tr>
-                      <td colspan="2" class="percent-bg">
-                        <div class="percent-meter" style="width: 0%; background-color: #4E7CA0"></div>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table> -->
                 </div>
                 <div class="right right_icon">
                   <i class="fa fa-facebook-square FB"></i>
@@ -101,7 +75,6 @@
                     <tbody>
                     <tr>
                       <td class="left" valign="bottom"><b>{{mentions}}</b> mentions</td>
-                      <!--<td class="right" valign="bottom"><b>0</b> avg</td>-->
                     </tr>
                     <tr>
                       <td colspan="2" class="percent-bg">
@@ -113,13 +86,11 @@
                 </div>
                 <div class="right right_icon">
                   <i class="fa fa-twitter-square"></i>
-                  <!--<i class="fa fa-facebook-square"></i>-->
                 </div>
               </div>
               <div class="connector">
                 <i class="fa fa-exchange"></i>
                 Twitter
-                <!-- <a class="authorize">Authorize</a> -->
               </div>
               <div class="chart">
               </div>
@@ -172,9 +143,6 @@
                     </tbody>
                   </table>
                 </div>
-                <!-- <div class="right right_icon">
-                  <i class="fa fa-file-text events"></i>
-                </div> -->
               </div>
               <div class="connector">
                 <i class="fa fa-exchange"></i>
@@ -206,74 +174,17 @@
                 <i class="fa fa-pencil"></i>
                 Rate day
               </router-link>
-              <!-- <div class="connector">
-                <i class="fa fa-exchange"></i>
-                Android
-              </div> -->
               <div class="chart">
 
               </div>
             </div>
           </div>
-          <!--Events-->
-          <!-- <div class="content_box">
-            <h4>Events</h4>
-
-            <div class="content_box_inner">
-              <div class="line clearfix">
-                <div class="left left_table">
-                  <table class="table">
-                    <tbody>
-                    <tr>
-                      <td class="left" valign="bottom"><b>0</b> today</td>
-                      <td class="right" valign="bottom"></td>
-                    </tr>
-                    <tr>
-                      <td colspan="2" class="percent-bg">
-                        <div class="percent-meter" style="width: 0%; background-color: #E1546C"></div>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-                  <table class="table">
-                    <tbody>
-                    <tr>
-                      <td class="left" valign="bottom"><b>00:00</b> in events</td>
-                      <td class="right" valign="bottom"></td>
-                    </tr>
-                    <tr>
-                      <td colspan="2" class="percent-bg">
-                        <div class="percent-meter" style="width: 0%; background-color: #E1546C"></div>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div class="right right_icon">
-                  <i class="fa fa-file-text events"></i>
-                </div>
-              </div>
-              <div class="connector">
-                <i class="fa fa-exchange"></i>
-                Events
-              </div>
-              <div class="chart">
-              </div>
-            </div>
-          </div> -->
           <!--Location-->
           <div class="content_box">
             <h4>Location</h4>
 
             <div class="content_box_inner">
                 <div id="map" style="display:block;height:3rem;width:100%;"></div>
-                <!-- <a style="display:block;height:100%;" target="_blank" href="https://google.com/maps/@37.87,-122.26,16z">
-                  <img style="width:100%;" src="https://api.mapbox.com/styles/v1/joshsharp/cjmfw5rw71t0m2rrwsj8ywbi1/static/-122.26,37.87,12,0/360x160?access_token=pk.eyJ1Ijoiam9zaHNoYXJwIiwiYSI6ImNqbHJta2ozMjA2b20zc3RhNTFuMm4zZGEifQ.sN74U85oG02UI3juN-NZtA" alt="Map">
-                </a> -->
-              <!-- <div class="connector">
-                <i class="fa fa-exchange"></i>
-                Android
-              </div> -->
               <div class="chart">
               </div>
             </div>
@@ -394,24 +305,6 @@
                   <div class="weeklist">SUN</div>
                 </div>
               </div>
-              <!-- facebook -->
-              <!-- <div class="line bottom_border">
-                <h3 class="chart_header"><i class="fa fa-facebook-square facebook_icon"></i>FaceBook</h3>
-                <p class="chart_totals"><b>{{posts}}</b> facebook posts</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in signDays" :key="index" >{{item == null ? '' : item.normalday}}
-                  </div>
-                </div>
-              </div> -->
-              <!-- twitter -->
-              <!-- <div class="line">
-                <h3 class="chart_header"><i class="fa fa-twitter-square twitter_icon"></i>Twitter</h3>
-                <p class="chart_totals"><b>{{tweets}}</b> tweets</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in signDays" :key="index" >{{item == null ? '' : item.normalday}}
-                  </div>
-                </div>
-              </div> -->
               <!-- Fitbit -->
               <div class="line bottom_border">
                 <h3 class="chart_header">Activity</h3>
@@ -437,25 +330,12 @@
                 <div class="calendar_wrapper">
                   <div class="week_day border-bottom">
                     <!-- week mood数据判断展示对应week的mood -->
-                    <!-- <div class="weeklist" v-for="(k,i) in 7" :key="i" >
-                     
-                      <a class=" chart_number mood_number"  v-for="(item,index) in periodMoods" :key="index" v-if='item.day==k' :class="item.day==k?'mood-'+item.score:''" >{{item.day==k?item.score:''}}</a>
-                    </div> -->
                     <div class="weeklist" v-for="(item,index) in periodMoods" :key="index" >
                       <a class=" chart_number mood_number" :class="item.day?'mood-'+item.score:''" >{{item.day?item.score:''}}</a>
                     </div>
                   </div>
                 </div>
               </div>
-              <!-- events -->
-              <!-- <div class="line bottom_border">
-                <h3 class="chart_header"><i class="fa fa-file-text events_icon"></i>Events</h3>
-                <p class="chart_totals"><b>{{event}}</b> events</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in events" :key="index" :class="item.events?'events_active':''" >{{item == null ? '' : item.events}}
-                  </div>
-                </div>
-              </div> -->
               <!-- weather -->
               <div class="line">
                 <h3 class="chart_header"><i class="fa fa-sun-o weather_icon"></i>Weather</h3>
@@ -544,7 +424,6 @@
                     <tbody>
                     <tr>
                       <td class="left" valign="bottom"><b>{{tweets}}</b> tweets</td>
-                      <!--<td class="right" valign="bottom"><b>0</b> avg</td>-->
                     </tr>
                     <tr>
                       <td colspan="2" class="percent-bg">
@@ -557,7 +436,6 @@
                     <tbody>
                     <tr>
                       <td class="left" valign="bottom"><b>{{mentions}}</b> mentions</td>
-                      <!--<td class="right" valign="bottom"><b>0</b> avg</td>-->
                     </tr>
                     <tr>
                       <td colspan="2" class="percent-bg">
@@ -569,13 +447,8 @@
                 </div>
                 <div class="right right_icon">
                   <i class="fa fa-twitter-square"></i>
-                  <!--<i class="fa fa-facebook-square"></i>-->
                 </div>
               </div>
-              <!-- <div class="connector">
-                <i class="fa fa-exchange"></i>
-                Twitter 
-              </div> -->
             </div>
           </div>
           <!-- moods/events -->
@@ -596,70 +469,7 @@
                 <div class="month_day" v-for="(signDay,i) in signDays" :key="i">
                   <div class="day_list"  v-for="(item,index) in signDay" :key="index" >
                     <a class="mood_a" v-if="item == null ? '' : item.normalday"  :class="item.moodday?'mood-'+item.moodday:''">{{item == null ? '' : item.normalday}}</a>
-                    <!-- <a class="mood_a" v-if="item == null ? '' : item.normalday" v-for="(moodItem,j) in periodMoods" :key="j"  :class="item.moodday&&moodItem.day==item.normalday?'mood-'+moodItem.score:''">{{item == null ? '' : item.normalday}}</a> -->
                     <!-- <p class="event_p" v-if="item == null ? '' : item.normalday" :class="item.eventday?'events_active':''">{{item.event}}</p> -->
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- weather -->
-          <div class="content_box">
-            <h4>Weather for this month</h4>
-            <div class="content_box_inner">
-              <!-- week -->
-              <div class="calendar_wrapper">
-                <div class="week_day">
-                  <div class="weeklist">MON</div>
-                  <div class="weeklist">TUE</div>
-                  <div class="weeklist">WED</div>
-                  <div class="weeklist">THU</div>
-                  <div class="weeklist">FRI</div>
-                  <div class="weeklist">SAT</div>
-                  <div class="weeklist">SUN</div>
-                </div>
-              </div>
-              <!-- weather -->
-              <div class="line">
-                <h3 class="chart_header"><i class="fa fa-sun-o weather_icon"></i>Weather</h3>
-                <p class="chart_totals">Max temp</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in maxTemp" :key="index" :class="item.temp?'max_temp_active':''">{{item == null ? '' : item.temp}}
-                  </div>
-                </div>
-                <p class="chart_totals">Min temp</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in minTemp" :key="index" :class="item.temp?'min_temp_active':''">{{item == null ? '' : item.temp}} 
-                  </div>
-                </div>
-                <p class="chart_totals">Precipitation</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in Precip" :key="index" :class="item.precip?'precip_active':''">{{item == null ? '' : item.precip}}
-                  </div>
-                </div>
-                <p class="chart_totals">Air pressure</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in press" :key="index" :class="item.press?'press_active':''">{{item == null ? '' : item.press}}
-                  </div>
-                </div>
-                <p class="chart_totals">Cloud cover</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in cloud" :key="index" :class="item.cloud?'cloud_active':''">{{item == null ? '' : item.cloud}}
-                  </div>
-                </div>
-                <p class="chart_totals">Humidity</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in humid" :key="index" :class="item.humid?'humid_active':''">{{item == null ? '' : item.humid}}
-                  </div>
-                </div>
-                <p class="chart_totals">Wind speed</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in wind" :key="index" :class="item.wind?'wind_active':''">{{item == null ? '' : item.wind}}
-                  </div>
-                </div>
-                <p class="chart_totals">Day length</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in dayLength" :key="index" :class="item.day_length?'day_length_active':''">{{item == null ? '' : item.day_length}}
                   </div>
                 </div>
               </div>
@@ -673,7 +483,6 @@
 
 <script>
 import navHeader from "@/components/header";
-// import google from "google";
 export default {
   name: "index",
   data() {
@@ -688,6 +497,7 @@ export default {
       dailyMoods: [], //每天的 mood 时间轴
       periodMoods: [], //每周或者每月的 mood 平均
       signDays: null,
+      day: [],
       event: 1,
       events: [
         { events: 1 },
@@ -839,7 +649,6 @@ export default {
           function(position) {
             var longitude = position.coords.longitude;
             var latitude = position.coords.latitude;
-            console.log(latitude + "--" + longitude);
             that.getLocation(latitude, longitude);
             that.$axios
               .post(
@@ -895,6 +704,8 @@ export default {
         var todayDate = getToday.getDate();
         var todayMonth = getToday.getMonth() + 1;
         var todayYear = getToday.getFullYear();
+        //月 数据处理显示
+        this.buildCal(todayYear, todayMonth, [], []);
       }
       var type = i;
       this.$axios
@@ -1048,6 +859,9 @@ export default {
             // }
             if (iVarDate == curMonthDays) {
               this.signDays = aMonth;
+              for (var i = 0; i < this.signDays.length; i++) {
+                this.day = this.day.concat(this.signDays[i]);
+              }
               return aMonth;
             } else {
               iVarDate++;
