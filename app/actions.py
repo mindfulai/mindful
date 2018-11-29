@@ -97,18 +97,18 @@ def count_filter_by_date(csl, user, start_date, end_date):
     ).count()
 
 
-def get_oauth_or_create(blueprint, user_id, user):
+def get_oauth_or_create(provider, provider_user_id, user):
     """ 获取或创建oauth
     args:
-        user_id: 第三方授权的 user_id
+        provider_user_id: 第三方授权的 user_id
         user: 访问用户 object
     return:
         oauth: OAuth
         created: 是否创建
     """
     query = models.OAuth.query.filter_by(
-        provider=blueprint.name,
-        provider_user_id=user_id
+        provider=provider,
+        provider_user_id=provider_user_id
     )
 
     try:
@@ -116,8 +116,8 @@ def get_oauth_or_create(blueprint, user_id, user):
         created = False
     except NoResultFound:
         oauth = models.OAuth(
-            provider=blueprint.name,
-            provider_user_id=user_id,
+            provider=provider,
+            provider_user_id=provider_user_id,
             user=user
         )
         db.session.add(oauth)
