@@ -227,10 +227,18 @@ Response:
     {
         "date": "2018-11-20",
         "score": 4,
-        "day_of_week": 2
+        "day": 2
     }
 ]
 ```
+
+Parameters:
+
+参数      | 描述        | Example
+-------- | ----------- | -------
+date | 访问当天的日期 | 2018-11-20
+day | 这一周这一月第几天 | 2
+score   | 平均分（1 - 5） | 4
 
 
 ## Fitbit 授权
