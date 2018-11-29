@@ -506,6 +506,30 @@ def fitbit_sleep(user_id):
     return jsonify(sleep.data['summary'])
 
 
+@app.route('/user/<int:user_id>/fitbit/sleep/week')
+def fitbit_sleep_week(user_id):
+    """ 每周的睡眠数据 """
+    user = load_user(user_id)
+    dt_str = request.args.get('datetime')
+    dt = pendulum.parse(dt_str, strict=False)
+    start_date = dt.start_of('week')
+    end_date = dt.end_of('week')
+
+    sleep = models.Sleep.query.filter(
+        models.Sleep.user == user,
+        models.Sleep.date >= start_date,
+        models.Sleep.date <= end_date
+    ).all()
+
+    result = []
+    for row in sleep:
+        data = row.data['summary']
+        data['day'] = pendulum.parse(str(row.date)).day_of_week
+        result.append(data)
+
+    return jsonify(result)
+
+
 @app.route('/user/<int:user_id>/fitbit/activity/day')
 def fitbit_activity(user_id):
     """ 存储今天的 activity 记录"""
