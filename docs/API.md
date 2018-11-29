@@ -1,6 +1,6 @@
 ## 登录
-URL: /user/<int:user_id>/authorized
-Method: GET
+URL: /user/<int:user_id>/authorized  
+Method: GET  
 
 Response:
 ```json
@@ -11,14 +11,14 @@ Response:
 ```
 
 ## Twitter 授权
-URL: /twitter/authorize
-Method: GET
+URL: /twitter/authorize  
+Method: GET  
 
 
 ## Twitter 用户数据统计
 
-URL: /user/<user_id>/twitter/summary
-Method: GET
+URL: /user/<user_id>/twitter/summary  
+Method: GET  
 Data:
 ```json
 {
@@ -43,8 +43,8 @@ Response:
 ```
 
 ## Twitter 更新 Tweets
-URL: /user/<user_id>/twitter/user_timeline/update
-Method: GET
+URL: /user/<user_id>/twitter/user_timeline/update  
+Method: GET  
 
 Response:
 ```json
@@ -55,8 +55,8 @@ Response:
 
 
 ## Twitter 更新 Mentions
-URL: /user/<user_id>/twitter/mentions_timeline/update
-Method: GET
+URL: /user/<user_id>/twitter/mentions_timeline/update  
+Method: GET  
 
 Response:
 ```json
@@ -68,8 +68,8 @@ Response:
 
 ## Facebook 用户统计接口
 
-URL: /user/<user_id>/facebook/summary
-Method: GET
+URL: /user/<user_id>/facebook/summary  
+Method: GET  
 Data:
 ```json
 {
@@ -93,8 +93,8 @@ Response:
 ```
 
 ## Facebook 更新 Posts
-URL: /user/<user_id>/facebook/posts/update
-Method: GET
+URL: /user/<user_id>/facebook/posts/update  
+Method: GET  
 
 Response:
 ```json
@@ -104,8 +104,8 @@ Response:
 ```
 
 ## 存储用户地理位置及天气接口，并展示当日天气
-URL: /user/<user_id>/location_and_weather/create
-Method: POST
+URL: /user/<user_id>/location_and_weather/create  
+Method: POST  
 Data:
 ```json
 {
@@ -164,8 +164,8 @@ Response:
 
 
 ## 创建心情接口
-URL: /user/<user_id>/mood/create
-Method: POST
+URL: /user/<user_id>/mood/create  
+Method: POST  
 Data:
 
 ```json
@@ -184,8 +184,8 @@ Response:
 ```
 
 ## 展示心情列表接口
-URL: /user/<user_id>/mood/list
-Method: GET
+URL: /user/<user_id>/mood/list  
+Method: GET  
 Data:
 ```json
 {
@@ -211,8 +211,8 @@ Response:
 ```
 
 ## 展示心情平均值列表接口
-URL: /user/<user_id>/mood/average/list
-Method: GET
+URL: /user/<user_id>/mood/average/list  
+Method: GET  
 Data:
 ```json
 {
@@ -242,8 +242,9 @@ score   | 平均分（1 - 5） | 4
 
 
 ## Fitbit 授权
-URL: ／login/fitbit
-Method: GET
+URL: ／login/fitbit    
+Method: GET  
+
 
 ## Fitbit Sleep
 URL: /user/<int:user_id>/fitbit/sleep/day    
