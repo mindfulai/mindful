@@ -103,3 +103,14 @@ class Mood(db.Model):
     created_at = db.Column(db.DateTime, server_default=func.now())
     detail = db.Column(db.String)
     score = db.Column(db.Integer)
+
+
+class Sleep(db.Model):
+    __tablename__ = 'sleep'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.relationship(User)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    created_at = db.Column(db.DateTime, server_default=func.now())
+    data = db.Column(MutableDict.as_mutable(JSONType))
+    api_url = db.Column(db.String)

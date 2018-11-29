@@ -466,6 +466,25 @@ def fitbit_auth():
 
 
 
+@app.route('/user/<int:user_id>/fitbit/sleep/day')
+def fitbit_sleep(user_id):
+    """ 创建今天的 sleep 记录 """
+    user = load_user(user_id)
+    token = fitbit.client.session.token
+    if not token:
+        return redirect(url_for('fitbit_auth'))
+    oauth, _ = get_oauth_or_create('fitbit', user=user)
+
+    sleep_data = fitbit.sleep(user_id=oauth.provider_user_id)
+
+    sleep = models.Sleep(
+        user=user,
+        data=sleep_data
+    )
+    db.session.add(sleep)
+    db.session.commit()
+
+    return jsonify(sleep.data['summary'])
 
 
 @app.route('/debug')
