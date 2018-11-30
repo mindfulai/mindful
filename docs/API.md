@@ -259,12 +259,15 @@ Data:
 Response:
 ```json
 {
-    "sleep": [],
-    "summary": {
-        "totalMinutesAsleep": 0,
-        "totalSleepRecords": 0,
-        "totalTimeInBed": 0
-    }
+    "stages": {
+        "deep": 92,
+        "light": 211,
+        "rem": 66,
+        "wake": 60
+    },
+    "totalMinutesAsleep": 396,
+    "totalSleepRecords": 1,
+    "totalTimeInBed": 429
 }
 ```
 
