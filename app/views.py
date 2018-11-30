@@ -572,7 +572,14 @@ def fitbit_activity(user_id):
         db.session.add(activities)
         db.session.commit()
 
-    return jsonify(activities.data['activities'])
+    result = activities.data['summary']
+
+    for distance in result['distances']:
+        if distance['activity'] == 'total':
+            result['distances'] = distance['distance']
+            break
+
+    return jsonify(result)
 
 
 @app.route('/user/<int:user_id>/fitbit/activity/week')
@@ -592,10 +599,13 @@ def fitbit_activity_week(user_id):
 
     result = []
     for row in activities:
-        data = {
-            'activities': row.data['activities'],
-            'day': pendulum.parse(str(row.date)).day_of_week
-        }
+        data = row.data['summary']
+        for distance in data['distances']:
+            if distance['activity'] == 'total':
+                data['distances'] = distance['distance']
+                break
+        data['day'] = pendulum.parse(str(row.date)).day_of_week
+
         result.append(data)
 
     return jsonify(result)
