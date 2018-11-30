@@ -324,7 +324,8 @@ def authorized(user_id):
 
     result = {
         'twitter_auth': actions.is_authorized(twitter_blueprint.name, user),
-        'facebook_auth': actions.is_authorized(facebook_blueprint.name, user)
+        'facebook_auth': actions.is_authorized(facebook_blueprint.name, user),
+        'fitbit_auth': actions.is_authorized('fitbit', user)
     }
     return jsonify(result)
 
