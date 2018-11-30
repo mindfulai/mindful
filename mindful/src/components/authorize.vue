@@ -9,7 +9,7 @@
           facebook <!--<i class="fa fa-facebook"></i>-->
         </div>
         <ul>
-          <li><a href="#">TRACKS</a><strong>Posts, comments, reactions</strong></li>
+          <li><a href="#">TRACKS</a><strong>Posts</strong></li>
           <li><a href="#">REQUIRES</a><strong>Facebook account</strong></li>
           <li><a href="#">PROVIDING</a><strong>Facebook posts</strong></li>
         </ul>
@@ -20,9 +20,9 @@
         <a v-if="facebook_auth" class="authorize_connect">
           Authorized
         </a>
-        <a class="authorize_connect" @click="updateData('facebook')">
+        <!-- <a class="authorize_connect" @click="updateData('facebook')">
         Update data
-        </a>
+        </a> -->
       </div>
       <!-- twitter -->
       <div class="authorize_box">
@@ -55,7 +55,7 @@
           <li><a href="#">REQUIRES</a><strong>Fitbit device</strong></li>
           <li><a href="#">PROVIDING</a><strong>Active,Sleep</strong></li>
         </ul>
-        <a  v-if="!fitbit_auth" class="authorize_connect" href="/login/fitbit ">
+        <a  v-if="!fitbit_auth" class="authorize_connect" href="https://b299d19d.ngrok.io/login/fitbit ">
           <i class="fa fa-plus"></i>&nbsp;
           Authorize
         </a>
@@ -83,7 +83,7 @@ export default {
   mounted() {
     this.name = window.localStorage.getItem("name");
     this.id = window.localStorage.getItem("id");
-    this.getAuthorize();
+    //this.getAuthorize();
   },
   methods: {
     getAuthorize() {
