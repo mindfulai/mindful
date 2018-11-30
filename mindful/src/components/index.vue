@@ -102,7 +102,7 @@
                   <table class="table">
                     <tbody>
                     <tr>
-                      <td class="left" valign="bottom"><b>{{dailySleep.totalMinutesAsleep?dailySleep.totalMinutesAsleep:"00:00"}}</b> total minutes asleep</td>
+                      <td class="left" valign="bottom"><b>{{dailySleep.totalMinutesAsleep?dailySleep.totalMinutesAsleep:"0"}}</b> total minutes asleep</td>
                       <td class="right" valign="bottom"></td>
                     </tr>
                     <tr>
@@ -115,7 +115,7 @@
                   <table class="table">
                     <tbody>
                     <tr>
-                      <td class="left" valign="bottom"><b>{{dailySleep.totalTimeInBed?dailySleep.totalTimeInBed:"00:00"}}</b> total minutes inbed</td>
+                      <td class="left" valign="bottom"><b>{{dailySleep.totalTimeInBed?dailySleep.totalTimeInBed:"0"}}</b> total minutes inbed</td>
                       <td class="right" valign="bottom"></td>
                     </tr>
                     <tr>

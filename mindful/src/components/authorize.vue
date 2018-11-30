@@ -97,6 +97,7 @@ export default {
           if (res.status == 200) {
             this.facebook_auth = res.data.facebook_auth;
             this.twitter_auth = res.data.twitter_auth;
+            this.fitbit_auth = res.data.fitbit_auth;
           }
         })
         .catch(err => {
