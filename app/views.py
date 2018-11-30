@@ -478,7 +478,7 @@ def fitbit_sleep(user_id):
     user = load_user(user_id)
     token = fitbit.client.session.token
     if not token:
-        return redirect(url_for('fitbit_auth'))
+        return jsonify({'msg': 'tokne error'})
 
     oauth, _ = get_oauth_or_create('fitbit', user=user)
 
@@ -546,7 +546,7 @@ def fitbit_activity(user_id):
     # 验证 token
     token = fitbit.client.session.token
     if not token:
-        return redirect(url_for('fitbit_auth'))
+        return jsonify({'msg': 'token error'})
 
     dt_str = request.args.get('datetime')
     dt = pendulum.parse(dt_str, strict=False)
