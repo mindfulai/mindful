@@ -464,6 +464,7 @@ def fitbit_auth():
     token = fitbit.client.fetch_access_token(code=code)
 
     oauth, created = get_oauth_or_create('fitbit', user, token['user_id'])
+    actions.update_oauth_token(oauth, token)
 
     return redirect('/#/index?name={}&id={}'.format(user.username, user.id))
 
