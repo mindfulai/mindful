@@ -55,7 +55,7 @@
           <li><a href="#">REQUIRES</a><strong>Fitbit device</strong></li>
           <li><a href="#">PROVIDING</a><strong>Active,Sleep</strong></li>
         </ul>
-        <a  v-if="!fitbit_auth" class="authorize_connect" href="https://b299d19d.ngrok.io/login/fitbit ">
+        <a  v-if="!fitbit_auth" class="authorize_connect" href="/login/fitbit ">
           <i class="fa fa-plus"></i>&nbsp;
           Authorize
         </a>
@@ -83,7 +83,7 @@ export default {
   mounted() {
     this.name = window.localStorage.getItem("name");
     this.id = window.localStorage.getItem("id");
-    //this.getAuthorize();
+    this.getAuthorize();
   },
   methods: {
     getAuthorize() {

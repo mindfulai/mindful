@@ -670,10 +670,10 @@ export default {
     changeTab(i) {
       this.activeTab = i;
       var date = this.formatTime(new Date());
-      // this.getTwitter(date, i);
-      // this.getFacebook(date, i);
-      //this.getMood(date, i);
-      //this.getWeather(i);
+      this.getTwitter(date, i);
+      this.getFacebook(date, i);
+      this.getMood(date, i);
+      this.getWeather(i);
       this.getSleep(date, i);
       this.getActivity(date, i);
     },
@@ -1023,6 +1023,9 @@ export default {
               message: "Update success",
               duration: 5000
             });
+            //更新完数据重新获取接口展示最新数据
+            var date = this.formatTime(new Date());
+            this.getFacebook(date, "day");
           } else {
             this.$toast({
               message: "Update failed",
