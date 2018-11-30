@@ -172,7 +172,7 @@
                   <table class="table">
                     <tbody>
                     <tr>
-                      <td class="left" valign="bottom"><b>{{dailyActivity.distance?dailyActivity.distance:"0"}}</b> km</td>
+                      <td class="left" valign="bottom"><b>{{dailyActivity.distances?dailyActivity.distances:"0"}}</b> mile</td>
                       <td class="right" valign="bottom"></td>
                     </tr>
                     <tr>
@@ -185,7 +185,7 @@
                   <table class="table">
                     <tbody>
                     <tr>
-                      <td class="left" valign="bottom"><b>{{dailyActivity.activityCalories?dailyActivity.activityCalories:"0"}}</b> activity calories</td>
+                      <td class="left" valign="bottom"><b>{{dailyActivity.caloriesOut?dailyActivity.caloriesOut:"0"}}</b> calories</td>
                       <td class="right" valign="bottom"></td>
                     </tr>
                     <tr>
@@ -381,14 +381,14 @@
                   <div class="day_list chart_number"  v-for="(item,index) in periodActivity" :key="index" :class="item.day?'activity_active':''" >{{item == null ? '' : item.steps}}
                   </div>
                 </div>
-                <p class="chart_totals">km</p>
+                <p class="chart_totals">mile</p>
                 <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in periodActivity" :key="index" :class="item.day?'activity_active':''" >{{item == null ? '' : item.distance}}
+                  <div class="day_list chart_number"  v-for="(item,index) in periodActivity" :key="index" :class="item.day?'activity_active':''" >{{item == null ? '' : item.distances}}
                   </div>
                 </div>
                 <p class="chart_totals">calories</p>
                 <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in periodActivity" :key="index" :class="item.day?'activity_active':''" >{{item == null ? '' : item.activityCalories}}
+                  <div class="day_list chart_number"  v-for="(item,index) in periodActivity" :key="index" :class="item.day?'activity_active':''" >{{item == null ? '' : item.caloriesOut}}
                   </div>
                 </div>
               </div>
@@ -842,7 +842,6 @@ export default {
           params: { datetime: date }
         })
         .then(res => {
-          console.log(res);
           if (res.status == 200) {
             if (type == "day") {
               this.dailyActivity = res.data;
