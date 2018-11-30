@@ -321,11 +321,15 @@ def logout():
 @login_required
 def authorized(user_id):
     user = load_user(user_id)
+    if fitbit.client.session.token:
+        fitbit_auth = True
+    else:
+        fitbit_auth = False
 
     result = {
         'twitter_auth': actions.is_authorized(twitter_blueprint.name, user),
         'facebook_auth': actions.is_authorized(facebook_blueprint.name, user),
-        'fitbit_auth': actions.is_authorized('fitbit', user)
+        'fitbit_auth': fitbit_auth
     }
     return jsonify(result)
 
@@ -478,7 +482,7 @@ def fitbit_sleep(user_id):
     user = load_user(user_id)
     token = fitbit.client.session.token
     if not token:
-        return jsonify({'msg': 'tokne error'})
+        return jsonify({'msg': 'token error'})
 
     oauth, _ = get_oauth_or_create('fitbit', user=user)
 
