@@ -102,7 +102,7 @@
                   <table class="table">
                     <tbody>
                     <tr>
-                      <td class="left" valign="bottom"><b>00:00</b> total minutes asleep</td>
+                      <td class="left" valign="bottom"><b>{{dailySleep.totalMinutesAsleep?dailySleep.totalMinutesAsleep:"00:00"}}</b> total minutes asleep</td>
                       <td class="right" valign="bottom"></td>
                     </tr>
                     <tr>
@@ -115,7 +115,7 @@
                   <table class="table">
                     <tbody>
                     <tr>
-                      <td class="left" valign="bottom"><b>00:00</b> total time inbed</td>
+                      <td class="left" valign="bottom"><b>{{dailySleep.totalTimeInBed?dailySleep.totalTimeInBed:"00:00"}}</b> total minutes inbed</td>
                       <td class="right" valign="bottom"></td>
                     </tr>
                     <tr>
@@ -128,7 +128,7 @@
                   <table class="table">
                     <tbody>
                     <tr>
-                      <td class="left" valign="bottom"><b>0</b> total sleep records</td>
+                      <td class="left" valign="bottom"><b>{{dailySleep.totalSleepRecords?dailySleep.totalSleepRecords:"0"}}</b> total sleep records</td>
                       <td class="right" valign="bottom"></td>
                     </tr>
                     <tr>
@@ -159,7 +159,7 @@
                   <table class="table">
                     <tbody>
                     <tr>
-                      <td class="left" valign="bottom"><b>0</b> steps</td>
+                      <td class="left" valign="bottom"><b>{{dailyActivity.steps?dailyActivity.steps:"0"}}</b> steps</td>
                       <td class="right" valign="bottom"></td>
                     </tr>
                     <tr>
@@ -172,7 +172,7 @@
                   <table class="table">
                     <tbody>
                     <tr>
-                      <td class="left" valign="bottom"><b>0</b> km</td>
+                      <td class="left" valign="bottom"><b>{{dailyActivity.distances?dailyActivity.distances:"0"}}</b> mile</td>
                       <td class="right" valign="bottom"></td>
                     </tr>
                     <tr>
@@ -185,7 +185,7 @@
                   <table class="table">
                     <tbody>
                     <tr>
-                      <td class="left" valign="bottom"><b>0</b> calories</td>
+                      <td class="left" valign="bottom"><b>{{dailyActivity.caloriesOut?dailyActivity.caloriesOut:"0"}}</b> calories</td>
                       <td class="right" valign="bottom"></td>
                     </tr>
                     <tr>
@@ -354,41 +354,41 @@
                   <div class="weeklist">SUN</div>
                 </div>
               </div>
-              <!-- Fitbit -->
+              <!-- Fitbit sleep-->
               <div class="line bottom_border">
                 <h3 class="chart_header"><i class="fa fa-moon-o"></i>Sleep</h3>
-                <p class="chart_totals"><b>{{event}}</b> asleep</p>
+                <p class="chart_totals">minutes asleep</p>
                 <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in events" :key="index" :class="item.events?'sleep_active':''" >{{item == null ? '' : item.events}}
+                  <div class="day_list chart_number"  v-for="(item,index) in periodSleep" :key="index" :class="item.day?'sleep_active':''" >{{item == null ? '' : item.totalMinutesAsleep}}
                   </div>
                 </div>
-                <p class="chart_totals"><b>{{event}}</b> inbed</p>
+                <p class="chart_totals">minutes inbed</p>
                 <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in events" :key="index" :class="item.events?'sleep_active':''" >{{item == null ? '' : item.events}}
+                  <div class="day_list chart_number"  v-for="(item,index) in periodSleep" :key="index" :class="item.day?'sleep_active':''" >{{item == null ? '' : item.totalTimeInBed}}
                   </div>
                 </div>
-                <p class="chart_totals"><b>{{event}}</b> sleep records</p>
+                <p class="chart_totals">sleep records</p>
                 <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in events" :key="index" :class="item.events?'sleep_active':''" >{{item == null ? '' : item.events}}
+                  <div class="day_list chart_number"  v-for="(item,index) in periodSleep" :key="index" :class="item.day?'sleep_active':''" >{{item == null ? '' : item.totalSleepRecords}}
                   </div>
                 </div>
               </div>
-              <!-- Fitbit -->
+              <!-- Fitbit activity-->
               <div class="line bottom_border">
                 <h3 class="chart_header"><i class="fa fa-soccer-ball-o"></i>Activity</h3>
-                <p class="chart_totals"><b>{{event}}</b> steps</p>
+                <p class="chart_totals">steps</p>
                 <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in events" :key="index" :class="item.events?'activity_active':''" >{{item == null ? '' : item.events}}
+                  <div class="day_list chart_number"  v-for="(item,index) in periodActivity" :key="index" :class="item.day?'activity_active':''" >{{item == null ? '' : item.steps}}
                   </div>
                 </div>
-                <p class="chart_totals"><b>{{event}}</b> km</p>
+                <p class="chart_totals">mile</p>
                 <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in events" :key="index" :class="item.events?'activity_active':''" >{{item == null ? '' : item.events}}
+                  <div class="day_list chart_number"  v-for="(item,index) in periodActivity" :key="index" :class="item.day?'activity_active':''" >{{item == null ? '' : item.distances}}
                   </div>
                 </div>
-                <p class="chart_totals"><b>{{event}}</b> calories</p>
+                <p class="chart_totals">calories</p>
                 <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in events" :key="index" :class="item.events?'activity_active':''" >{{item == null ? '' : item.events}}
+                  <div class="day_list chart_number"  v-for="(item,index) in periodActivity" :key="index" :class="item.day?'activity_active':''" >{{item == null ? '' : item.caloriesOut}}
                   </div>
                 </div>
               </div>
@@ -564,11 +564,16 @@ export default {
       tweets: 0, //twitter中tweets
       mentions: 0, //twitter中metions
       posts: 0, //facebook中posts
+      longitude: "",
+      latitude: "",
       daily: {}, //weather 当天数据
       dailyMoods: [], //每天的 mood 时间轴
       periodMoods: [], //每周或者每月的 mood 平均
       signDays: null,
-      day: [],
+      dailySleep: {},
+      periodSleep: [],
+      dailyActivity: {},
+      periodActivity: [],
       event: 1,
       events: [
         { events: 1 },
@@ -650,9 +655,7 @@ export default {
         { day_length: "09:45" },
         { day_length: "" },
         { day_length: "09:38" }
-      ],
-      longitude: "",
-      latitude: ""
+      ]
     };
   },
   mounted() {
@@ -669,8 +672,10 @@ export default {
       var date = this.formatTime(new Date());
       this.getTwitter(date, i);
       this.getFacebook(date, i);
-      this.getWeather();
       this.getMood(date, i);
+      this.getWeather(i);
+      this.getSleep(date, i);
+      this.getActivity(date, i);
     },
     //获取 twitter
     getTwitter(date, i) {
@@ -713,8 +718,12 @@ export default {
       });
     },
     //获取 天气
-    getWeather() {
+    getWeather(i) {
       var that = this;
+      //只在day tab显示 weather
+      if (i != "day") {
+        return;
+      }
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           function(position) {
@@ -784,23 +793,61 @@ export default {
           params: { datetime: date, period: i }
         })
         .then(res => {
-          this.periodMoods = res.data;
-          //周 数据处理显示
-          if (type == "week") {
-            var mm = [];
-            for (var i = 0; i < 7; i++) {
-              mm[i] = {};
-              for (var j = 0; j < this.periodMoods.length; j++) {
-                if (this.periodMoods[j].day == i + 1) {
-                  mm[i] = this.periodMoods[j];
-                  continue;
-                }
-              }
+          if (res.status == 200) {
+            this.periodMoods = res.data;
+            //周 数据处理显示
+            if (type == "week") {
+              this.periodMoods = this.weekData(res.data);
+            } else if (type == "month") {
+              //月 数据处理显示
+              this.buildCal(todayYear, todayMonth, this.periodMoods, []);
             }
-            this.periodMoods = mm;
-          } else if (type == "month") {
-            //月 数据处理显示
-            this.buildCal(todayYear, todayMonth, this.periodMoods, []);
+          }
+        });
+    },
+    //获取 Sleep 数据展示
+    getSleep(date, i) {
+      var url = "";
+      if (i == "day") {
+        url = this.api + "/user/" + this.id + "/fitbit/sleep/day";
+      } else if (i == "week") {
+        url = this.api + "/user/" + this.id + "/fitbit/sleep/week";
+      }
+      var type = i;
+      this.$axios
+        .get(url, {
+          params: { datetime: date }
+        })
+        .then(res => {
+          if (res.status == 200) {
+            if (type == "day") {
+              this.dailySleep = res.data;
+            } else if (type == "week") {
+              this.periodSleep = this.weekData(res.data);
+            }
+          }
+        });
+    },
+    //获取 activity 数据展示
+    getActivity(date, i) {
+      var url = "";
+      if (i == "day") {
+        url = this.api + "/user/" + this.id + "/fitbit/activity/day";
+      } else if (i == "week") {
+        url = this.api + "/user/" + this.id + "/fitbit/activity/week";
+      }
+      var type = i;
+      this.$axios
+        .get(url, {
+          params: { datetime: date }
+        })
+        .then(res => {
+          if (res.status == 200) {
+            if (type == "day") {
+              this.dailyActivity = res.data;
+            } else if (type == "week") {
+              this.periodActivity = this.weekData(res.data);
+            }
           }
         });
     },
@@ -836,6 +883,20 @@ export default {
         ":" +
         ((sunsetTime - sunriseTime) % 3600) % 60
       );
+    },
+    // week 数据处理
+    weekData(data) {
+      var mm = [];
+      for (var i = 0; i < 7; i++) {
+        mm[i] = {};
+        for (var j = 0; j < data.length; j++) {
+          if (data[j].day == i + 1) {
+            mm[i] = data[j];
+            continue;
+          }
+        }
+      }
+      return mm;
     },
     //月份调用
     buildCal(iYear, iMonth, moodDay, eventDay) {
@@ -930,9 +991,6 @@ export default {
             // }
             if (iVarDate == curMonthDays) {
               this.signDays = aMonth;
-              for (var i = 0; i < this.signDays.length; i++) {
-                this.day = this.day.concat(this.signDays[i]);
-              }
               return aMonth;
             } else {
               iVarDate++;
@@ -941,6 +999,7 @@ export default {
         }
       }
     },
+    //update
     updateData(type) {
       if (type == "facebook") {
         this.updateFacebook();
@@ -949,6 +1008,7 @@ export default {
         // this.updateMetions();
       }
     },
+    //facebook update
     updateFacebook() {
       this.$indicator.open({
         spinnerType: "fading-circle"
@@ -962,6 +1022,9 @@ export default {
               message: "Update success",
               duration: 5000
             });
+            //更新完数据重新获取接口展示最新数据
+            var date = this.formatTime(new Date());
+            this.getFacebook(date, "day");
           } else {
             this.$toast({
               message: "Update failed",
