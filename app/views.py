@@ -509,6 +509,7 @@ def fitbit_sleep(user_id):
 
 
 @app.route('/user/<int:user_id>/fitbit/sleep/week')
+@login_required
 def fitbit_sleep_week(user_id):
     """ 每周的睡眠数据 """
     user = load_user(user_id)
@@ -533,6 +534,7 @@ def fitbit_sleep_week(user_id):
 
 
 @app.route('/user/<int:user_id>/fitbit/activity/day')
+@login_required
 def fitbit_activity(user_id):
     """ 存储今天的 activity 记录
     API: https://dev.fitbit.com/build/reference/web-api/activity/
@@ -583,6 +585,7 @@ def fitbit_activity(user_id):
 
 
 @app.route('/user/<int:user_id>/fitbit/activity/week')
+@login_required
 def fitbit_activity_week(user_id):
     """ 每周的 activities 数据 """
     user = load_user(user_id)
