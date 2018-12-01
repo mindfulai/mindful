@@ -336,3 +336,44 @@ Response:
     "veryActiveMinutes":0
 }
 ```
+
+## Fitbit Activities
+URL: /user/<int:user_id>/fitbit/activity/week  
+Method: GET  
+Data:  
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```   
+
+Response:
+详见： https://dev.fitbit.com/build/reference/web-api/activity/#get-daily-activity-summary
+```json
+[
+    {
+        "activityCalories":230,
+        "caloriesBMR":1913,
+        "day": 6,
+        "caloriesOut":2143,
+        "distances":[
+            {"activity":"tracker", "distance":1.32},
+            {"activity":"loggedActivities", "distance":0},
+            {"activity":"total","distance":1.32},
+            {"activity":"veryActive", "distance":0.51},
+            {"activity":"moderatelyActive", "distance":0.51},
+            {"activity":"lightlyActive", "distance":0.51},
+            {"activity":"sedentaryActive", "distance":0.51},
+            {"activity":"Treadmill, 0% Incline", "distance":3.28}
+        ],
+        "elevation":48.77,
+        "fairlyActiveMinutes":0,
+        "floors":16,
+        "lightlyActiveMinutes":0,
+        "marginalCalories":200,
+        "sedentaryMinutes":1166,
+        "steps":0,
+        "veryActiveMinutes":0
+    }
+]
+```
