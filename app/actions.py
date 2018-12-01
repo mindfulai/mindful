@@ -126,6 +126,19 @@ def get_oauth_or_create(provider, user, provider_user_id=None):
     return oauth, created
 
 
+def get_user_oauth(user, provider):
+    query = models.OAuth.query.filter_by(
+        user=user,
+        provider=provider
+    )
+
+    try:
+        oauth = query.one()
+    except NoResultFound:
+        oauth = None
+    return oauth
+
+
 def update_oauth_token(oauth, token):
     """ 更新 OAuth token
     """

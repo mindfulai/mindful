@@ -16,7 +16,7 @@ from app import models
 from app import login_manager
 from app.actions import get_user_last_tweet_or_mention, get_twitter_path,\
     save_twitter_data, get_twitter_screen_name, count_filter_by_date, \
-    get_oauth_or_create
+    get_oauth_or_create, get_user_oauth
 
 from app import actions
 
@@ -474,7 +474,10 @@ def fitbit_sleep(user_id):
     API: https://dev.fitbit.com/build/reference/web-api/sleep/
     """
     user = load_user(user_id)
-    oauth, _ = get_oauth_or_create('fitbit', user=user)
+    oauth = get_user_oauth(user=user, provider='fitbit')
+
+    if not oauth:
+        return jsonify({'msg': 'Unauthorized'})
 
     fitbit = Fitbit(client_id='22D6BS',
                     client_secret='5cf4f501414edbe53904cf473c833d5f',
@@ -541,7 +544,10 @@ def fitbit_activity(user_id):
     API: https://dev.fitbit.com/build/reference/web-api/activity/
     """
     user = load_user(user_id)
-    oauth, _ = get_oauth_or_create('fitbit', user=user)
+    oauth = get_user_oauth(user=user, provider='fitbit')
+
+    if not oauth:
+        return jsonify({'msg': 'Unauthorized'})
 
     fitbit = Fitbit(client_id='22D6BS',
                     client_secret='5cf4f501414edbe53904cf473c833d5f',
