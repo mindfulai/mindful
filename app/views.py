@@ -321,15 +321,11 @@ def logout():
 @login_required
 def authorized(user_id):
     user = load_user(user_id)
-    if fitbit.client.session.token:
-        fitbit_auth = True
-    else:
-        fitbit_auth = False
 
     result = {
         'twitter_auth': actions.is_authorized(twitter_blueprint.name, user),
         'facebook_auth': actions.is_authorized(facebook_blueprint.name, user),
-        'fitbit_auth': fitbit_auth
+        'fitbit_auth': actions.is_authorized('fitbit', user)
     }
     return jsonify(result)
 
@@ -448,26 +444,24 @@ def mood_average_list(user_id):
 ##############################################
 
 
-fitbit = Fitbit(client_id='22D6BS',
-                client_secret='5cf4f501414edbe53904cf473c833d5f')
-
-
 @app.route('/login/fitbit')
 @login_required
 def fitbit_auth():
     user = current_user
-
-    fitbit.redirect_uri = url_for('fitbit_auth', _external=True)
+    fitbit = Fitbit(client_id='22D6BS',
+                    client_secret='5cf4f501414edbe53904cf473c833d5f',
+                    redirect_uri=url_for('fitbit_auth', _external=True))
 
     code = request.args.get('code')
     if not code:
-        url, _ = fitbit.client.authorize_token_url(
-            redirect_uri=fitbit.redirect_uri)
+        url, _ = fitbit.client.authorize_token_url()
         return redirect(url)
 
     token = fitbit.client.fetch_access_token(code=code)
 
     oauth, created = get_oauth_or_create('fitbit', user, token['user_id'])
+    app.logger.info('======== \n{} access_token: {}'.format(
+        user.username, oauth.token))
     actions.update_oauth_token(oauth, token)
 
     return redirect('/#/index?name={}&id={}'.format(user.username, user.id))
@@ -480,11 +474,12 @@ def fitbit_sleep(user_id):
     API: https://dev.fitbit.com/build/reference/web-api/sleep/
     """
     user = load_user(user_id)
-    token = fitbit.client.session.token
-    if not token:
-        return jsonify({'msg': 'token error'})
-
     oauth, _ = get_oauth_or_create('fitbit', user=user)
+
+    fitbit = Fitbit(client_id='22D6BS',
+                    client_secret='5cf4f501414edbe53904cf473c833d5f',
+                    access_token=oauth.token['access_token'],
+                    refresh_token=oauth.token['refresh_token'])
 
     # TODO: 如果没有 datetime 参数处理
     dt_str = request.args.get('datetime')
@@ -546,17 +541,18 @@ def fitbit_activity(user_id):
     API: https://dev.fitbit.com/build/reference/web-api/activity/
     """
     user = load_user(user_id)
+    oauth, _ = get_oauth_or_create('fitbit', user=user)
 
-    # 验证 token
-    token = fitbit.client.session.token
-    if not token:
-        return jsonify({'msg': 'token error'})
+    fitbit = Fitbit(client_id='22D6BS',
+                    client_secret='5cf4f501414edbe53904cf473c833d5f',
+                    access_token=oauth.token['access_token'],
+                    refresh_token=oauth.token['refresh_token'])
 
     dt_str = request.args.get('datetime')
     dt = pendulum.parse(dt_str, strict=False)
 
     # 获取 activity
-    data = fitbit.activities(date=dt.date(), user_id=token['user_id'])
+    data = fitbit.activities(date=dt.date(), user_id=oauth.provider_user_id)
     print('==== activities from fitbit')
     print(data)
 
