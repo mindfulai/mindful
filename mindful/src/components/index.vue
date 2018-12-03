@@ -12,6 +12,17 @@
         2018-11-05
         <div class="arrow right"><i class="fa fa-angle-right"></i></div>
       </div>-->
+      <!-- emotion analysis -->
+        <div class="content_box" v-show="activeTab=='day'||activeTab=='week'">
+          <h4 style="background:#39c68c;">{{emotionTitle}}</h4>
+          <div class="content_box_inner" style="overflow-x:scroll;">
+            <div class="charts" id="day_emotion" style="width:100%;height:300px;">
+            </div>
+            <hr>
+            <div class="eight_emotion" id="day_eight_emotion" style="width:100%;height:260px;"> 
+            </div>
+          </div>
+        </div>       
       <transition name="fade" mode="in-out">
         <!-- day Tab -->
         <div v-show="activeTab=='day'"> 
@@ -147,74 +158,14 @@
                 <i class="fa fa-pencil"></i>
                 Rate day
               </router-link>
-              <!-- <div class="connector">
-                <i class="fa fa-exchange"></i>
-                Android
-              </div> -->
-              <div class="chart">
-
-              </div>
             </div>
           </div>
-          <!--Events-->
-          <!-- <div class="content_box">
-            <h4>Events</h4>
-
-            <div class="content_box_inner">
-              <div class="line clearfix">
-                <div class="left left_table">
-                  <table class="table">
-                    <tbody>
-                    <tr>
-                      <td class="left" valign="bottom"><b>0</b> today</td>
-                      <td class="right" valign="bottom"></td>
-                    </tr>
-                    <tr>
-                      <td colspan="2" class="percent-bg">
-                        <div class="percent-meter" style="width: 0%; background-color: #E1546C"></div>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-                  <table class="table">
-                    <tbody>
-                    <tr>
-                      <td class="left" valign="bottom"><b>00:00</b> in events</td>
-                      <td class="right" valign="bottom"></td>
-                    </tr>
-                    <tr>
-                      <td colspan="2" class="percent-bg">
-                        <div class="percent-meter" style="width: 0%; background-color: #E1546C"></div>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div class="right right_icon">
-                  <i class="fa fa-file-text events"></i>
-                </div>
-              </div>
-              <div class="connector">
-                <i class="fa fa-exchange"></i>
-                Events
-              </div>
-              <div class="chart">
-              </div>
-            </div>
-          </div> -->
           <!--Location-->
           <div class="content_box">
             <h4>Location</h4>
 
             <div class="content_box_inner">
                 <div id="map" style="display:block;height:3rem;width:100%;"></div>
-                <!-- <a style="display:block;height:100%;" target="_blank" href="https://google.com/maps/@37.87,-122.26,16z">
-                  <img style="width:100%;" src="https://api.mapbox.com/styles/v1/joshsharp/cjmfw5rw71t0m2rrwsj8ywbi1/static/-122.26,37.87,12,0/360x160?access_token=pk.eyJ1Ijoiam9zaHNoYXJwIiwiYSI6ImNqbHJta2ozMjA2b20zc3RhNTFuMm4zZGEifQ.sN74U85oG02UI3juN-NZtA" alt="Map">
-                </a> -->
-              <!-- <div class="connector">
-                <i class="fa fa-exchange"></i>
-                Android
-              </div> -->
               <div class="chart">
               </div>
             </div>
@@ -614,6 +565,9 @@ export default {
       dailyMoods: [], //每天的 mood 时间轴
       periodMoods: [], //每周或者每月的 mood 平均
       signDays: null,
+      longitude: "",
+      latitude: "",
+      emotionTitle: "",
       event: 1,
       events: [
         { events: 1 },
@@ -695,9 +649,7 @@ export default {
         { day_length: "09:45" },
         { day_length: "" },
         { day_length: "09:38" }
-      ],
-      longitude: "",
-      latitude: ""
+      ]
     };
   },
   mounted() {
@@ -708,6 +660,162 @@ export default {
     this.changeTab("day");
   },
   methods: {
+    //情感分析
+    getEmotion(date, i) {
+      var title_text = "";
+      var xAxis_data = [];
+      var yAxis_data = [];
+      this.emotionTitle = "";
+      if (i == "day") {
+        this.emotionTitle = date.slice(0, 10);
+        title_text = "今日情感趋势图";
+        xAxis_data = ["10:40", "11:40", "15:30", "16:40", "18:40"];
+        yAxis_data = [90, 20, 60, 40, 50];
+      } else if (i == "week") {
+        this.emotionTitle = "本周情感分析";
+        title_text = "本周情感趋势图";
+        xAxis_data = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+        yAxis_data = [60, 70, 60, 50, 80, 90, 50];
+      } else if (i == "month") {
+        // this.emotionTitle = "本月情感分析";
+        // title_text = "本月情感趋势图";
+        // xAxis_data = ["1/12", "2/12", "3/12", "4/12", "5/12", "6/12", "7/12","8/12"];
+        // yAxis_data = [60, 70, 60, 50, 80, 90, 50];
+      }
+      var option = {
+        title: {
+          text: title_text,
+          textStyle: {
+            fontSize: 14
+          },
+          subtext: "0 代表最负面情绪  100% 代表最正面情绪"
+        },
+        legend: {
+          right: "5%"
+        },
+        grid: {
+          top: "80",
+          bottom: "40"
+        },
+        tooltip: {
+          trigger: "axis",
+          formatter: "{b}<br/>{a} : {c}%"
+        },
+        xAxis: [
+          {
+            type: "category",
+            axisLine: {
+              lineStyle: {
+                color: "#90979c"
+              }
+            },
+            data: xAxis_data
+          }
+        ],
+        yAxis: [
+          {
+            name: "(%)",
+            max: 100,
+            type: "value",
+            splitLine: {
+              show: false
+            },
+            axisLine: {
+              lineStyle: {
+                color: "#90979c"
+              }
+            },
+            axisTick: {
+              show: false
+            },
+            axisLabel: {
+              interval: 0
+            },
+            splitArea: {
+              show: false
+            }
+          }
+        ],
+        series: [
+          {
+            name: "情感值",
+            type: "line",
+            stack: "总量",
+            symbolSize: 10,
+            symbol: "circle",
+            itemStyle: {
+              normal: {
+                color: "#39c68c",
+                barBorderRadius: 0,
+                label: {
+                  show: true,
+                  position: "top",
+                  formatter: function(p) {
+                    return p.value > 0 ? p.value + "%" : "";
+                  }
+                }
+              }
+            },
+            data: yAxis_data
+          }
+        ]
+      };
+      var eight_option = {
+        grid: {
+          top: "60",
+          bottom: "10"
+        },
+        radar: [
+          {
+            name: {
+              color: "#90979c",
+              formatter: function(value, indicator) {
+                var res = value + " : " + indicator.value;
+                return res;
+              }
+            },
+            indicator: [
+              { name: "happiness", max: 100, value: "60%" },
+              { name: "surprise", max: 100, value: "20%" },
+              { name: "fear", max: 100, value: "5%" },
+              { name: "neutral", max: 100, value: "5%" },
+              { name: "disgust", max: 100, value: "3%" },
+              { name: "contempt", max: 100, value: "3%" },
+              { name: "anger", max: 100, value: "2%" },
+              { name: "sadness", max: 100, value: "2%" }
+            ],
+            radius: 70,
+            center: ["50%", "50%"]
+          }
+        ],
+        series: [
+          {
+            type: "radar",
+            tooltip: {
+              trigger: "item"
+            },
+            itemStyle: {
+              normal: {
+                areaStyle: { type: "default" },
+                color: "#39c68c"
+              }
+            },
+            data: [
+              {
+                value: [60, 20, 5, 5, 3, 3, 2, 2],
+                name: "八大情感分析图"
+              }
+            ]
+          }
+        ]
+      };
+      this.$echarts
+        .init(document.getElementById("day_emotion"))
+        .setOption(option);
+      this.$echarts
+        .init(document.getElementById("day_eight_emotion"))
+        .setOption(eight_option);
+    },
     //切换 tab
     changeTab(i) {
       this.activeTab = i;
@@ -716,6 +824,7 @@ export default {
       this.getFacebook(date, i);
       this.getWeather();
       this.getMood(date, i);
+      this.getEmotion(date, i);
     },
     //获取 twitter
     getTwitter(date, i) {

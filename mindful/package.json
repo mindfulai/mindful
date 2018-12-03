@@ -13,14 +13,12 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "echarts": "^4.2.0-rc.2",
     "font-awesome": "^4.7.0",
-    "google": "^2.1.0",
-    "hellojs": "^1.17.1",
     "jquery": "^3.3.1",
     "mint-ui": "^2.2.13",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1",
-    "vue2-google-maps": "^0.10.3"
+    "vue-router": "^3.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

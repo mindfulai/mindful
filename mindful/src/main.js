@@ -17,7 +17,9 @@ Vue.use(MintUI)
 //全局引入jquery
 // import $ from 'jquery'
 // Vue.prototype.$ = $
-
+//全局引入echarts
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 //import "font-awesome/css/font-awesome.min.css"
 
 Vue.config.productionTip = false
