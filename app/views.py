@@ -16,7 +16,7 @@ from app import models
 from app import login_manager
 from app.actions import get_user_last_tweet_or_mention, get_twitter_path,\
     save_twitter_data, get_twitter_screen_name, count_filter_by_date, \
-    get_oauth_or_create, get_user_oauth
+    get_oauth_or_create, get_user_oauth, is_token_expired
 
 from app import actions
 
@@ -552,10 +552,17 @@ def fitbit_activity(user_id):
     fitbit = Fitbit(client_id='22D6BS',
                     client_secret='5cf4f501414edbe53904cf473c833d5f',
                     access_token=oauth.token['access_token'],
-                    refresh_token=oauth.token['refresh_token'])
+                    refresh_token=oauth.token['refresh_token'],
+                    refresh_cb=actions.fitbit_refresh_cb)
 
     dt_str = request.args.get('datetime')
     dt = pendulum.parse(dt_str, strict=False)
+
+    # 如果 token 失效更新 token
+    if is_token_expired(dt, oauth.token):
+        new_token = fitbit.client.refresh_token()
+        app.logger.info('=== {} new_token: {}'.format(user.username, new_token))
+        actions.update_oauth_token(oauth, new_token)
 
     # 获取 activity
     data = fitbit.activities(date=dt.date(), user_id=oauth.provider_user_id)

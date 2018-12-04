@@ -185,3 +185,18 @@ def save_and_get_weather(user, latitude, longitude):
     db.session.add(weather)
     db.session.commit()
     return result['daily']
+
+
+def is_token_expired(now, token):
+    """ token 是否过期，过期为 True """
+    if token['expires_at'] <= now.timestamp():
+        print('======= token expired')
+        return True
+    return False
+
+
+def fitbit_refresh_cb(token):
+    """ Fitbit instance refresh_cb callback """
+    access_token = token['access_token']
+    refresh_token = token['refresh_token']
+    expires_at = token['expires_at']
