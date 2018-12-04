@@ -31,7 +31,7 @@ class User(db.Model, UserMixin):
 
 
 class OAuth(OAuthConsumerMixin, db.Model):
-    provider_user_id = db.Column(db.String(256), unique=True)
+    provider_user_id = db.Column(db.String(256), unique=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     user = db.relationship(User)
 
@@ -103,3 +103,29 @@ class Mood(db.Model):
     created_at = db.Column(db.DateTime, server_default=func.now())
     detail = db.Column(db.String)
     score = db.Column(db.Integer)
+
+
+class Sleep(db.Model):
+    __tablename__ = 'sleep'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.relationship(User)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    created_at = db.Column(db.DateTime, server_default=func.now())
+    updated_at = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+    date = db.Column(db.Date)
+    data = db.Column(MutableDict.as_mutable(JSONType))
+    api_url = db.Column(db.String)
+
+
+class Activity(db.Model):
+    __tablename__ = 'activities'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.relationship(User)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    created_at = db.Column(db.DateTime, server_default=func.now())
+    updated_at = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+    date = db.Column(db.Date)
+    data = db.Column(MutableDict.as_mutable(JSONType))
+    api_url = db.Column(db.String)
