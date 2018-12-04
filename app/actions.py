@@ -97,18 +97,18 @@ def count_filter_by_date(csl, user, start_date, end_date):
     ).count()
 
 
-def get_oauth_or_create(blueprint, user_id, user):
+def get_oauth_or_create(provider, user, provider_user_id=None):
     """ 获取或创建oauth
     args:
-        user_id: 第三方授权的 user_id
+        provider_user_id: 第三方授权的 user_id
         user: 访问用户 object
     return:
         oauth: OAuth
         created: 是否创建
     """
     query = models.OAuth.query.filter_by(
-        provider=blueprint.name,
-        provider_user_id=user_id
+        provider=provider,
+        user=user
     )
 
     try:
@@ -116,14 +116,27 @@ def get_oauth_or_create(blueprint, user_id, user):
         created = False
     except NoResultFound:
         oauth = models.OAuth(
-            provider=blueprint.name,
-            provider_user_id=user_id,
+            provider=provider,
+            provider_user_id=provider_user_id,
             user=user
         )
         db.session.add(oauth)
         db.session.commit()
         created = True
     return oauth, created
+
+
+def get_user_oauth(user, provider):
+    query = models.OAuth.query.filter_by(
+        user=user,
+        provider=provider
+    )
+
+    try:
+        oauth = query.one()
+    except NoResultFound:
+        oauth = None
+    return oauth
 
 
 def update_oauth_token(oauth, token):
@@ -172,3 +185,18 @@ def save_and_get_weather(user, latitude, longitude):
     db.session.add(weather)
     db.session.commit()
     return result['daily']
+
+
+def is_token_expired(now, token):
+    """ token 是否过期，过期为 True """
+    if token['expires_at'] <= now.timestamp():
+        print('======= token expired')
+        return True
+    return False
+
+
+def fitbit_refresh_cb(token):
+    """ Fitbit instance refresh_cb callback """
+    access_token = token['access_token']
+    refresh_token = token['refresh_token']
+    expires_at = token['expires_at']

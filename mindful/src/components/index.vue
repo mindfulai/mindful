@@ -46,32 +46,6 @@
                     </tr>
                     </tbody>
                   </table>
-                  <!-- <table class="table">
-                    <tbody>
-                    <tr>
-                      <td class="left" valign="bottom"><b>0</b> FB reactions</td>
-                      <td class="right" valign="bottom"></td>
-                    </tr>
-                    <tr>
-                      <td colspan="2" class="percent-bg">
-                        <div class="percent-meter" style="width: 0%; background-color: #4E7CA0"></div>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-                  <table class="table">
-                    <tbody>
-                    <tr>
-                      <td class="left" valign="bottom"><b>0</b> FB comments</td>
-                      <td class="right" valign="bottom"></td>
-                    </tr>
-                    <tr>
-                      <td colspan="2" class="percent-bg">
-                        <div class="percent-meter" style="width: 0%; background-color: #4E7CA0"></div>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table> -->
                 </div>
                 <div class="right right_icon">
                   <i class="fa fa-facebook-square FB"></i>
@@ -83,8 +57,6 @@
                 <a class="authorize" @click="updateData('facebook')">
                  Update data
                 </a>
-              </div>
-              <div class="chart">
               </div>
             </div>
           </div>
@@ -112,7 +84,6 @@
                     <tbody>
                     <tr>
                       <td class="left" valign="bottom"><b>{{mentions}}</b> mentions</td>
-                      <!--<td class="right" valign="bottom"><b>0</b> avg</td>-->
                     </tr>
                     <tr>
                       <td colspan="2" class="percent-bg">
@@ -124,15 +95,125 @@
                 </div>
                 <div class="right right_icon">
                   <i class="fa fa-twitter-square"></i>
-                  <!--<i class="fa fa-facebook-square"></i>-->
                 </div>
               </div>
               <div class="connector">
                 <i class="fa fa-exchange"></i>
                 Twitter
-                <!-- <a class="authorize">Authorize</a> -->
               </div>
-              <div class="chart">
+            </div>
+          </div>
+          <!--Fitbit-->
+          <div class="content_box">
+            <h4>Sleep</h4>
+
+            <div class="content_box_inner">
+              <div class="line clearfix">
+                <div class="left left_table">
+                  <table class="table">
+                    <tbody>
+                    <tr>
+                      <td class="left" valign="bottom"><b>{{dailySleep.totalMinutesAsleep?dailySleep.totalMinutesAsleep:"0"}}</b> total minutes asleep</td>
+                      <td class="right" valign="bottom"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" class="percent-bg">
+                        <div class="percent-meter" style="width: 0%; background-color: #6780ff"></div>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <table class="table">
+                    <tbody>
+                    <tr>
+                      <td class="left" valign="bottom"><b>{{dailySleep.totalTimeInBed?dailySleep.totalTimeInBed:"0"}}</b> total minutes inbed</td>
+                      <td class="right" valign="bottom"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" class="percent-bg">
+                        <div class="percent-meter" style="width: 0%; background-color: #6780ff"></div>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <table class="table">
+                    <tbody>
+                    <tr>
+                      <td class="left" valign="bottom"><b>{{dailySleep.totalSleepRecords?dailySleep.totalSleepRecords:"0"}}</b> total sleep records</td>
+                      <td class="right" valign="bottom"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" class="percent-bg">
+                        <div class="percent-meter" style="width: 0%; background-color: #6780ff"></div>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="right right_icon">
+                  <i class="fa fa-moon-o sleep_icon"></i>
+                </div>
+              </div>
+              <div class="connector">
+                <i class="fa fa-exchange"></i>
+                Fitbit
+              </div>
+            </div>
+          </div>
+          <!-- Activity -->
+          <div class="content_box">
+            <h4>Activity</h4>
+
+            <div class="content_box_inner">
+              <div class="line clearfix">
+                <div class="left left_table">
+                  <table class="table">
+                    <tbody>
+                    <tr>
+                      <td class="left" valign="bottom"><b>{{dailyActivity.steps?dailyActivity.steps:"0"}}</b> steps</td>
+                      <td class="right" valign="bottom"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" class="percent-bg">
+                        <div class="percent-meter" style="width: 0%; background-color: #50d29d"></div>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <table class="table">
+                    <tbody>
+                    <tr>
+                      <td class="left" valign="bottom"><b>{{dailyActivity.distances?dailyActivity.distances:"0"}}</b> mile</td>
+                      <td class="right" valign="bottom"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" class="percent-bg">
+                        <div class="percent-meter" style="width: 0%; background-color: #50d29d"></div>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <table class="table">
+                    <tbody>
+                    <tr>
+                      <td class="left" valign="bottom"><b>{{dailyActivity.caloriesOut?dailyActivity.caloriesOut:"0"}}</b> calories</td>
+                      <td class="right" valign="bottom"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" class="percent-bg">
+                        <div class="percent-meter" style="width: 0%; background-color: #50d29d"></div>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="right right_icon">
+                  <i class="fa fa-soccer-ball-o activity_icon"></i>
+                </div>
+              </div>
+              <div class="connector">
+                <i class="fa fa-exchange"></i>
+                Fitbit
               </div>
             </div>
           </div>
@@ -196,8 +277,6 @@
                 <i class="fa fa-exchange"></i>
                 Dark Sky
               </div>
-              <div class="chart">
-              </div>
             </div>
           </div>
         </div>
@@ -207,6 +286,7 @@
         <div v-show="activeTab=='week'">
           <!--Facebook-->
           <div class="content_box">
+
             <h4>Posts for this week</h4>
 
             <div class="content_box_inner">
@@ -233,9 +313,7 @@
             </div>
           </div>
           <!--Twitter-->
-          <div class="content_box">
-            <h4>Tweets and  mentions for this week</h4>
-
+          <div class="content_box"><h4>Tweets and  mentions for this week</h4>
             <div class="content_box_inner">
               <div class="line clearfix">
                 <div class="left left_table">
@@ -287,52 +365,62 @@
                   <div class="weeklist">SUN</div>
                 </div>
               </div>
-              <!-- facebook -->
-              <!-- <div class="line bottom_border">
-                <h3 class="chart_header"><i class="fa fa-facebook-square facebook_icon"></i>FaceBook</h3>
-                <p class="chart_totals"><b>{{posts}}</b> facebook posts</p>
+              <!-- Fitbit sleep-->
+              <div class="line bottom_border">
+                <h3 class="chart_header"><i class="fa fa-moon-o"></i>Sleep</h3>
+                <p class="chart_totals">minutes asleep</p>
                 <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in signDays" :key="index" >{{item == null ? '' : item.normalday}}
+                  <div class="day_list chart_number"  v-for="(item,index) in periodSleep" :key="index" :class="item.day?'sleep_active':''" >{{item == null ? '' : item.totalMinutesAsleep}}
                   </div>
                 </div>
-              </div> -->
-              <!-- twitter -->
-              <!-- <div class="line">
-                <h3 class="chart_header"><i class="fa fa-twitter-square twitter_icon"></i>Twitter</h3>
-                <p class="chart_totals"><b>{{tweets}}</b> tweets</p>
+                <p class="chart_totals">minutes inbed</p>
                 <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in signDays" :key="index" >{{item == null ? '' : item.normalday}}
+                  <div class="day_list chart_number"  v-for="(item,index) in periodSleep" :key="index" :class="item.day?'sleep_active':''" >{{item == null ? '' : item.totalTimeInBed}}
                   </div>
                 </div>
-              </div> -->
+                <p class="chart_totals">sleep records</p>
+                <div class="month_day">
+                  <div class="day_list chart_number"  v-for="(item,index) in periodSleep" :key="index" :class="item.day?'sleep_active':''" >{{item == null ? '' : item.totalSleepRecords}}
+                  </div>
+                </div>
+              </div>
+              <!-- Fitbit activity-->
+              <div class="line bottom_border">
+                <h3 class="chart_header"><i class="fa fa-soccer-ball-o"></i>Activity</h3>
+                <p class="chart_totals">steps</p>
+                <div class="month_day">
+                  <div class="day_list chart_number"  v-for="(item,index) in periodActivity" :key="index" :class="item.day?'activity_active':''" >{{item == null ? '' : item.steps}}
+                  </div>
+                </div>
+                <p class="chart_totals">mile</p>
+                <div class="month_day">
+                  <div class="day_list chart_number"  v-for="(item,index) in periodActivity" :key="index" :class="item.day?'activity_active':''" >{{item == null ? '' : item.distances}}
+                  </div>
+                </div>
+                <p class="chart_totals">calories</p>
+                <div class="month_day">
+                  <div class="day_list chart_number"  v-for="(item,index) in periodActivity" :key="index" :class="item.day?'activity_active':''" >{{item == null ? '' : item.caloriesOut}}
+                  </div>
+                </div>
+              </div>
               <!-- mood -->
               <div class="line">
-                <h3 class="chart_header">Mood</h3>
+                <h3 class="chart_header"><i class="fa fa-meh-o"></i>Mood</h3>
                 <div class="calendar_wrapper">
                   <div class="week_day border-bottom">
                     <!-- week mood数据判断展示对应week的mood -->
-                    <!-- <div class="weeklist" v-for="(k,i) in 7" :key="i" >
-                     
-                      <a class=" chart_number mood_number"  v-for="(item,index) in periodMoods" :key="index" v-if='item.day==k' :class="item.day==k?'mood-'+item.score:''" >{{item.day==k?item.score:''}}</a>
-                    </div> -->
                     <div class="weeklist" v-for="(item,index) in periodMoods" :key="index" >
                       <a class=" chart_number mood_number" :class="item.day?'mood-'+item.score:''" >{{item.day?item.score:''}}</a>
                     </div>
                   </div>
                 </div>
               </div>
-              <!-- events -->
-              <!-- <div class="line bottom_border">
-                <h3 class="chart_header"><i class="fa fa-file-text events_icon"></i>Events</h3>
-                <p class="chart_totals"><b>{{event}}</b> events</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in events" :key="index" :class="item.events?'events_active':''" >{{item == null ? '' : item.events}}
-                  </div>
-                </div>
-              </div> -->
               <!-- weather -->
               <div class="line">
-                <h3 class="chart_header"><i class="fa fa-sun-o weather_icon"></i>Weather</h3>
+                <h3 class="chart_header">
+                  <i class="fa fa-sun-o"></i>
+                  Weather
+                </h3>
                 <p class="chart_totals">Max temp</p>
                 <div class="month_day">
                   <div class="day_list chart_number"  v-for="(item,index) in maxTemp" :key="index" :class="item.temp?'max_temp_active':''">{{item == null ? '' : item.temp}}
@@ -411,7 +499,6 @@
           <!--Twitter-->
           <div class="content_box">
             <h4>Tweets and mentions for this month</h4>
-
             <div class="content_box_inner">
               <div class="line clearfix">
                 <div class="left left_table">
@@ -419,7 +506,6 @@
                     <tbody>
                     <tr>
                       <td class="left" valign="bottom"><b>{{tweets}}</b> tweets</td>
-                      <!--<td class="right" valign="bottom"><b>0</b> avg</td>-->
                     </tr>
                     <tr>
                       <td colspan="2" class="percent-bg">
@@ -432,7 +518,6 @@
                     <tbody>
                     <tr>
                       <td class="left" valign="bottom"><b>{{mentions}}</b> mentions</td>
-                      <!--<td class="right" valign="bottom"><b>0</b> avg</td>-->
                     </tr>
                     <tr>
                       <td colspan="2" class="percent-bg">
@@ -444,19 +529,13 @@
                 </div>
                 <div class="right right_icon">
                   <i class="fa fa-twitter-square"></i>
-                  <!--<i class="fa fa-facebook-square"></i>-->
                 </div>
               </div>
-              <!-- <div class="connector">
-                <i class="fa fa-exchange"></i>
-                Twitter 
-              </div> -->
             </div>
           </div>
           <!-- moods/events -->
           <div class="content_box">
-            <h4>Moods for this month</h4>
-            
+            <h4>Moods for this month</h4>  
             <div class="content_box_inner">
               <!-- week -->
               <div class="calendar_wrapper">
@@ -472,71 +551,7 @@
                 <div class="month_day" v-for="(signDay,i) in signDays" :key="i">
                   <div class="day_list"  v-for="(item,index) in signDay" :key="index" >
                     <a class="mood_a" v-if="item == null ? '' : item.normalday"  :class="item.moodday?'mood-'+item.moodday:''">{{item == null ? '' : item.normalday}}</a>
-                    <!-- <a class="mood_a" v-if="item == null ? '' : item.normalday" v-for="(moodItem,j) in periodMoods" :key="j"  :class="item.moodday&&moodItem.day==item.normalday?'mood-'+moodItem.score:''">{{item == null ? '' : item.normalday}}</a> -->
                     <!-- <p class="event_p" v-if="item == null ? '' : item.normalday" :class="item.eventday?'events_active':''">{{item.event}}</p> -->
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- others -->
-          <div class="content_box">
-            <h4>Weather for this month</h4>
-            
-            <div class="content_box_inner">
-              <!-- week -->
-              <div class="calendar_wrapper">
-                <div class="week_day">
-                  <div class="weeklist">MON</div>
-                  <div class="weeklist">TUE</div>
-                  <div class="weeklist">WED</div>
-                  <div class="weeklist">THU</div>
-                  <div class="weeklist">FRI</div>
-                  <div class="weeklist">SAT</div>
-                  <div class="weeklist">SUN</div>
-                </div>
-              </div>
-              <!-- weather -->
-              <div class="line">
-                <h3 class="chart_header"><i class="fa fa-sun-o weather_icon"></i>Weather</h3>
-                <p class="chart_totals">Max temp</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in maxTemp" :key="index" :class="item.temp?'max_temp_active':''">{{item == null ? '' : item.temp}}
-                  </div>
-                </div>
-                <p class="chart_totals">Min temp</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in minTemp" :key="index" :class="item.temp?'min_temp_active':''">{{item == null ? '' : item.temp}} 
-                  </div>
-                </div>
-                <p class="chart_totals">Precipitation</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in Precip" :key="index" :class="item.precip?'precip_active':''">{{item == null ? '' : item.precip}}
-                  </div>
-                </div>
-                <p class="chart_totals">Air pressure</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in press" :key="index" :class="item.press?'press_active':''">{{item == null ? '' : item.press}}
-                  </div>
-                </div>
-                <p class="chart_totals">Cloud cover</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in cloud" :key="index" :class="item.cloud?'cloud_active':''">{{item == null ? '' : item.cloud}}
-                  </div>
-                </div>
-                <p class="chart_totals">Humidity</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in humid" :key="index" :class="item.humid?'humid_active':''">{{item == null ? '' : item.humid}}
-                  </div>
-                </div>
-                <p class="chart_totals">Wind speed</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in wind" :key="index" :class="item.wind?'wind_active':''">{{item == null ? '' : item.wind}}
-                  </div>
-                </div>
-                <p class="chart_totals">Day length</p>
-                <div class="month_day">
-                  <div class="day_list chart_number"  v-for="(item,index) in dayLength" :key="index" :class="item.day_length?'day_length_active':''">{{item == null ? '' : item.day_length}}
                   </div>
                 </div>
               </div>
@@ -550,7 +565,6 @@
 
 <script>
 import navHeader from "@/components/header";
-// import google from "google";
 export default {
   name: "index",
   data() {
@@ -561,13 +575,17 @@ export default {
       tweets: 0, //twitter中tweets
       mentions: 0, //twitter中metions
       posts: 0, //facebook中posts
+      longitude: "",
+      latitude: "",
       daily: {}, //weather 当天数据
       dailyMoods: [], //每天的 mood 时间轴
       periodMoods: [], //每周或者每月的 mood 平均
       signDays: null,
-      longitude: "",
-      latitude: "",
       emotionTitle: "",
+      dailySleep: {},
+      periodSleep: [],
+      dailyActivity: {},
+      periodActivity: [],
       event: 1,
       events: [
         { events: 1 },
@@ -822,8 +840,10 @@ export default {
       var date = this.formatTime(new Date());
       this.getTwitter(date, i);
       this.getFacebook(date, i);
-      this.getWeather();
       this.getMood(date, i);
+      this.getWeather(i);
+      this.getSleep(date, i);
+      this.getActivity(date, i);
       this.getEmotion(date, i);
     },
     //获取 twitter
@@ -867,14 +887,17 @@ export default {
       });
     },
     //获取 天气
-    getWeather() {
+    getWeather(i) {
       var that = this;
+      //只在day tab显示 weather
+      if (i != "day") {
+        return;
+      }
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           function(position) {
             var longitude = position.coords.longitude;
             var latitude = position.coords.latitude;
-            console.log(latitude + "--" + longitude);
             that.getLocation(latitude, longitude);
             that.$axios
               .post(
@@ -930,6 +953,8 @@ export default {
         var todayDate = getToday.getDate();
         var todayMonth = getToday.getMonth() + 1;
         var todayYear = getToday.getFullYear();
+        //月 数据处理显示
+        this.buildCal(todayYear, todayMonth, [], []);
       }
       var type = i;
       this.$axios
@@ -937,23 +962,61 @@ export default {
           params: { datetime: date, period: i }
         })
         .then(res => {
-          this.periodMoods = res.data;
-          //周 数据处理显示
-          if (type == "week") {
-            var mm = [];
-            for (var i = 0; i < 7; i++) {
-              mm[i] = {};
-              for (var j = 0; j < this.periodMoods.length; j++) {
-                if (this.periodMoods[j].day == i + 1) {
-                  mm[i] = this.periodMoods[j];
-                  continue;
-                }
-              }
+          if (res.status == 200) {
+            this.periodMoods = res.data;
+            //周 数据处理显示
+            if (type == "week") {
+              this.periodMoods = this.weekData(res.data);
+            } else if (type == "month") {
+              //月 数据处理显示
+              this.buildCal(todayYear, todayMonth, this.periodMoods, []);
             }
-            this.periodMoods = mm;
-          } else if (type == "month") {
-            //月 数据处理显示
-            this.buildCal(todayYear, todayMonth, this.periodMoods, []);
+          }
+        });
+    },
+    //获取 Sleep 数据展示
+    getSleep(date, i) {
+      var url = "";
+      if (i == "day") {
+        url = this.api + "/user/" + this.id + "/fitbit/sleep/day";
+      } else if (i == "week") {
+        url = this.api + "/user/" + this.id + "/fitbit/sleep/week";
+      }
+      var type = i;
+      this.$axios
+        .get(url, {
+          params: { datetime: date }
+        })
+        .then(res => {
+          if (res.status == 200) {
+            if (type == "day") {
+              this.dailySleep = res.data;
+            } else if (type == "week") {
+              this.periodSleep = this.weekData(res.data);
+            }
+          }
+        });
+    },
+    //获取 activity 数据展示
+    getActivity(date, i) {
+      var url = "";
+      if (i == "day") {
+        url = this.api + "/user/" + this.id + "/fitbit/activity/day";
+      } else if (i == "week") {
+        url = this.api + "/user/" + this.id + "/fitbit/activity/week";
+      }
+      var type = i;
+      this.$axios
+        .get(url, {
+          params: { datetime: date }
+        })
+        .then(res => {
+          if (res.status == 200) {
+            if (type == "day") {
+              this.dailyActivity = res.data;
+            } else if (type == "week") {
+              this.periodActivity = this.weekData(res.data);
+            }
           }
         });
     },
@@ -989,6 +1052,20 @@ export default {
         ":" +
         ((sunsetTime - sunriseTime) % 3600) % 60
       );
+    },
+    // week 数据处理
+    weekData(data) {
+      var mm = [];
+      for (var i = 0; i < 7; i++) {
+        mm[i] = {};
+        for (var j = 0; j < data.length; j++) {
+          if (data[j].day == i + 1) {
+            mm[i] = data[j];
+            continue;
+          }
+        }
+      }
+      return mm;
     },
     //月份调用
     buildCal(iYear, iMonth, moodDay, eventDay) {
@@ -1091,6 +1168,7 @@ export default {
         }
       }
     },
+    //update
     updateData(type) {
       if (type == "facebook") {
         this.updateFacebook();
@@ -1099,6 +1177,7 @@ export default {
         // this.updateMetions();
       }
     },
+    //facebook update
     updateFacebook() {
       this.$indicator.open({
         spinnerType: "fading-circle"
@@ -1112,6 +1191,9 @@ export default {
               message: "Update success",
               duration: 5000
             });
+            //更新完数据重新获取接口展示最新数据
+            var date = this.formatTime(new Date());
+            this.getFacebook(date, "day");
           } else {
             this.$toast({
               message: "Update failed",
@@ -1178,7 +1260,7 @@ export default {
   border-bottom: 0.03rem solid #e1e2e9;
 }
 .chart_header {
-  padding: 0 0.2rem;
+  /* padding: 0 0.2rem; */
   line-height: 0.6rem;
   font-size: 0.32rem;
 }
@@ -1191,6 +1273,9 @@ export default {
 }
 .twitter_icon {
   color: #55acee;
+}
+.activity_icon {
+  color: #50d29d;
 }
 .events_icon {
   color: #e1546c;
@@ -1272,6 +1357,14 @@ export default {
 }
 .mood-5 {
   background: #00b50d;
+  color: #fff;
+}
+.sleep_active {
+  background: #6780ff;
+  color: #fff;
+}
+.activity_active {
+  background: #50d29d;
   color: #fff;
 }
 .events_active {

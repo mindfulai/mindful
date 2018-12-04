@@ -1,6 +1,6 @@
 ## 登录
-URL: /user/<int:user_id>/authorized
-Method: GET
+URL: /user/<int:user_id>/authorized  
+Method: GET  
 
 Response:
 ```json
@@ -11,14 +11,14 @@ Response:
 ```
 
 ## Twitter 授权
-URL: /twitter/authorize
-Method: GET
+URL: /twitter/authorize  
+Method: GET  
 
 
 ## Twitter 用户数据统计
 
-URL: /user/<user_id>/twitter/summary
-Method: GET
+URL: /user/<user_id>/twitter/summary  
+Method: GET  
 Data:
 ```json
 {
@@ -43,8 +43,8 @@ Response:
 ```
 
 ## Twitter 更新 Tweets
-URL: /user/<user_id>/twitter/user_timeline/update
-Method: GET
+URL: /user/<user_id>/twitter/user_timeline/update  
+Method: GET  
 
 Response:
 ```json
@@ -55,8 +55,8 @@ Response:
 
 
 ## Twitter 更新 Mentions
-URL: /user/<user_id>/twitter/mentions_timeline/update
-Method: GET
+URL: /user/<user_id>/twitter/mentions_timeline/update  
+Method: GET  
 
 Response:
 ```json
@@ -68,8 +68,8 @@ Response:
 
 ## Facebook 用户统计接口
 
-URL: /user/<user_id>/facebook/summary
-Method: GET
+URL: /user/<user_id>/facebook/summary  
+Method: GET  
 Data:
 ```json
 {
@@ -93,8 +93,8 @@ Response:
 ```
 
 ## Facebook 更新 Posts
-URL: /user/<user_id>/facebook/posts/update
-Method: GET
+URL: /user/<user_id>/facebook/posts/update  
+Method: GET  
 
 Response:
 ```json
@@ -104,8 +104,8 @@ Response:
 ```
 
 ## 存储用户地理位置及天气接口，并展示当日天气
-URL: /user/<user_id>/location_and_weather/create
-Method: POST
+URL: /user/<user_id>/location_and_weather/create  
+Method: POST  
 Data:
 ```json
 {
@@ -164,8 +164,8 @@ Response:
 
 
 ## 创建心情接口
-URL: /user/<user_id>/mood/create
-Method: POST
+URL: /user/<user_id>/mood/create  
+Method: POST  
 Data:
 
 ```json
@@ -184,8 +184,8 @@ Response:
 ```
 
 ## 展示心情列表接口
-URL: /user/<user_id>/mood/list
-Method: GET
+URL: /user/<user_id>/mood/list  
+Method: GET  
 Data:
 ```json
 {
@@ -211,8 +211,8 @@ Response:
 ```
 
 ## 展示心情平均值列表接口
-URL: /user/<user_id>/mood/average/list
-Method: GET
+URL: /user/<user_id>/mood/average/list  
+Method: GET  
 Data:
 ```json
 {
@@ -227,7 +227,153 @@ Response:
     {
         "date": "2018-11-20",
         "score": 4,
-        "day_of_week": 2
+        "day": 2
+    }
+]
+```
+
+Parameters:
+
+参数      | 描述        | Example
+-------- | ----------- | -------
+date | 访问当天的日期 | 2018-11-20
+day | 这一周这一月第几天 | 2
+score   | 平均分（1 - 5） | 4
+
+
+## Fitbit 授权
+URL: ／login/fitbit    
+Method: GET  
+
+
+## Fitbit Sleep
+URL: /user/<int:user_id>/fitbit/sleep/day    
+Method: GET  
+Data:
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```   
+
+Response:
+```json
+{
+    "stages": {
+        "deep": 92,
+        "light": 211,
+        "rem": 66,
+        "wake": 60
+    },
+    "totalMinutesAsleep": 396,
+    "totalSleepRecords": 1,
+    "totalTimeInBed": 429
+}
+```
+
+## Fitbit Sleep 周数据
+URL: /user/<user_id>/fitbit/sleep/week  
+Method: GET  
+Data:
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```
+
+Response:
+```json
+[
+    {
+        "day": 3,
+        "totalMinutesAsleep": 0,
+        "totalSleepRecords": 0,
+        "totalTimeInBed": 0
+    }
+    {
+        "day": 4,
+        "totalMinutesAsleep": 0,
+        "totalSleepRecords": 0,
+        "totalTimeInBed": 0
+    }
+]
+```
+
+## Fitbit Activities
+URL: /user/<int:user_id>/fitbit/activity/day  
+Method: GET  
+Data:  
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```   
+
+Response:
+详见： https://dev.fitbit.com/build/reference/web-api/activity/#get-daily-activity-summary
+```json
+{
+    "activityCalories":230,
+    "caloriesBMR":1913,
+    "caloriesOut":2143,
+    "distances":[
+        {"activity":"tracker", "distance":1.32},
+        {"activity":"loggedActivities", "distance":0},
+        {"activity":"total","distance":1.32},
+        {"activity":"veryActive", "distance":0.51},
+        {"activity":"moderatelyActive", "distance":0.51},
+        {"activity":"lightlyActive", "distance":0.51},
+        {"activity":"sedentaryActive", "distance":0.51},
+        {"activity":"Treadmill, 0% Incline", "distance":3.28}
+    ],
+    "elevation":48.77,
+    "fairlyActiveMinutes":0,
+    "floors":16,
+    "lightlyActiveMinutes":0,
+    "marginalCalories":200,
+    "sedentaryMinutes":1166,
+    "steps":0,
+    "veryActiveMinutes":0
+}
+```
+
+## Fitbit Activities
+URL: /user/<int:user_id>/fitbit/activity/week  
+Method: GET  
+Data:  
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```   
+
+Response:
+详见： https://dev.fitbit.com/build/reference/web-api/activity/#get-daily-activity-summary
+```json
+[
+    {
+        "activityCalories":230,
+        "caloriesBMR":1913,
+        "day": 6,
+        "caloriesOut":2143,
+        "distances":[
+            {"activity":"tracker", "distance":1.32},
+            {"activity":"loggedActivities", "distance":0},
+            {"activity":"total","distance":1.32},
+            {"activity":"veryActive", "distance":0.51},
+            {"activity":"moderatelyActive", "distance":0.51},
+            {"activity":"lightlyActive", "distance":0.51},
+            {"activity":"sedentaryActive", "distance":0.51},
+            {"activity":"Treadmill, 0% Incline", "distance":3.28}
+        ],
+        "elevation":48.77,
+        "fairlyActiveMinutes":0,
+        "floors":16,
+        "lightlyActiveMinutes":0,
+        "marginalCalories":200,
+        "sedentaryMinutes":1166,
+        "steps":0,
+        "veryActiveMinutes":0
     }
 ]
 ```

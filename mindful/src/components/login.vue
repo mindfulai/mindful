@@ -1,7 +1,7 @@
 <template>
     <div class="login_box">
       <div class="login_header">Login</div>
-      <!-- <a class="login" @click="login('facebook',{scope:'user_posts,email'})"> Login with Facebook<a class="facebook_logo"><i class="fa fa-facebook-square"></i></a>  -->
+      <!-- <a class="login" @click="login('facebook',{scope:'user_posts,email'})"> Login with Facebook<a class="facebook_logo"><i class="fa fa-facebook-square"></i></a></a>  -->
       <!-- https://mindful-ucb.herokuapp.com -->
       <a class="login" href="/login/facebook"> Login with Facebook<a class="facebook_logo"><i class="fa fa-facebook-square"></i></a> 
       </a>
@@ -13,12 +13,12 @@ export default {
   data() {
     return {};
   },
-  // mounted() {
-  //   this.$hello.init({
-  //     facebook: "176320989922581",
-  //     twitter: ""
-  //   });
-  // },
+  mounted() {
+    // this.$hello.init({
+    //   facebook: "176320989922581",
+    //   twitter: ""
+    // });
+  },
   methods: {
     // login(network, options) {
     //   var that = this;
@@ -34,9 +34,9 @@ export default {
     //       //   .then(res => {
     //       //     console.log(res);
     //       //   });
-    //       provider.api("me", "get").then(res => {
-    //         console.log(res);
-    //       });
+    //       // provider.api("me", "get").then(res => {
+    //       //   console.log(res);
+    //       // });
     //       // provider.api("me/share", "get").then(res => {
     //       //   console.log(res);
     //       // });
@@ -48,26 +48,6 @@ export default {
     //       console.log(e);
     //     }
     //   );
-    // }
-    // goHome() {
-    //   this.$axios
-    //     .get(this.api + "/login/facebook")
-    //     .then(res => {
-    //       alert(res);
-    //       if (res.status == 200) {
-    //       }
-    //     })
-    //     .catch(res => {
-    //       console.log(res);
-    //     });
-    // },
-    // goHome() {
-    //   this.$.ajax({
-    //     url: this.api + "/login/facebook",
-    //     success: function(res) {
-    //       console.log(res);
-    //     }
-    //   });
     // }
   }
 };

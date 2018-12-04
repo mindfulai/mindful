@@ -16,7 +16,7 @@ from app import models
 from app import login_manager
 from app.actions import get_user_last_tweet_or_mention, get_twitter_path,\
     save_twitter_data, get_twitter_screen_name, count_filter_by_date, \
-    get_oauth_or_create
+    get_oauth_or_create, get_user_oauth, is_token_expired
 
 from app import actions
 from app.azure import sentiment
@@ -24,6 +24,8 @@ from app.azure import sentiment
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import func
 from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
+
+from fitbit import Fitbit
 
 # Twitter
 twitter_blueprint = make_twitter_blueprint(
@@ -108,7 +110,7 @@ def facebook_auth(facebook_blueprint, token):
     print('=== get user posts')
     facebook_posts(oauth.user.id)
 
-    return redirect('/static/dist/index.html#/index?name={}&id={}'.format(
+    return redirect('/#/index?name={}&id={}'.format(
         oauth.user.username, oauth.user.id))
 
 
@@ -200,7 +202,8 @@ def twitter_auth(twitter_blueprint, token):
         return jsonify(resp.json())
 
     screen_name = resp.json()['screen_name']
-    oauth, created = get_oauth_or_create(twitter_blueprint, screen_name, user)
+    oauth, created = get_oauth_or_create(
+        twitter_blueprint.name, user, screen_name)
 
     actions.update_oauth_token(oauth, twitter.token)
 
@@ -208,7 +211,7 @@ def twitter_auth(twitter_blueprint, token):
     twitter_user_timeline(user.id)
     print('==== get twitter user mention timeline')
     twitter_mentions_timeline(user.id)
-    return redirect('/static/dist/index.html#/index?name={}&id={}'.format(
+    return redirect('/#/index?name={}&id={}'.format(
         user.username, user.id))
 
 
@@ -322,7 +325,8 @@ def authorized(user_id):
 
     result = {
         'twitter_auth': actions.is_authorized(twitter_blueprint.name, user),
-        'facebook_auth': actions.is_authorized(facebook_blueprint.name, user)
+        'facebook_auth': actions.is_authorized(facebook_blueprint.name, user),
+        'fitbit_auth': actions.is_authorized('fitbit', user)
     }
     return jsonify(result)
 
@@ -433,6 +437,195 @@ def mood_average_list(user_id):
             info['day'] = dt.day_of_year
 
         result.append(info)
+
+    return jsonify(result)
+
+##############################################
+#                 Fitbit
+##############################################
+
+
+@app.route('/login/fitbit')
+@login_required
+def fitbit_auth():
+    user = current_user
+    fitbit = Fitbit(client_id='22D6BS',
+                    client_secret='5cf4f501414edbe53904cf473c833d5f',
+                    redirect_uri=url_for('fitbit_auth', _external=True))
+
+    code = request.args.get('code')
+    if not code:
+        url, _ = fitbit.client.authorize_token_url()
+        return redirect(url)
+
+    token = fitbit.client.fetch_access_token(code=code)
+
+    oauth, created = get_oauth_or_create('fitbit', user, token['user_id'])
+    app.logger.info('======== \n{} access_token: {}'.format(
+        user.username, oauth.token))
+    actions.update_oauth_token(oauth, token)
+
+    return redirect('/#/index?name={}&id={}'.format(user.username, user.id))
+
+
+@app.route('/user/<int:user_id>/fitbit/sleep/day')
+@login_required
+def fitbit_sleep(user_id):
+    """ 创建或更新今天的 sleep 记录
+    API: https://dev.fitbit.com/build/reference/web-api/sleep/
+    """
+    user = load_user(user_id)
+    oauth = get_user_oauth(user=user, provider='fitbit')
+
+    if not oauth:
+        return jsonify({'msg': 'Unauthorized'})
+
+    fitbit = Fitbit(client_id='22D6BS',
+                    client_secret='5cf4f501414edbe53904cf473c833d5f',
+                    access_token=oauth.token['access_token'],
+                    refresh_token=oauth.token['refresh_token'])
+
+    # TODO: 如果没有 datetime 参数处理
+    dt_str = request.args.get('datetime')
+    dt = pendulum.parse(dt_str, strict=False)
+
+    sleep_data = fitbit.sleep(date=dt.date(), user_id=oauth.provider_user_id)
+
+    query = models.Sleep.query.filter_by(
+        user=user,
+        date=dt.date()
+    )
+
+    try:
+        sleep = query.one()
+        sleep.data = sleep_data
+        db.session.add(sleep)
+        db.session.commit()
+    except NoResultFound:
+        sleep = models.Sleep(
+            user=user,
+            data=sleep_data,
+            date=dt.date()
+        )
+        db.session.add(sleep)
+        db.session.commit()
+
+    return jsonify(sleep.data['summary'])
+
+
+@app.route('/user/<int:user_id>/fitbit/sleep/week')
+@login_required
+def fitbit_sleep_week(user_id):
+    """ 每周的睡眠数据 """
+    user = load_user(user_id)
+    dt_str = request.args.get('datetime')
+    dt = pendulum.parse(dt_str, strict=False)
+    start_date = dt.start_of('week')
+    end_date = dt.end_of('week')
+
+    sleep = models.Sleep.query.filter(
+        models.Sleep.user == user,
+        models.Sleep.date >= start_date,
+        models.Sleep.date <= end_date
+    ).all()
+
+    result = []
+    for row in sleep:
+        data = row.data['summary']
+        data['day'] = pendulum.parse(str(row.date)).day_of_week
+        result.append(data)
+
+    return jsonify(result)
+
+
+@app.route('/user/<int:user_id>/fitbit/activity/day')
+@login_required
+def fitbit_activity(user_id):
+    """ 存储今天的 activity 记录
+    API: https://dev.fitbit.com/build/reference/web-api/activity/
+    """
+    user = load_user(user_id)
+    oauth = get_user_oauth(user=user, provider='fitbit')
+
+    if not oauth:
+        return jsonify({'msg': 'Unauthorized'})
+
+    fitbit = Fitbit(client_id='22D6BS',
+                    client_secret='5cf4f501414edbe53904cf473c833d5f',
+                    access_token=oauth.token['access_token'],
+                    refresh_token=oauth.token['refresh_token'],
+                    refresh_cb=actions.fitbit_refresh_cb)
+
+    dt_str = request.args.get('datetime')
+    dt = pendulum.parse(dt_str, strict=False)
+
+    # 如果 token 失效更新 token
+    if is_token_expired(dt, oauth.token):
+        new_token = fitbit.client.refresh_token()
+        app.logger.info('=== {} new_token: {}'.format(user.username, new_token))
+        actions.update_oauth_token(oauth, new_token)
+
+    # 获取 activity
+    data = fitbit.activities(date=dt.date(), user_id=oauth.provider_user_id)
+    print('==== activities from fitbit')
+    print(data)
+
+    query = models.Activity.query.filter_by(
+        user=user,
+        date=dt.date()
+    )
+
+    try:
+        activities = query.one()
+        activities.data = data
+        db.session.add(activities)
+        db.session.commit()
+    except NoResultFound:
+        # 存储 activity
+        activities = models.Activity(
+            user=user,
+            data=data,
+            date=dt.date()
+        )
+        db.session.add(activities)
+        db.session.commit()
+
+    result = activities.data['summary']
+
+    for distance in result['distances']:
+        if distance['activity'] == 'total':
+            result['distances'] = distance['distance']
+            break
+
+    return jsonify(result)
+
+
+@app.route('/user/<int:user_id>/fitbit/activity/week')
+@login_required
+def fitbit_activity_week(user_id):
+    """ 每周的 activities 数据 """
+    user = load_user(user_id)
+    dt_str = request.args.get('datetime')
+    dt = pendulum.parse(dt_str, strict=False)
+    start_date = dt.start_of('week')
+    end_date = dt.end_of('week')
+
+    activities = models.Activity.query.filter(
+        models.Activity.user == user,
+        models.Activity.date >= start_date,
+        models.Activity.date <= end_date
+    ).all()
+
+    result = []
+    for row in activities:
+        data = row.data['summary']
+        for distance in data['distances']:
+            if distance['activity'] == 'total':
+                data['distances'] = distance['distance']
+                break
+        data['day'] = pendulum.parse(str(row.date)).day_of_week
+
+        result.append(data)
 
     return jsonify(result)
 
