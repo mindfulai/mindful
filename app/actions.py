@@ -6,6 +6,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from flask import abort, flash
 
 from app import db, models
+from app.azure import azure
 
 
 def get_user_last_tweet_or_mention(user, csl):
@@ -61,6 +62,19 @@ def save_twitter_data(resp, user, csl):
                     user=user, api_url=resp.url, tweet_id=tweet_id)
             db.session.add(t)
             db.session.commit()
+
+            if json.loads(t.detail).get('text'):
+                result = azure(t.id, json.loads(t.detail)['text'])
+                for row in result['documents']:
+                    print('======== create sentiment ')
+                    sentiment = models.Sentiment(
+                        score=row['score'], language='en')
+                    db.session.add(sentiment)
+                    db.session.commit()
+                t.sentiment = sentiment
+                t.sentiment_id = sentiment.id
+                db.session.add(t)
+                db.session.commit()
 
 
 def get_twitter_screen_name(buleprint, user):
