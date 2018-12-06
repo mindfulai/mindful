@@ -5,6 +5,7 @@ from flask_dance.consumer.backend.sqla import OAuthConsumerMixin
 from sqlalchemy.sql import func
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy_utils import JSONType
+from sqlalchemy.ext.declarative import declared_attr
 
 
 class Flaskr(db.Model):
@@ -30,44 +31,61 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String)
 
 
+class Sentiment(db.Model):
+    __tablename__ = 'sentiment'
+
+    id = db.Column(db.Integer, primary_key=True)
+    score = db.Column(db.Float)
+    language = db.Column(db.Integer)
+
+
+class ContentMixin(object):
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime, server_default=func.now())
+
+    @declared_attr
+    def user_id(cls):
+        return db.Column(db.Integer, db.ForeignKey(User.id))
+
+    @declared_attr
+    def user(cls):
+        return db.relationship(User)
+
+    @declared_attr
+    def sentiment_id(cls):
+        return db.Column(db.Integer, db.ForeignKey(Sentiment.id))
+
+    @declared_attr
+    def sentiment(cls):
+        return db.relationship('Sentiment')
+
+
 class OAuth(OAuthConsumerMixin, db.Model):
     provider_user_id = db.Column(db.String(256), unique=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     user = db.relationship(User)
 
 
-class Tweet(db.Model):
+class Tweet(ContentMixin, db.Model):
     __tablename__ = "tweets"
 
-    id = db.Column(db.Integer, primary_key=True)
     tweet_id = db.Column(db.String, unique=True)
-    created_at = db.Column(db.DateTime)
-    user = db.relationship(User)
-    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     api_url = db.Column(db.String)
     detail = db.Column(db.String)
 
 
-class TweetMention(db.Model):
+class TweetMention(ContentMixin, db.Model):
     __tablename__ = "tweet_mentions"
 
-    id = db.Column(db.Integer, primary_key=True)
     tweet_id = db.Column(db.String, unique=True)
-    created_at = db.Column(db.DateTime)
-    user = db.relationship(User)
-    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     api_url = db.Column(db.String)
     detail = db.Column(db.String)
 
 
-class FacebookPost(db.Model):
+class FacebookPost(ContentMixin, db.Model):
     __tablename__ = "faceboot_posts"
 
-    id = db.Column(db.Integer, primary_key=True)
     post_id = db.Column(db.String, unique=True)
-    created_at = db.Column(db.DateTime)
-    user = db.relationship(User)
-    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     api_url = db.Column(db.String)
     detail = db.Column(db.String)
 
@@ -94,13 +112,9 @@ class Weather(db.Model):
     api_url = db.Column(db.String)
 
 
-class Mood(db.Model):
+class Mood(ContentMixin, db.Model):
     __tablename__ = 'moods'
 
-    id = db.Column(db.Integer, primary_key=True)
-    user = db.relationship(User)
-    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
-    created_at = db.Column(db.DateTime, server_default=func.now())
     detail = db.Column(db.String)
     score = db.Column(db.Integer)
 
