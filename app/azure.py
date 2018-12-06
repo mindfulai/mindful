@@ -21,3 +21,22 @@ def sentiment(data):
         return data
     except Exception as e:
         print("[Errno {0}] {1}".format(e.errno, e.strerror))
+
+
+def azure(id, text):
+    data = {
+        "documents": [
+            {
+                "language": "en",
+                "id": id,
+                "text": text
+            }
+        ]
+    }
+    result = sentiment(data)
+    print('===== Collection of documents to analyze.')
+    print(data)
+    print('===== sentiment result')
+    print(result)
+
+    return result
