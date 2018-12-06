@@ -639,7 +639,8 @@ def debug():
             'id': tweet.id, 'user': tweet.user.username,
             'text': json.loads(tweet.detail)['text'],
             'api_url': tweet.api_url, 'tweet_id': tweet.tweet_id,
-            'time': tweet.created_at})
+            'time': tweet.created_at,
+            'score': tweet.sentiment.score if tweet.sentiment else None})
 
     mentions = db.session.query(models.TweetMention).all()
     mention_result = {'mention': []}
@@ -647,7 +648,8 @@ def debug():
         mention_result['mention'].append({
             'id': mention.id, 'user': mention.user.username,
             'text': json.loads(mention.detail)['text'],
-            'api_url': mention.api_url})
+            'api_url': mention.api_url,
+            'score': mention.sentiment.score if mention.sentiment else None})
 
     users = db.session.query(models.User).all()
     user_result = {'user': []}
@@ -671,13 +673,25 @@ def debug():
         fb_result['fb'].append({
             'id': fb.id, 'user': fb.user.username,
             'text': json.loads(fb.detail),
-            'api_url': fb.api_url})
+            'api_url': fb.api_url,
+            'score': fb.sentiment.score if fb.sentiment else None
+        })
+
+    moods = db.session.query(models.Mood).all()
+    mood_result = {'mood': []}
+    for mood in moods:
+        mood_result['mood'].append({
+            'id': mood.id, 'user': mood.user.username,
+            'text': mood.detail,
+            'score': mood.sentiment.score if mood.sentiment else None
+        })
 
     return jsonify(user_result, '=======',
                    oauth_result, '=======',
                    tweet_result, '=======',
                    mention_result, '=======',
-                   fb_result, '=======')
+                   fb_result, '=======',
+                   mood_result, '=======')
 
 
 @app.route('/add', methods=['POST'])
