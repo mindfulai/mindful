@@ -1,1 +1,28 @@
 Generic single-database configuration.
+
+# 说明
+## Development
+migration 文件夹目录：/alembic/local
+
+
+## Production
+migration 文件夹目录：/alembic/versions
+
+
+# 使用
+详见官方文档 [Alembic 1.0.6 documentation](https://alembic.sqlalchemy.org/en/latest/index.html)
+
+创建生成 migrations 文件
+```
+alembic revision --autogenerate -m ""
+```
+
+执行 migrations 文件
+```
+alembic upgrade head
+```
+
+查看信息
+```
+alembic current
+```
