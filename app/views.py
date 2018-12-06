@@ -19,7 +19,7 @@ from app.actions import get_user_last_tweet_or_mention, get_twitter_path,\
     get_oauth_or_create, get_user_oauth, is_token_expired
 
 from app import actions
-from app.azure import sentiment
+from app.azure import sentiment, azure
 
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import func
@@ -158,6 +158,18 @@ def facebook_posts(user_id):
             )
             db.session.add(fb)
             db.session.commit()
+            if json.loads(fb.detail).get('message'):
+                result = azure(fb.id, json.loads(fb.detail)['message'])
+                for row in result['documents']:
+                    print('======== create sentiment ')
+                    sentiment = models.Sentiment(
+                        score=row['score'], language='en')
+                    db.session.add(sentiment)
+                    db.session.commit()
+                fb.sentiment = sentiment
+                fb.sentiment_id = sentiment.id
+                db.session.add(fb)
+                db.session.commit()
 
     return jsonify({"msg": "success"})
 
@@ -371,6 +383,19 @@ def mood_create(user_id):
     score = data['score']
 
     mood = models.Mood(user=user, detail=detail, score=score)
+    db.session.add(mood)
+    db.session.commit()
+
+    result = azure(mood.id, mood.detail)
+    print(result)
+    for row in result['documents']:
+        print('======== create sentiment ')
+        sentiment = models.Sentiment(score=row['score'], language='en')
+        db.session.add(sentiment)
+        db.session.commit()
+
+    mood.sentiment = sentiment
+    mood.sentiment_id = sentiment.id
     db.session.add(mood)
     db.session.commit()
 
