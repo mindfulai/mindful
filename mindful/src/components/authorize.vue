@@ -6,7 +6,7 @@
       <!-- facebook -->
       <div class="authorize_box">
         <div class="authorize_meta facebook">
-          facebook <!--<i class="fa fa-facebook"></i>-->
+          FaceBook <!--<i class="fa fa-facebook"></i>-->
         </div>
         <ul>
           <li><a href="#">TRACKS</a><strong>Posts</strong></li>
