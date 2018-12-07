@@ -2,6 +2,7 @@ import json
 import pendulum
 import requests
 import decimal
+import os
 
 from flask_dance.contrib.twitter import make_twitter_blueprint, twitter
 from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
@@ -30,14 +31,14 @@ from fitbit import Fitbit
 
 # Twitter
 twitter_blueprint = make_twitter_blueprint(
-    api_key="devnDViKMhTY4J5AwVKW7NewW",
-    api_secret="92kwOgTnMiFNGP1bXNvaLCOLSEIiX6WYSPYDohEWIAnsDceGja",
+    api_key=os.getenv('TWITTER_APP_ID'),
+    api_secret=os.getenv('TWITTER_SECRET'),
 )
 
 # Facebook
 facebook_blueprint = make_facebook_blueprint(
-    client_id="176320989922581",
-    client_secret="bfbf2231584f211669debf63467e58e9",
+    client_id=os.getenv('FACEBOOK_APP_ID'),
+    client_secret=os.getenv('FACEBOOK_SECRET'),
     scope="email,user_posts"
 )
 
@@ -396,8 +397,6 @@ def authorized(user_id):
 #                 Darksky
 ##############################################
 
-darksky_secret = 'bec7b6450421ba2b12b42fec0d98ad72'
-
 
 @app.route('/user/<int:user_id>/location_and_weather/create', methods=['POST'])
 def location_and_weather_create(user_id):
@@ -547,8 +546,8 @@ def mood_sentiment_list(user_id):
 @login_required
 def fitbit_auth():
     user = current_user
-    fitbit = Fitbit(client_id='22D6BS',
-                    client_secret='5cf4f501414edbe53904cf473c833d5f',
+    fitbit = Fitbit(client_id=os.getenv('FITBIT_APP_ID'),
+                    client_secret=os.getenv('FITBIT_SECRET'),
                     redirect_uri=url_for('fitbit_auth', _external=True))
 
     code = request.args.get('code')
@@ -578,8 +577,8 @@ def fitbit_sleep(user_id):
     if not oauth:
         return jsonify({'msg': 'Unauthorized'})
 
-    fitbit = Fitbit(client_id='22D6BS',
-                    client_secret='5cf4f501414edbe53904cf473c833d5f',
+    fitbit = Fitbit(client_id=os.getenv('FITBIT_APP_ID'),
+                    client_secret=os.getenv('FITBIT_SECRET'),
                     access_token=oauth.token['access_token'],
                     refresh_token=oauth.token['refresh_token'])
 
@@ -648,8 +647,8 @@ def fitbit_activity(user_id):
     if not oauth:
         return jsonify({'msg': 'Unauthorized'})
 
-    fitbit = Fitbit(client_id='22D6BS',
-                    client_secret='5cf4f501414edbe53904cf473c833d5f',
+    fitbit = Fitbit(client_id=os.getenv('FITBIT_APP_ID'),
+                    client_secret=os.getenv('FITBIT_SECRET'),
                     access_token=oauth.token['access_token'],
                     refresh_token=oauth.token['refresh_token'],
                     refresh_cb=actions.fitbit_refresh_cb)
