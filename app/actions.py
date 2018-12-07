@@ -63,6 +63,19 @@ def save_twitter_data(resp, user, csl):
             db.session.add(t)
             db.session.commit()
 
+            if json.loads(t.detail).get('text'):
+                result = azure(t.id, json.loads(t.detail)['text'])
+                for row in result['documents']:
+                    print('======== create sentiment ')
+                    sentiment = models.Sentiment(
+                        score=row['score'], language='en')
+                    db.session.add(sentiment)
+                    db.session.commit()
+                t.sentiment = sentiment
+                t.sentiment_id = sentiment.id
+                db.session.add(t)
+                db.session.commit()
+
 
 def get_twitter_screen_name(buleprint, user):
     query = models.OAuth.query.filter_by(
@@ -96,6 +109,23 @@ def count_filter_by_date(csl, user, start_date, end_date):
         csl.created_at >= start_date,
         csl.created_at < end_date
     ).count()
+
+
+def get_all_objects_filter_by_date(csl, user, start_date, end_date):
+    """ 获取用户在时间范围内 cls 的数据
+
+    args:
+        user: 访问用户 User
+        csl: 需要查找的表 例如，Tweet 或者 TweetMention
+    retrun:
+        用户在时间范围内 cls 的全部数据
+
+    """
+
+    return csl.query.filter(
+        csl.user == user,
+        csl.created_at >= start_date,
+        csl.created_at <= end_date).all()
 
 
 def get_oauth_or_create(provider, user, provider_user_id=None):

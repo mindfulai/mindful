@@ -17,6 +17,11 @@ Vue.use(MintUI)
 //全局引入jquery
 // import $ from 'jquery'
 // Vue.prototype.$ = $
+
+//全局引入echarts
+// import echarts from 'echarts'
+// Vue.prototype.$echarts = echarts
+
 Vue.config.productionTip = false
 
 import "@/assets/app.css"

@@ -10,3 +10,4 @@ pyOpenSSL==18.0.0
 Flask-Cors==3.0.6
 psycopg2-binary==2.7.6.1
 python-dotenv==0.9.1
+alembic==1.0.0

@@ -11,7 +11,6 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      //开发环境下服务代理配置
       '/api': {
         target: "https://192.168.1.237:5000",
         changeOrigin: true,
@@ -19,11 +18,20 @@ module.exports = {
           '^/api': 'https://192.168.1.237:5000'
         }
       }
+      // '/api': {
+      //   target: "https://pocoweb-mindful.herokuapp.com",
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/api': 'https://pocoweb-mindful.herokuapp.com'
+      //   }
+      // }
     },
+
     // Various Dev Server settings
     //host: '192.168.1.111', // can be overwritten by process.env.HOST
+    //host: '127.0.0.1',
     host: 'localhost',
-    port: 5000, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    port: 8000, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,

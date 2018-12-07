@@ -12,6 +12,17 @@
         2018-11-05
         <div class="arrow right"><i class="fa fa-angle-right"></i></div>
       </div>-->
+      <!-- emotion analysis -->
+        <!-- <div class="content_box" v-show="activeTab=='day'||activeTab=='week'">
+          <h4 style="background:#39c68c;">{{emotionTitle}}</h4>
+          <div class="content_box_inner" style="overflow-x:scroll;">
+            <div class="charts" id="day_emotion" style="width:100%;height:300px;">
+            </div>
+            <hr>
+            <div class="eight_emotion" id="day_eight_emotion" style="width:100%;height:260px;"> 
+            </div>
+          </div>
+        </div>        -->
       <transition name="fade" mode="in-out">
         <!-- day Tab -->
         <div v-show="activeTab=='day'"> 
@@ -570,6 +581,7 @@ export default {
       dailyMoods: [], //每天的 mood 时间轴
       periodMoods: [], //每周或者每月的 mood 平均
       signDays: null,
+      emotionTitle: "",
       dailySleep: {},
       periodSleep: [],
       dailyActivity: {},
@@ -666,6 +678,158 @@ export default {
     this.changeTab("day");
   },
   methods: {
+    //情感分析
+    // getEmotion(date, i) {
+    //   var title_text = "";
+    //   var xAxis_data = [];
+    //   var yAxis_data = [];
+    //   this.emotionTitle = "";
+    //   if (i == "day") {
+    //     this.emotionTitle = date.slice(0, 10);
+    //     title_text = "今日情感趋势图";
+    //     xAxis_data = ["10:40", "11:40", "15:30", "16:40", "18:40"];
+    //     yAxis_data = [90, 20, 60, 40, 50];
+    //   } else if (i == "week") {
+    //     this.emotionTitle = "本周情感分析";
+    //     title_text = "本周情感趋势图";
+    //     xAxis_data = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    //     yAxis_data = [60, 70, 60, 50, 80, 90, 50];
+    //   } else if (i == "month") {
+    //   }
+    //   var option = {
+    //     title: {
+    //       text: title_text,
+    //       textStyle: {
+    //         fontSize: 14
+    //       },
+    //       subtext: "0 代表最负面情绪  100% 代表最正面情绪"
+    //     },
+    //     legend: {
+    //       right: "5%"
+    //     },
+    //     grid: {
+    //       top: "80",
+    //       bottom: "40"
+    //     },
+    //     tooltip: {
+    //       trigger: "axis",
+    //       formatter: "{b}<br/>{a} : {c}%"
+    //     },
+    //     xAxis: [
+    //       {
+    //         type: "category",
+    //         axisLine: {
+    //           lineStyle: {
+    //             color: "#90979c"
+    //           }
+    //         },
+    //         data: xAxis_data
+    //       }
+    //     ],
+    //     yAxis: [
+    //       {
+    //         name: "(%)",
+    //         max: 100,
+    //         type: "value",
+    //         splitLine: {
+    //           show: false
+    //         },
+    //         axisLine: {
+    //           lineStyle: {
+    //             color: "#90979c"
+    //           }
+    //         },
+    //         axisTick: {
+    //           show: false
+    //         },
+    //         axisLabel: {
+    //           interval: 0
+    //         },
+    //         splitArea: {
+    //           show: false
+    //         }
+    //       }
+    //     ],
+    //     series: [
+    //       {
+    //         name: "情感值",
+    //         type: "line",
+    //         stack: "总量",
+    //         symbolSize: 10,
+    //         symbol: "circle",
+    //         itemStyle: {
+    //           normal: {
+    //             color: "#39c68c",
+    //             barBorderRadius: 0,
+    //             label: {
+    //               show: true,
+    //               position: "top",
+    //               formatter: function(p) {
+    //                 return p.value > 0 ? p.value + "%" : "";
+    //               }
+    //             }
+    //           }
+    //         },
+    //         data: yAxis_data
+    //       }
+    //     ]
+    //   };
+    //   var eight_option = {
+    //     grid: {
+    //       top: "60",
+    //       bottom: "10"
+    //     },
+    //     radar: [
+    //       {
+    //         name: {
+    //           color: "#90979c",
+    //           formatter: function(value, indicator) {
+    //             var res = value + " : " + indicator.value;
+    //             return res;
+    //           }
+    //         },
+    //         indicator: [
+    //           { name: "happiness", max: 100, value: "60%" },
+    //           { name: "surprise", max: 100, value: "20%" },
+    //           { name: "fear", max: 100, value: "5%" },
+    //           { name: "neutral", max: 100, value: "5%" },
+    //           { name: "disgust", max: 100, value: "3%" },
+    //           { name: "contempt", max: 100, value: "3%" },
+    //           { name: "anger", max: 100, value: "2%" },
+    //           { name: "sadness", max: 100, value: "2%" }
+    //         ],
+    //         radius: 70,
+    //         center: ["50%", "50%"]
+    //       }
+    //     ],
+    //     series: [
+    //       {
+    //         type: "radar",
+    //         tooltip: {
+    //           trigger: "item"
+    //         },
+    //         itemStyle: {
+    //           normal: {
+    //             areaStyle: { type: "default" },
+    //             color: "#39c68c"
+    //           }
+    //         },
+    //         data: [
+    //           {
+    //             value: [60, 20, 5, 5, 3, 3, 2, 2],
+    //             name: "八大情感分析图"
+    //           }
+    //         ]
+    //       }
+    //     ]
+    //   };
+    //   this.$echarts
+    //     .init(document.getElementById("day_emotion"))
+    //     .setOption(option);
+    //   this.$echarts
+    //     .init(document.getElementById("day_eight_emotion"))
+    //     .setOption(eight_option);
+    // },
     //切换 tab
     changeTab(i) {
       this.activeTab = i;
@@ -676,6 +840,7 @@ export default {
       this.getWeather(i);
       this.getSleep(date, i);
       this.getActivity(date, i);
+      // this.getEmotion(date, i);
     },
     //获取 twitter
     getTwitter(date, i) {
@@ -937,22 +1102,6 @@ export default {
             continue;
           }
         }
-        // if (moodDay.indexOf(iVarDate) > -1) {
-        //   aMonth[0][d] = {
-        //     moodday: true,
-        //     normalday: iVarDate
-        //   };
-        // } else {
-        //   aMonth[0][d] = {
-        //     moodday: false,
-        //     normalday: iVarDate
-        //   };
-        // }
-        // if (eventDay.indexOf(iVarDate) > -1) {
-        //   aMonth[0][d].eventday = true;
-        // } else {
-        //   aMonth[0][d].eventday = false;
-        // }
         iVarDate++;
       }
       //处理每月第一天出现位置
@@ -973,22 +1122,6 @@ export default {
                 continue;
               }
             }
-            // if (moodDay.indexOf(iVarDate) > -1) {
-            //   aMonth[w][d] = {
-            //     moodday: true,
-            //     normalday: iVarDate
-            //   };
-            // } else {
-            //   aMonth[w][d] = {
-            //     moodday: false,
-            //     normalday: iVarDate
-            //   };
-            // }
-            // if (eventDay.indexOf(iVarDate) > -1) {
-            //   aMonth[w][d].eventday = true;
-            // } else {
-            //   aMonth[w][d].eventday = false;
-            // }
             if (iVarDate == curMonthDays) {
               this.signDays = aMonth;
               return aMonth;

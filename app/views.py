@@ -17,9 +17,11 @@ from app import models
 from app import login_manager
 from app.actions import get_user_last_tweet_or_mention, get_twitter_path,\
     save_twitter_data, get_twitter_screen_name, count_filter_by_date, \
-    get_oauth_or_create, get_user_oauth, is_token_expired
+    get_oauth_or_create, get_user_oauth, is_token_expired, \
+    get_all_objects_filter_by_date
 
 from app import actions
+from app.azure import sentiment, azure
 
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import func
@@ -158,6 +160,18 @@ def facebook_posts(user_id):
             )
             db.session.add(fb)
             db.session.commit()
+            if json.loads(fb.detail).get('message'):
+                result = azure(fb.id, json.loads(fb.detail)['message'])
+                for row in result['documents']:
+                    print('======== create sentiment ')
+                    sentiment = models.Sentiment(
+                        score=row['score'], language='en')
+                    db.session.add(sentiment)
+                    db.session.commit()
+                fb.sentiment = sentiment
+                fb.sentiment_id = sentiment.id
+                db.session.add(fb)
+                db.session.commit()
 
     return jsonify({"msg": "success"})
 
@@ -179,6 +193,34 @@ def facebook_summary(user_id):
     result = {
         'posts': posts,
     }
+    return jsonify(result)
+
+
+@app.route('/user/<int:user_id>/facebook/sentiment')
+def facebook_sentiment_list(user_id):
+    user = load_user(user_id)
+    if not user.is_admin():
+        abort(404)
+
+    dt = pendulum.parse(request.args.get('datetime'), strict=False)
+    start_date = dt.start_of('day')
+    end_date = dt.end_of('day')
+
+    posts = get_all_objects_filter_by_date(
+        models.FacebookPost, user, start_date, end_date)
+
+    result = []
+
+    for post in posts:
+        print(post.detail)
+        if json.loads(post.detail).get('message'):
+            if post.sentiment:
+                row = {
+                    'created_at': post.created_at,
+                    'content': json.loads(post.detail)['message'],
+                    'score': post.sentiment.score
+                }
+                result.append(row)
     return jsonify(result)
 
 
@@ -302,6 +344,32 @@ def twitter_summary(user_id):
     return jsonify(result)
 
 
+@app.route('/user/<int:user_id>/twitter/sentiment')
+def twitter_sentiment_list(user_id):
+    user = load_user(user_id)
+    if not user.is_admin():
+        abort(404)
+
+    dt = pendulum.parse(request.args.get('datetime'), strict=False)
+    start_date = dt.start_of('day')
+    end_date = dt.end_of('day')
+
+    tweets = get_all_objects_filter_by_date(
+        models.Tweet, user, start_date, end_date)
+
+    result = []
+
+    for tweet in tweets:
+        if tweet.sentiment:
+            row = {
+                'created_at': tweet.created_at,
+                'content': json.loads(tweet.detail)['text'],
+                'score': tweet.sentiment.score
+            }
+            result.append(row)
+    return jsonify(result)
+
+
 ##############################################
 #                 System
 ##############################################
@@ -372,6 +440,19 @@ def mood_create(user_id):
     db.session.add(mood)
     db.session.commit()
 
+    result = azure(mood.id, mood.detail)
+    print(result)
+    for row in result['documents']:
+        print('======== create sentiment ')
+        sentiment = models.Sentiment(score=row['score'], language='en')
+        db.session.add(sentiment)
+        db.session.commit()
+
+    mood.sentiment = sentiment
+    mood.sentiment_id = sentiment.id
+    db.session.add(mood)
+    db.session.commit()
+
     return jsonify({'msg': 'success'})
 
 
@@ -437,6 +518,32 @@ def mood_average_list(user_id):
         result.append(info)
 
     return jsonify(result)
+
+
+@app.route('/user/<int:user_id>/mood/sentiment')
+def mood_sentiment_list(user_id):
+    user = load_user(user_id)
+    if not user.is_admin():
+        abort(404)
+    dt = pendulum.parse(request.args.get('datetime'), strict=False)
+    start_date = dt.start_of('day')
+    end_date = dt.end_of('day')
+
+    moods = get_all_objects_filter_by_date(
+        models.Mood, user, start_date, end_date)
+
+    result = []
+
+    for mood in moods:
+        if mood.sentiment:
+            row = {
+                'created_at': mood.created_at,
+                'content': mood.detail,
+                'score': mood.sentiment.score
+            }
+            result.append(row)
+    return jsonify(result)
+
 
 ##############################################
 #                 Fitbit
@@ -629,7 +736,11 @@ def fitbit_activity_week(user_id):
 
 
 @app.route('/debug')
+@login_required
 def debug():
+    if not current_user.is_admin():
+        abort(404)
+
     tweets = db.session.query(models.Tweet).all()
     tweet_result = {'tweet': []}
     for tweet in tweets:
@@ -637,7 +748,8 @@ def debug():
             'id': tweet.id, 'user': tweet.user.username,
             'text': json.loads(tweet.detail)['text'],
             'api_url': tweet.api_url, 'tweet_id': tweet.tweet_id,
-            'time': tweet.created_at})
+            'time': tweet.created_at,
+            'score': tweet.sentiment.score if tweet.sentiment else None})
 
     mentions = db.session.query(models.TweetMention).all()
     mention_result = {'mention': []}
@@ -645,7 +757,8 @@ def debug():
         mention_result['mention'].append({
             'id': mention.id, 'user': mention.user.username,
             'text': json.loads(mention.detail)['text'],
-            'api_url': mention.api_url})
+            'api_url': mention.api_url,
+            'score': mention.sentiment.score if mention.sentiment else None})
 
     users = db.session.query(models.User).all()
     user_result = {'user': []}
@@ -669,13 +782,25 @@ def debug():
         fb_result['fb'].append({
             'id': fb.id, 'user': fb.user.username,
             'text': json.loads(fb.detail),
-            'api_url': fb.api_url})
+            'api_url': fb.api_url,
+            'score': fb.sentiment.score if fb.sentiment else None
+        })
+
+    moods = db.session.query(models.Mood).all()
+    mood_result = {'mood': []}
+    for mood in moods:
+        mood_result['mood'].append({
+            'id': mood.id, 'user': mood.user.username,
+            'text': mood.detail,
+            'score': mood.sentiment.score if mood.sentiment else None
+        })
 
     return jsonify(user_result, '=======',
                    oauth_result, '=======',
                    tweet_result, '=======',
                    mention_result, '=======',
-                   fb_result, '=======')
+                   fb_result, '=======',
+                   mood_result, '=======')
 
 
 @app.route('/add', methods=['POST'])

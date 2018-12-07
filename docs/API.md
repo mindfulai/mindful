@@ -53,6 +53,28 @@ Response:
 }
 ```
 
+## Twitter sentiment 列表接口
+URL: /user/<int:user_id>/twitter/sentiment  
+Method: GET  
+
+Data:  
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```
+
+Response:
+```json
+[
+  {
+    "content": "Content",
+    "created_at": "Fri, 18 Nov 2016 02:53:24 GMT",
+    "score": 0.5
+  }
+]
+```
+
 
 ## Twitter 更新 Mentions
 URL: /user/<user_id>/twitter/mentions_timeline/update  
@@ -101,6 +123,26 @@ Response:
 {
     "msg": "success"
 }
+```
+
+## Facebook sentiment 列表接口
+URL: /user/<int:user_id>/facebook/sentiment  
+Method: GET  
+Data:
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```
+Response:
+```json
+[
+  {
+    "content": "Content",
+    "created_at": "Sun, 11 Dec 2016 04:26:56 GMT",
+    "score": 0.9970524907112122
+  }
+]
 ```
 
 ## 存储用户地理位置及天气接口，并展示当日天气
@@ -239,6 +281,28 @@ Parameters:
 date | 访问当天的日期 | 2018-11-20
 day | 这一周这一月第几天 | 2
 score   | 平均分（1 - 5） | 4
+
+
+## Mood sentiment 列表接口
+URL: /user/<int:user_id>/mood/sentiment  
+Method: GET  
+Data:  
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```
+
+Response:  
+```json
+[
+  {
+    "content": "Content",
+    "created_at": "Sun, 11 Dec 2016 04:26:56 GMT",
+    "score": 0.9970524907112122
+  }
+]
+```
 
 
 ## Fitbit 授权
