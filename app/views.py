@@ -214,12 +214,13 @@ def facebook_sentiment_list(user_id):
     for post in posts:
         print(post.detail)
         if json.loads(post.detail).get('message'):
-            row = {
-                'created_at': post.created_at,
-                'content': json.loads(post.detail)['message'],
-                'score': post.sentiment.score
-            }
-            result.append(row)
+            if post.sentiment:
+                row = {
+                    'created_at': post.created_at,
+                    'content': json.loads(post.detail)['message'],
+                    'score': post.sentiment.score
+                }
+                result.append(row)
     return jsonify(result)
 
 
@@ -359,12 +360,13 @@ def twitter_sentiment_list(user_id):
     result = []
 
     for tweet in tweets:
-        row = {
-            'created_at': tweet.created_at,
-            'content': json.loads(tweet.detail)['text'],
-            'score': tweet.sentiment.score
-        }
-        result.append(row)
+        if tweet.sentiment:
+            row = {
+                'created_at': tweet.created_at,
+                'content': json.loads(tweet.detail)['text'],
+                'score': tweet.sentiment.score
+            }
+            result.append(row)
     return jsonify(result)
 
 
@@ -533,13 +535,13 @@ def mood_sentiment_list(user_id):
     result = []
 
     for mood in moods:
-        print(mood.detail)
-        row = {
-            'created_at': mood.created_at,
-            'content': mood.detail,
-            'score': mood.sentiment.score
-        }
-        result.append(row)
+        if mood.sentiment:
+            row = {
+                'created_at': mood.created_at,
+                'content': mood.detail,
+                'score': mood.sentiment.score
+            }
+            result.append(row)
     return jsonify(result)
 
 
