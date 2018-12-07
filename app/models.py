@@ -30,6 +30,12 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)
 
+    def is_admin(self):
+        # FIXME: add admin role
+        if self.id in [1, 2, 3, 4, 6]:
+            return True
+        return False
+
 
 class Sentiment(db.Model):
     __tablename__ = 'sentiment'
