@@ -199,6 +199,8 @@ def facebook_summary(user_id):
 @app.route('/user/<int:user_id>/facebook/sentiment')
 def facebook_sentiment_list(user_id):
     user = load_user(user_id)
+    if not user.is_admin():
+        abort(404)
 
     dt = pendulum.parse(request.args.get('datetime'), strict=False)
     start_date = dt.start_of('day')
@@ -344,6 +346,8 @@ def twitter_summary(user_id):
 @app.route('/user/<int:user_id>/twitter/sentiment')
 def twitter_sentiment_list(user_id):
     user = load_user(user_id)
+    if not user.is_admin():
+        abort(404)
 
     dt = pendulum.parse(request.args.get('datetime'), strict=False)
     start_date = dt.start_of('day')
@@ -517,6 +521,8 @@ def mood_average_list(user_id):
 @app.route('/user/<int:user_id>/mood/sentiment')
 def mood_sentiment_list(user_id):
     user = load_user(user_id)
+    if not user.is_admin():
+        abort(404)
     dt = pendulum.parse(request.args.get('datetime'), strict=False)
     start_date = dt.start_of('day')
     end_date = dt.end_of('day')
@@ -728,7 +734,11 @@ def fitbit_activity_week(user_id):
 
 
 @app.route('/debug')
+@login_required
 def debug():
+    if not current_user.is_admin():
+        abort(404)
+
     tweets = db.session.query(models.Tweet).all()
     tweet_result = {'tweet': []}
     for tweet in tweets:
