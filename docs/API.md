@@ -271,7 +271,7 @@ day | 这一周这一月第几天 | 2
 score   | 平均分（1 - 5） | 4
 
 
-## Facebook sentiment 列表接口
+## Mood sentiment 列表接口
 URL: /user/<int:user_id>/mood/sentiment
 Method: GET  
 
