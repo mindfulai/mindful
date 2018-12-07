@@ -16,7 +16,8 @@ from app import models
 from app import login_manager
 from app.actions import get_user_last_tweet_or_mention, get_twitter_path,\
     save_twitter_data, get_twitter_screen_name, count_filter_by_date, \
-    get_oauth_or_create, get_user_oauth, is_token_expired
+    get_oauth_or_create, get_user_oauth, is_token_expired, \
+    get_all_objects_filter_by_date
 
 from app import actions
 from app.azure import sentiment, azure
@@ -198,7 +199,12 @@ def facebook_summary(user_id):
 def facebook_sentiment_list(user_id):
     user = load_user(user_id)
 
-    posts = models.FacebookPost.query.filter_by(user=user).all()
+    dt = pendulum.parse(request.args.get('datetime'), strict=False)
+    start_date = dt.start_of('day')
+    end_date = dt.end_of('day')
+
+    posts = get_all_objects_filter_by_date(
+        models.FacebookPost, user, start_date, end_date)
 
     result = []
 
@@ -338,7 +344,12 @@ def twitter_summary(user_id):
 def twitter_sentiment_list(user_id):
     user = load_user(user_id)
 
-    tweets = models.Tweet.query.filter_by(user=user).all()
+    dt = pendulum.parse(request.args.get('datetime'), strict=False)
+    start_date = dt.start_of('day')
+    end_date = dt.end_of('day')
+
+    tweets = get_all_objects_filter_by_date(
+        models.Tweet, user, start_date, end_date)
 
     result = []
 
@@ -507,8 +518,12 @@ def mood_average_list(user_id):
 @app.route('/user/<int:user_id>/mood/sentiment')
 def mood_sentiment_list(user_id):
     user = load_user(user_id)
+    dt = pendulum.parse(request.args.get('datetime'), strict=False)
+    start_date = dt.start_of('day')
+    end_date = dt.end_of('day')
 
-    moods = models.Mood.query.filter_by(user=user).all()
+    moods = get_all_objects_filter_by_date(
+        models.Mood, user, start_date, end_date)
 
     result = []
 
