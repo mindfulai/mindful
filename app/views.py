@@ -194,6 +194,26 @@ def facebook_summary(user_id):
     return jsonify(result)
 
 
+@app.route('/user/<int:user_id>/facebook/sentiment')
+def facebook_sentiment_list(user_id):
+    user = load_user(user_id)
+
+    posts = models.FacebookPost.query.filter_by(user=user).all()
+
+    result = []
+
+    for post in posts:
+        print(post.detail)
+        if json.loads(post.detail).get('message'):
+            row = {
+                'created_at': post.created_at,
+                'content': json.loads(post.detail)['message'],
+                'score': post.sentiment.score
+            }
+            result.append(row)
+    return jsonify(result)
+
+
 ##############################################
 #             Twitter API
 ##############################################
@@ -311,6 +331,24 @@ def twitter_summary(user_id):
         'tweets': tweet_count,
         'mentions': mention_count
     }
+    return jsonify(result)
+
+
+@app.route('/user/<int:user_id>/twitter/user_timeline/sentiment')
+def user_timeline_sentiment_list(user_id):
+    user = load_user(user_id)
+
+    tweets = models.Tweet.query.filter_by(user=user).all()
+
+    result = []
+
+    for tweet in tweets:
+        row = {
+            'created_at': tweet.created_at,
+            'content': json.loads(tweet.detail)['text'],
+            'score': tweet.sentiment.score
+        }
+        result.append(row)
     return jsonify(result)
 
 
@@ -464,6 +502,26 @@ def mood_average_list(user_id):
         result.append(info)
 
     return jsonify(result)
+
+
+@app.route('/user/<int:user_id>/mood/sentiment')
+def mood_sentiment_list(user_id):
+    user = load_user(user_id)
+
+    moods = models.Mood.query.filter_by(user=user).all()
+
+    result = []
+
+    for mood in moods:
+        print(mood.detail)
+        row = {
+            'created_at': mood.created_at,
+            'content': mood.detail,
+            'score': mood.sentiment.score
+        }
+        result.append(row)
+    return jsonify(result)
+
 
 ##############################################
 #                 Fitbit
