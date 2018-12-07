@@ -8,6 +8,7 @@
       <!-- FaceBook -->
       <h4 class="content_header">FaceBook</h4>
       <div class="content_sentiment">
+        <div class="nodata" v-if="facebookData.length==0">no data</div>
         <div class="content_sentiment_box" v-for="(item,index) in facebookData" :key="index">
           <p class="content_date">{{formatTime(new Date(item.created_at)).slice(0,-5)}}</p>
           <div class="content_inner">
@@ -30,6 +31,7 @@
       <!-- Twitter -->
       <h4 class="content_header">Twitter</h4>
       <div class="content_sentiment">
+        <div class="nodata" v-if="twitterData.length==0">no data</div>
         <div class="content_sentiment_box" v-for="(item,index) in twitterData" :key="index">
           <p class="content_date">{{formatTime(new Date(item.created_at)).slice(0,-5)}}</p>
           <div class="content_inner">
@@ -61,6 +63,7 @@
       <!-- Mood -->
       <h4 class="content_header">Mood</h4>
       <div class="content_sentiment">
+        <div class="nodata" v-if="moodData.length==0">no data</div>
         <div class="content_sentiment_box" v-for="(item,index) in moodData" :key="index">
           <p class="content_date">{{formatTime(new Date(item.created_at)).slice(0,-5)}}</p>
           <div class="content_inner">
@@ -89,32 +92,39 @@ export default {
   mounted() {
     this.name = window.localStorage.getItem("name");
     this.id = window.localStorage.getItem("id");
-    this.getFacebook();
-    this.getTwitter();
-    this.getMood();
+    var date = this.formatTime(new Date());
+    this.getFacebook(date);
+    this.getTwitter(date);
+    this.getMood(date);
   },
   methods: {
-    getFacebook() {
+    getFacebook(date) {
       this.$axios
-        .get(this.api + "/user/" + this.id + "/facebook/sentiment")
+        .get(this.api + "/user/" + this.id + "/facebook/sentiment", {
+          params: { datetime: date }
+        })
         .then(res => {
           if (res.status == 200) {
             this.facebookData = res.data;
           }
         });
     },
-    getTwitter() {
+    getTwitter(date) {
       this.$axios
-        .get(this.api + "/user/" + this.id + "/twitter/sentiment")
+        .get(this.api + "/user/" + this.id + "/twitter/sentiment", {
+          params: { datetime: date }
+        })
         .then(res => {
           if (res.status == 200) {
             this.twitterData = res.data;
           }
         });
     },
-    getMood() {
+    getMood(date) {
       this.$axios
-        .get(this.api + "/user/" + this.id + "/mood/sentiment")
+        .get(this.api + "/user/" + this.id + "/mood/sentiment", {
+          params: { datetime: date }
+        })
         .then(res => {
           if (res.status == 200) {
             this.moodData = res.data;
@@ -175,7 +185,13 @@ export default {
   border-bottom-right-radius: 0.1rem;
   background: #fff;
   padding: 0 0.2rem;
+  min-height: 1.5rem;
   margin-bottom: 0.3rem;
+}
+.nodata {
+  width: 100%;
+  line-height: 1rem;
+  font-size: 0.3rem;
 }
 .content_sentiment_box {
   border-bottom: 1px solid #e1e2e9;
