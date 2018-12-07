@@ -42,7 +42,7 @@ class Sentiment(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     score = db.Column(db.Float)
-    language = db.Column(db.Integer)
+    language = db.Column(db.String)
 
 
 class ContentMixin(object):
