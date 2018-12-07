@@ -334,8 +334,8 @@ def twitter_summary(user_id):
     return jsonify(result)
 
 
-@app.route('/user/<int:user_id>/twitter/user_timeline/sentiment')
-def user_timeline_sentiment_list(user_id):
+@app.route('/user/<int:user_id>/twitter/sentiment')
+def twitter_sentiment_list(user_id):
     user = load_user(user_id)
 
     tweets = models.Tweet.query.filter_by(user=user).all()
