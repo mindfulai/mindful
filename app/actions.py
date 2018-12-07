@@ -6,7 +6,6 @@ from sqlalchemy.orm.exc import NoResultFound
 from flask import abort, flash
 
 from app import db, models
-from app.azure import azure
 import os
 
 
