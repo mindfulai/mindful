@@ -9,6 +9,7 @@
         
         <div class="mine_bar" v-show="isShow">
             <ul class="mine_bar_list">
+                <li><router-link to="/debug"><i class="fa fa-tag"></i>&nbsp;&nbsp;&nbsp;Sentiment</router-link></li>
                 <li><router-link to="/authorize"><i class="fa fa-tasks"></i>&nbsp;&nbsp;&nbsp;Authorize</router-link></li>
                 <li><a @click="logout"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;&nbsp;Log out</a></li>
             </ul>

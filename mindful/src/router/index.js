@@ -4,6 +4,7 @@ import login from '@/components/login'
 import index from '@/components/index'
 import authorize from '@/components/authorize'
 import edit_mood from '@/components/edit_mood'
+import debug from '@/components/debug'
 
 Vue.use(Router)
 
@@ -33,6 +34,11 @@ export default new Router({
       path: '/edit_mood',
       name: 'edit_mood',
       component: edit_mood
+    },
+    {
+      path: '/debug',
+      name: 'debug',
+      component: debug
     },
   ]
 })
