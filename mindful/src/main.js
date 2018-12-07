@@ -19,8 +19,8 @@ Vue.use(MintUI)
 // Vue.prototype.$ = $
 
 //全局引入echarts
-import echarts from 'echarts'
-Vue.prototype.$echarts = echarts
+// import echarts from 'echarts'
+// Vue.prototype.$echarts = echarts
 
 Vue.config.productionTip = false
 
