@@ -6,6 +6,8 @@ from sqlalchemy.orm.exc import NoResultFound
 from flask import abort, flash
 
 from app import db, models
+from app.azure import azure
+import os
 
 
 def get_user_last_tweet_or_mention(user, csl):
@@ -172,7 +174,7 @@ def save_location(user, latitude, longitude):
 
 def save_and_get_weather(user, latitude, longitude):
     """ 保存用户所在地理位置的天气 """
-    darksky_secret = 'bec7b6450421ba2b12b42fec0d98ad72'
+    darksky_secret = os.getenv('DARKSKY_SECRET')
 
     api_url = 'https://api.darksky.net/forecast'
     url = '{}/{}/{},{}?units=si'.format(
