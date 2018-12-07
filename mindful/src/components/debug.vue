@@ -5,15 +5,16 @@
         sentiment
     </header>
     <div class="content">
+      <!-- FaceBook -->
       <h4 class="content_header">FaceBook</h4>
       <div class="content_sentiment">
-        <div class="content_sentiment_box">
-          <p class="content_date">2018-12-06 08:34:23</p>
+        <div class="content_sentiment_box" v-for="(item,index) in facebookData" :key="index">
+          <p class="content_date">{{formatTime(new Date(item.created_at)).slice(0,-5)}}</p>
           <div class="content_inner">
-            <p class="content_inner_p">北京天气很好，心情也不错！北京天气很好，心情也不错！北京天气很好，心情也不错！北京天气很好，心情也不错！北京天气很好，心情也不错！</p>
-            <div class="score">score:<br><b>0.90</b></div>
+            <p class="content_inner_p">{{item.content?item.content:""}}</p>
+            <div class="score">score:<br><b>{{item.score.toFixed(2)}}</b></div>
           </div> 
-          <div class="content_img">
+          <!-- <div class="content_img">
             <div class="content_img_inner clearfix">
               <div class="img_part left"><img src="./../assets/user.png" alt=""></div>
               <div class="img_sentiment right">
@@ -23,46 +24,19 @@
                 <div><p>sadness  : <b>0.01</b></p><p>fear    : <b>0.01</b></p></div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="content_sentiment_box">
-          <p class="content_date">2018-12-06 08:34:23</p>
-          <div class="content_inner">
-            <p class="content_inner_p">北京天气很好，心情也不错！</p>
-            <div class="score">score:<br><b>0.90</b></div>
-          </div> 
-          <div class="content_sentiment_img">
-            
-          </div>
-        </div>
-        <div class="content_sentiment_box">
-          <p class="content_date">2018-12-06 08:34:23</p>
-          <!-- <div class="content_inner">
-            <p class="content_inner_p">北京天气很好，心情也不错！</p>
-            <div class="score">score:<br><b>0.90</b></div>
-          </div>  -->
-          <div class="content_img">
-            <div class="content_img_inner clearfix">
-              <div class="img_part left"><img src="./../assets/user.png" alt=""></div>
-              <div class="img_sentiment right">
-                <div><p>happiness: <b>0.78</b></p><p>neutral: <b>0.01</b></p></div>
-                <div><p>surprise : <b>0.08</b></p><p>disgust : <b>0.01</b></p></div>
-                <div><p>contempt  : <b>0.01</b></p><p>anger   : <b>0.01</b></p></div>
-                <div><p>sadness  : <b>0.01</b></p><p>fear    : <b>0.01</b></p></div>
-              </div>
-            </div>
-          </div>
+          </div> -->
         </div>
       </div>
+      <!-- Twitter -->
       <h4 class="content_header">Twitter</h4>
       <div class="content_sentiment">
-        <div class="content_sentiment_box">
-          <p class="content_date">2018-12-06 08:34:23</p>
+        <div class="content_sentiment_box" v-for="(item,index) in twitterData" :key="index">
+          <p class="content_date">{{formatTime(new Date(item.created_at)).slice(0,-5)}}</p>
           <div class="content_inner">
-            <p class="content_inner_p">北京天气很好，心情也不错！</p>
-            <div class="score">score:<br><b>0.90</b></div>
+            <p class="content_inner_p">{{item.content?item.content:""}}</p>
+            <div class="score">score:<br><b>{{item.score.toFixed(2)}}</b></div>
           </div> 
-          <div class="content_img">
+          <!-- <div class="content_img">
             <div class="content_img_inner clearfix">
               <div class="img_part left"><img src="./../assets/user.png" alt=""></div>
               <div class="img_sentiment right">
@@ -81,17 +55,18 @@
                 <div><p>sadness  : <b>0.01</b></p><p>fear    : <b>0.01</b></p></div>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
-        <div class="content_sentiment_box">
-          <p class="content_date">2018-12-06 08:34:23</p>
+      </div>
+      <!-- Mood -->
+      <h4 class="content_header">Mood</h4>
+      <div class="content_sentiment">
+        <div class="content_sentiment_box" v-for="(item,index) in moodData" :key="index">
+          <p class="content_date">{{formatTime(new Date(item.created_at)).slice(0,-5)}}</p>
           <div class="content_inner">
-            <p class="content_inner_p">北京天气很好，心情也不错！</p>
-            <div class="score">score:<br><b>0.90</b></div>
+            <p class="content_inner_p">{{item.content?item.content:""}}</p>
+            <div class="score">score:<br><b>{{item.score.toFixed(2)}}</b></div>
           </div> 
-          <div class="content_sentiment_img">
-            
-          </div>
         </div>
       </div>
     </div>
@@ -105,14 +80,72 @@ export default {
   data() {
     return {
       name: "",
-      id: ""
+      id: "",
+      facebookData: [],
+      twitterData: [],
+      moodData: []
     };
   },
   mounted() {
     this.name = window.localStorage.getItem("name");
     this.id = window.localStorage.getItem("id");
+    this.getFacebook();
+    this.getTwitter();
+    this.getMood();
   },
-  methods: {},
+  methods: {
+    getFacebook() {
+      this.$axios
+        .get(this.api + "/user/" + this.id + "/facebook/sentiment")
+        .then(res => {
+          if (res.status == 200) {
+            this.facebookData = res.data;
+          }
+        });
+    },
+    getTwitter() {
+      this.$axios
+        .get(this.api + "/user/" + this.id + "/twitter/sentiment")
+        .then(res => {
+          if (res.status == 200) {
+            this.twitterData = res.data;
+          }
+        });
+    },
+    getMood() {
+      this.$axios
+        .get(this.api + "/user/" + this.id + "/mood/sentiment")
+        .then(res => {
+          if (res.status == 200) {
+            this.moodData = res.data;
+          }
+        });
+    },
+    //时间转换
+    //日期带时区格式处理
+    formatTime(date) {
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var day = date.getDate();
+      var hour = date.getHours();
+      var minute = date.getMinutes();
+      var second = date.getSeconds();
+      return (
+        [year, month, day].map(this.formatNumber).join("-") +
+        " " +
+        [hour, minute, second].map(this.formatNumber).join(":") +
+        String(date).slice(
+          String(date).indexOf("GMT") + 3,
+          String(date).indexOf("GMT") + 8
+        )
+      );
+    },
+    //数字格式
+    formatNumber(n) {
+      n = n.toString();
+      return n[1] ? n : "0" + n;
+    }
+  },
   components: {
     navHeader
   }
@@ -146,7 +179,7 @@ export default {
 }
 .content_sentiment_box {
   border-bottom: 1px solid #e1e2e9;
-  padding: 0.2rem 0;
+  padding: 0.2rem 0 0;
 }
 .content_sentiment_box:last-of-type {
   border: none;
@@ -160,10 +193,11 @@ export default {
   position: relative;
   font-size: 0.3rem;
   padding: 0.1rem 0;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.1rem;
 }
 .content_inner_p {
   width: 80%;
+  line-height: 0.6rem;
 }
 .score {
   text-align: center;
