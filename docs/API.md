@@ -54,8 +54,15 @@ Response:
 ```
 
 ## Twitter sentiment 列表接口
-URL: /user/<int:user_id>/twitter/sentiment
+URL: /user/<int:user_id>/twitter/sentiment  
 Method: GET  
+
+Data:  
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```
 
 Response:
 ```json
@@ -119,9 +126,14 @@ Response:
 ```
 
 ## Facebook sentiment 列表接口
-URL: /user/<int:user_id>/facebook/sentiment
+URL: /user/<int:user_id>/facebook/sentiment  
 Method: GET  
-
+Data:
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```
 Response:
 ```json
 [
@@ -271,11 +283,17 @@ day | 这一周这一月第几天 | 2
 score   | 平均分（1 - 5） | 4
 
 
-## Facebook sentiment 列表接口
-URL: /user/<int:user_id>/mood/sentiment
+## Mood sentiment 列表接口
+URL: /user/<int:user_id>/mood/sentiment  
 Method: GET  
+Data:  
+```json
+{
+    "datetime": "2018-11-20 13:55:03+0800"
+}
+```
 
-Response:
+Response:  
 ```json
 [
   {
