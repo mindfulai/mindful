@@ -1,8 +1,9 @@
 import json
 import requests
+import os
 
 BASE_URL = "https://westus2.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment"
-TEXT_KEY = 'b1fd2d43cb804835babafed8493659fa'
+TEXT_KEY = os.getenv('AZURE_TEXT_KEY')
 
 
 def sentiment(data):
