@@ -8,7 +8,7 @@ heroku login
 
 Clone the application
 ```
-git clone git@github.com:ucb-poco1/mindful-poc1.git
+git clone git@github.com:mindfulai/mindful-poc1.git
 cd mindful-poc1
 ```
 
